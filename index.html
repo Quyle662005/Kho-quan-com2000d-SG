@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản Lý Kho — Quán Cơm 2000đ</title>
+    <style>
+        /* ── Tokens ── */
+        :root {
+            --bg: #FDF8F2;
+            --surface: #FFFFFF;
+            --border: #E8DDD0;
+            --text: #2C1A0E;
+            --muted: #8C7B6E;
+            --accent: #C84B2F;
+            /* warm brick red — charitable warmth */
+            --accent-dk: #A33A20;
+            --green: #2E7D5A;
+            --green-bg: #EAF5EF;
+            --red-bg: #FDECEA;
+            --shadow: 0 2px 12px rgba(44, 26, 14, 0.10);
+            --radius: 14px;
+            --font-head: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-head);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 0 48px;
+        }
+
+        /* ── Header banner ── */
+        .banner {
+            width: 100%;
+            background: var(--accent);
+            padding: 20px 24px 18px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner::before {
+            content: '🍚';
+            position: absolute;
+            font-size: 80px;
+            opacity: .08;
+            right: -8px;
+            top: -12px;
+            transform: rotate(-15deg);
+        }
+
+        .banner h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: .3px;
+        }
+
+        .banner p {
+            font-size: .78rem;
+            color: rgba(255, 255, 255, .75);
+            margin-top: 3px;
+        }
+
+        /* ── Card ── */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px 20px 28px;
+            width: min(100%, 460px);
+            margin: 24px 16px 0;
+        }
+
+        /* ── Transaction type tabs ── */
+        .tab-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 8px;
+            font-size: .88rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: none;
+            color: var(--muted);
+            transition: all .18s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .tab-btn.active-nhap {
+            background: #FFF3F1;
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .tab-btn.active-xuat {
+            background: #EDF7F2;
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        /* ── Field groups ── */
+        .field {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            margin-bottom: 6px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: .95rem;
+            font-family: var(--font-head);
+            color: var(--text);
+            background: var(--bg);
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+            transition: border-color .15s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent);
+            background: #fff;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238C7B6E' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        /* Quantity + unit row */
+        .row-split {
+            display: grid;
+            grid-template-columns: 1fr 120px;
+            gap: 10px;
+        }
+
+        /* ── Note optional ── */
+        .optional {
+            font-size: .7rem;
+            font-weight: 400;
+            color: var(--muted);
+            margin-left: 4px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        /* ── Submit button ── */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all .18s;
+            background: var(--accent);
+            color: #fff;
+            letter-spacing: .2px;
+        }
+
+        .btn-submit:hover {
+            background: var(--accent-dk);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-submit.xuat {
+            background: var(--green);
+        }
+
+        .btn-submit.xuat:hover {
+            background: #235f44;
+        }
+
+        /* ── Spinner ── */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255, 255, 255, .4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .18);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .9rem;
+            font-weight: 600;
+            min-width: 260px;
+            max-width: 90vw;
+            transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+            z-index: 999;
+            border-left: 4px solid transparent;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .toast.error {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .toast-icon {
+            font-size: 1.3rem;
+        }
+
+        /* ── Divider ── */
+        .divider {
+            border: none;
+            border-top: 1.5px solid var(--border);
+            margin: 20px 0 22px;
+        }
+
+        .section-label {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="banner">
+        <h1>📦 Quản Lý Kho</h1>
+        <p>Quán Cơm 2000đ Sài Gòn</p>
+    </div>
+
+    <div class="card">
+
+        <!-- Transaction type -->
+        <p class="section-label">Loại giao dịch</p>
+        <div class="tab-group">
+            <button class="tab-btn active-nhap" id="btn-nhap" onclick="setType('nhap')">
+                ⬇️ Nhập kho
+            </button>
+            <button class="tab-btn" id="btn-xuat" onclick="setType('xuat')">
+                ⬆️ Xuất kho
+            </button>
+        </div>
+
+        <input type="hidden" id="loaiGiaoDich" value="Nhập kho" />
+
+        <hr class="divider" />
+
+        <!-- Người thực hiện -->
+        <div class="field">
+            <label>Người thực hiện</label>
+            <input type="text" id="nguoiThucHien" placeholder="Nhập tên bạn…" autocomplete="name" />
+        </div>
+
+        <!-- Sản phẩm -->
+        <div class="field">
+            <label>Sản phẩm <span class="optional">(chọn hoặc gõ tên)</span></label>
+            <select id="sanPham" onchange="syncUnit()">
+                <option value="" disabled selected>— Chọn nguyên vật liệu —</option>
+                <optgroup label="🌾 Lương thực & Gia vị">
+                    <option value="Gạo" data-dvt="kg">Gạo</option>
+                    <option value="Dầu ăn" data-dvt="lít">Dầu ăn</option>
+                    <option value="Nước mắm" data-dvt="lít">Nước mắm</option>
+                    <option value="Nước tương" data-dvt="lít">Nước tương</option>
+                    <option value="Hạt nêm" data-dvt="kg">Hạt nêm</option>
+                    <option value="Bột ngọt" data-dvt="kg">Bột ngọt</option>
+                    <option value="Muối" data-dvt="kg">Muối</option>
+                    <option value="Đường" data-dvt="kg">Đường</option>
+                    <option value="Tiêu" data-dvt="kg">Tiêu</option>
+                    <option value="Tương ớt" data-dvt="lít">Tương ớt</option>
+                    <option value="Dầu hào" data-dvt="lít">Dầu hào</option>
+                </optgroup>
+                <optgroup label="🥩 Thực phẩm tươi">
+                    <option value="Thịt heo" data-dvt="kg">Thịt heo</option>
+                    <option value="Xúc xích" data-dvt="kg">Xúc xích</option>
+                    <option value="Trứng" data-dvt="cái">Trứng</option>
+                    <option value="Lạp xưởng" data-dvt="kg">Lạp xưởng</option>
+                    <option value="Cá hộp" data-dvt="hộp">Cá hộp</option>
+                    <option value="Nấm" data-dvt="kg">Nấm</option>
+                    <option value="Nấm mèo" data-dvt="kg">Nấm mèo</option>
+                    <option value="Rau củ" data-dvt="kg">Rau củ</option>
+                    <option value="Trái cây" data-dvt="kg">Trái cây</option>
+                    <option value="Bún gạo" data-dvt="kg">Bún gạo</option>
+                    <option value="Mì gói" data-dvt="gói">Mì gói</option>
+                </optgroup>
+                <optgroup label="🧴 Vật dụng">
+                    <option value="Nước rửa chén" data-dvt="kg">Nước rửa chén</option>
+                </optgroup>
+                <option value="__other__">✏️ Khác (gõ bên dưới)</option>
+            </select>
+            <!-- Free-text fallback -->
+            <input type="text" id="sanPhamKhac" placeholder="Gõ tên sản phẩm khác…"
+                style="margin-top:8px;display:none;" />
+        </div>
+
+        <!-- Số lượng + Đơn vị -->
+        <div class="field row-split">
+            <div>
+                <label>Số lượng</label>
+                <input type="number" id="soLuong" placeholder="0" min="0.01" step="any" inputmode="decimal" />
+            </div>
+            <div>
+                <label>Đơn vị</label>
+                <select id="donVi">
+                    <option value="kg">kg</option>
+                    <option value="gram">gram</option>
+                    <option value="lít">lít</option>
+                    <option value="ml">ml</option>
+                    <option value="cái">cái</option>
+                    <option value="gói">gói</option>
+                    <option value="hộp">hộp</option>
+                    <option value="chai">chai</option>
+                    <option value="bịch">bịch</option>
+                    <option value="túi">túi</option>
+                    <option value="thùng">thùng</option>
+                    <option value="bó">bó</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Ghi chú -->
+        <div class="field">
+            <label>Ghi chú <span class="optional">tuỳ chọn</span></label>
+            <input type="text" id="ghiChu" placeholder="VD:Xuất cho Quán cơm 2000 đ SG" />
+        </div>
+
+        <!-- Submit -->
+        <button class="btn-submit" id="btnSubmit" onclick="submitForm()">
+            <span id="btnText">Ghi nhận nhập kho</span>
+        </button>
+
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon"></span>
+        <span id="toastMsg"></span>
+    </div>
+
+    <script>
+        // ────────────────────────────────────────────────
+        // ⚙️  CẤU HÌNH — Thay URL này sau khi deploy GAS
+        // ────────────────────────────────────────────────
+        const WEBHOOK_URL = 'https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbzBgBF4hHsJS2k5ZlLoRkCcFxL1o-kW2za3AmnsA3_84atkqSVJUygL_eiz3O3wMXAo/exec';
+
+        // ── State ──
+        let currentType = 'nhap';
+
+        function setType(type) {
+            currentType = type;
+            const isNhap = type === 'nhap';
+
+            document.getElementById('loaiGiaoDich').value = isNhap ? 'Nhập kho' : 'Xuất kho';
+
+            document.getElementById('btn-nhap').className = 'tab-btn' + (isNhap ? ' active-nhap' : '');
+            document.getElementById('btn-xuat').className = 'tab-btn' + (!isNhap ? ' active-xuat' : '');
+
+            const btn = document.getElementById('btnSubmit');
+            const txt = document.getElementById('btnText');
+            btn.className = 'btn-submit' + (!isNhap ? ' xuat' : '');
+            txt.textContent = isNhap ? 'Ghi nhận nhập kho' : 'Ghi nhận xuất kho';
+            // Cập nhật placeholder ghi chú theo loại giao dịch
+            const ghiChuInput = document.getElementById('ghiChu');
+            ghiChuInput.placeholder = isNhap 
+                ? 'VD: hàng từ MTQ Cô Thủy Q10' 
+                : 'VD: Xuất cho Quán cơm 2000 đ SG';
+        }
+
+        // Auto-select đơn vị khi chọn sản phẩm
+        function syncUnit() {
+            const sel = document.getElementById('sanPham');
+            const opt = sel.options[sel.selectedIndex];
+            const dvt = opt.getAttribute('data-dvt');
+            const khacField = document.getElementById('sanPhamKhac');
+
+            if (sel.value === '__other__') {
+                khacField.style.display = 'block';
+                khacField.required = true;
+            } else {
+                khacField.style.display = 'none';
+                khacField.required = false;
+                if (dvt) {
+                    const dvtSel = document.getElementById('donVi');
+                    for (let i = 0; i < dvtSel.options.length; i++) {
+                        if (dvtSel.options[i].value === dvt) { dvtSel.selectedIndex = i; break; }
+                    }
+                }
+            }
+        }
+
+        // ── Validation ──
+        function validate() {
+            const nguoi = document.getElementById('nguoiThucHien').value.trim();
+            const spSel = document.getElementById('sanPham').value;
+            const spKhac = document.getElementById('sanPhamKhac').value.trim();
+            const sl = parseFloat(document.getElementById('soLuong').value);
+
+            if (!nguoi) return 'Vui lòng nhập tên người thực hiện.';
+            if (!spSel) return 'Vui lòng chọn sản phẩm.';
+            if (spSel === '__other__' && !spKhac) return 'Vui lòng nhập tên sản phẩm.';
+            if (!sl || sl <= 0) return 'Số lượng phải lớn hơn 0.';
+            return null;
+        }
+
+        // ── Submit ──
+        async function submitForm() {
+            const err = validate();
+            if (err) { showToast(err, 'error'); return; }
+
+            const btn = document.getElementById('btnSubmit');
+            const txt = document.getElementById('btnText');
+            const spSel = document.getElementById('sanPham').value;
+            const sanPham = spSel === '__other__'
+                ? document.getElementById('sanPhamKhac').value.trim()
+                : spSel;
+
+            const payload = {
+                loaiGiaoDich: document.getElementById('loaiGiaoDich').value,
+                nguoiThucHien: document.getElementById('nguoiThucHien').value.trim(),
+                sanPham,
+                soLuong: parseFloat(document.getElementById('soLuong').value),
+                donVi: document.getElementById('donVi').value,
+                ghiChu: document.getElementById('ghiChu').value.trim(),
+            };
+
+            // Loading state
+            btn.disabled = true;
+            txt.innerHTML = '';
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            btn.insertBefore(spinner, btn.firstChild);
+            btn.insertAdjacentHTML('beforeend', '<span>Đang ghi nhận…</span>');
+
+            try {
+                const res = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload),
+                });
+                const json = await res.json();
+
+                if (json.status === 'success') {
+                    showToast('✅ Đã ghi nhận thành công!', 'success');
+                    resetForm();
+                } else {
+                    showToast('❌ Lỗi: ' + (json.message || 'Không rõ nguyên nhân.'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Không kết nối được. Kiểm tra mạng và thử lại.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '';
+                const newTxt = document.createElement('span');
+                newTxt.id = 'btnText';
+                newTxt.textContent = currentType === 'nhap' ? 'Ghi nhận nhập kho' : 'Ghi nhận xuất kho';
+                btn.appendChild(newTxt);
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('nguoiThucHien').value = '';
+            document.getElementById('sanPham').selectedIndex = 0;
+            document.getElementById('sanPhamKhac').style.display = 'none';
+            document.getElementById('sanPhamKhac').value = '';
+            document.getElementById('soLuong').value = '';
+            document.getElementById('ghiChu').value = '';
+        }
+
+        // ── Toast ──
+        let toastTimer;
+        function showToast(msg, type) {
+            const el = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            const txt = document.getElementById('toastMsg');
+
+            icon.textContent = type === 'success' ? '✅' : '⚠️';
+            txt.textContent = msg;
+            el.className = `toast ${type} show`;
+
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { el.className = `toast ${type}`; }, 3800);
+        }
+        
+    </script>
+</body>
+
+</html>
