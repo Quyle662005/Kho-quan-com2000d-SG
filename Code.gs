@@ -188,3 +188,76 @@ function setupSheets() {
 
   SpreadsheetApp.getUi().alert('✅ Thiết lập hoàn tất! Sheet SoGiaoDich và TonKho đã sẵn sàng.');
 }
+
+
+// ============================================================
+//  ADMIN API — đọc dữ liệu & cập nhật trạng thái duyệt
+// ============================================================
+
+function doGet(e) {
+  const action = e.parameter.action || 'ping';
+
+  if (action === 'ping') {
+    return jsonResponse({ status: 'ok', message: 'Webhook đang hoạt động.' });
+  }
+
+  if (action === 'getAll') {
+    return getAllData();
+  }
+
+  return jsonResponse({ status: 'error', message: 'Unknown action.' });
+}
+
+function getAllData() {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_GIAO_DICH);
+  if (!sheet) return jsonResponse({ status: 'error', message: 'Sheet not found.' });
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return jsonResponse({ status: 'ok', transactions: [] });
+
+  const data  = sheet.getRange(2, 1, lastRow - 1, 8).getValues();
+  const rows  = data
+    .filter(r => r[0] !== '')   // bỏ dòng trống
+    .map((r, i) => ({
+      id:       i + 2,          // row number in sheet (for update)
+      time:     r[0] ? Utilities.formatDate(new Date(r[0]), 'Asia/Ho_Chi_Minh', 'dd/MM/yyyy HH:mm') : '',
+      type:     r[1] || '',
+      person:   r[2] || '',
+      product:  r[3] || '',
+      qty:      parseFloat(r[4]) || 0,
+      unit:     r[5] || '',
+      note:     r[6] || '',
+      approved: r[7] === true,
+    }));
+
+  return jsonResponse({ status: 'ok', transactions: rows });
+}
+
+// Hàm doPost mở rộng để xử lý cả "approve" action
+// (thêm vào đầu hàm doPost cũ, trước phần parse giao dịch)
+function doPostAdmin(e) {
+  try {
+    const raw  = e.postData ? e.postData.contents : '{}';
+    const data = JSON.parse(raw);
+
+    // Action: duyệt / bỏ duyệt
+    if (data.action === 'approve') {
+      const ss    = SpreadsheetApp.getActiveSpreadsheet();
+      const sheet = ss.getSheetByName(SHEET_GIAO_DICH);
+      if (!sheet) return jsonResponse({ status:'error', message:'Sheet not found.' });
+
+      const rowNum = parseInt(data.id);
+      if (isNaN(rowNum) || rowNum < 2) return jsonResponse({ status:'error', message:'Invalid row id.' });
+
+      sheet.getRange(rowNum, 8).setValue(data.approved === true);
+      return jsonResponse({ status:'success', message:'Đã cập nhật trạng thái.' });
+    }
+
+    // Delegate to original doPost logic (nhận giao dịch mới)
+    return doPost(e);
+
+  } catch(err) {
+    return jsonResponse({ status:'error', message: err.toString() });
+  }
+}
