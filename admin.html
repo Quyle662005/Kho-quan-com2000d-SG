@@ -371,7 +371,7 @@
 // ════════════════════════════════════════════════════════
 //  ⚙️  CẤU HÌNH — SỬA CÁC DÒNG NÀY
 // ════════════════════════════════════════════════════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxKUcQfXQFdh6pphh0K2TQlpdLFnwacEn6hP7a1wEM7_VkIhuNk9Pms_-IHn2PQpsAB/exec';
+const SHEET_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 
 // Danh sách tài khoản admin (thêm nhiều tài khoản tùy ý)
 const ACCOUNTS = [
@@ -393,7 +393,7 @@ let dashCache    = null;
 
 // ════════════════════════════════════════════════════════
 //  ĐĂNG NHẬP HARDCODE
-// ═════════════════════════════════ ═══════════════════════
+// ════════════════════════════════════════════════════════
 function togglePw() {
   const inp = document.getElementById('loginPass');
   inp.type = inp.type === 'password' ? 'text' : 'password';
@@ -645,12 +645,14 @@ function closeRejectModal() {
 async function confirmReject() {
   const lyDo = document.getElementById('rejectReason').value.trim();
   if (!lyDo) { alert('Vui lòng nhập lý do từ chối!'); return; }
-  loading(true);
+  // Lưu phieuId TRƯỚC khi closeRejectModal() set nó về null
+  const phieuId = rejectTarget;
   closeRejectModal();
+  loading(true);
   try {
-    const r = await api('reject', {phieuId: rejectTarget, lyDo});
+    const r = await api('reject', {phieuId, lyDo});
     if (r.status === 'ok') {
-      document.getElementById('phieu-'+rejectTarget)?.remove();
+      document.getElementById('phieu-'+phieuId)?.remove();
       if (!document.querySelectorAll('.phieu-card').length) {
         document.getElementById('pendingList').innerHTML = `<div class="empty-state"><div class="ico">✅</div><p>Không còn phiếu nào chờ duyệt!</p></div>`;
       }
