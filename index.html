@@ -24,208 +24,73 @@
     --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 24px 16px 60px;
-  }
-
-  /* ── HEADER ── */
+  body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; padding: 24px 16px 60px; }
   .page-header { text-align: center; margin-bottom: 24px; }
   .page-header .logo { font-size: 36px; margin-bottom: 8px; }
-  .page-header h1 {
-    font-size: 20px; font-weight: 700;
-    color: var(--green-dark); letter-spacing: -0.3px;
-  }
+  .page-header h1 { font-size: 20px; font-weight: 700; color: var(--green-dark); letter-spacing: -0.3px; }
   .page-header p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-
-  /* ── CARD ── */
-  .card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 20px;
-    max-width: 560px; margin: 0 auto;
-    box-shadow: 0 1px 4px rgba(0,0,0,.06);
-  }
-
-  /* ── CONFIG NOTICE ── */
-  .config-notice {
-    background: #fffbea; border: 1px solid #f5c518;
-    border-radius: var(--radius); padding: 10px 14px;
-    font-size: 12.5px; color: #7a6000;
-    margin-bottom: 18px; line-height: 1.6;
-  }
-  .config-notice strong { display: block; margin-bottom: 2px; font-size: 13px; }
-  .config-notice code {
-    background: rgba(0,0,0,.08); padding: 1px 5px;
-    border-radius: 4px; font-family: monospace; font-size: 12px;
-  }
-
-  /* ── TABS ── */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; max-width: 560px; margin: 0 auto; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
   .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-  .tab {
-    flex: 1; padding: 10px; border-radius: var(--radius);
-    font-size: 14px; font-weight: 500; cursor: pointer;
-    border: 1px solid var(--border);
-    background: transparent; color: var(--text-muted);
-    transition: all .15s; font-family: var(--font);
-  }
+  .tab { flex: 1; padding: 10px; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); transition: all .15s; font-family: var(--font); }
   .tab:hover { background: var(--bg); }
   .tab.active-nhap { background: var(--green-light); color: var(--green-dark); border-color: var(--green-border); font-weight: 600; }
-  .tab.active-xuat { background: var(--red-light);   color: var(--red-dark);   border-color: var(--red-border);   font-weight: 600; }
-
-  /* ── FORM LAYOUT ── */
+  .tab.active-xuat { background: var(--red-light); color: var(--red-dark); border-color: var(--red-border); font-weight: 600; }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
   .field { margin-bottom: 14px; position: relative; }
-
-  label {
-    display: block; font-size: 11.5px; font-weight: 600;
-    color: var(--text-muted); text-transform: uppercase;
-    letter-spacing: .05em; margin-bottom: 5px;
-  }
+  label { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
   label .req { color: #E24B4A; margin-left: 2px; }
-
-  input, select, textarea {
-    width: 100%; padding: 9px 12px;
-    border: 1px solid var(--border); border-radius: var(--radius);
-    background: var(--input-bg); color: var(--text);
-    font-size: 14px; font-family: var(--font);
-    transition: border-color .15s, box-shadow .15s;
-    -webkit-appearance: none;
-  }
-  input:focus, select:focus, textarea:focus {
-    outline: none; border-color: var(--green-mid);
-    box-shadow: 0 0 0 3px rgba(15,110,86,.1);
-  }
-  .tab-xuat-active input:focus, .tab-xuat-active select:focus, .tab-xuat-active textarea:focus {
-    border-color: var(--red-mid);
-    box-shadow: 0 0 0 3px rgba(153,60,29,.1);
-  }
+  input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--input-bg); color: var(--text); font-size: 14px; font-family: var(--font); transition: border-color .15s, box-shadow .15s; -webkit-appearance: none; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(15,110,86,.1); }
   input[readonly] { background: #f0f0ec; color: var(--text-muted); cursor: default; }
   input.err, select.err { border-color: #E24B4A !important; box-shadow: 0 0 0 3px rgba(226,75,74,.1) !important; }
   textarea { resize: vertical; min-height: 64px; }
   input[type=number] { -moz-appearance: textfield; }
   input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
-
-  select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%236b6b67' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 11px center;
-    padding-right: 32px; cursor: pointer;
-  }
-
-  /* ── AUTOCOMPLETE SUGGEST ── */
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%236b6b67' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 11px center; padding-right: 32px; cursor: pointer; }
   .suggest-wrap { position: relative; }
-  .suggest-box {
-    display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); box-shadow: 0 4px 16px rgba(0,0,0,.12);
-    max-height: 220px; overflow-y: auto; z-index: 100;
-  }
-  .sitem {
-    padding: 10px 12px; cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid #f0f0ec; font-size: 13.5px;
-  }
+  .suggest-box { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 4px 16px rgba(0,0,0,.12); max-height: 220px; overflow-y: auto; z-index: 100; }
+  .sitem { padding: 10px 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0ec; font-size: 13.5px; }
   .sitem:last-child { border-bottom: none; }
   .sitem:hover { background: var(--green-light); }
   .sitem-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
   .sitem-ma { font-size: 11px; font-weight: 700; color: var(--text-muted); font-family: monospace; }
   .sitem-dv { font-size: 11px; background: #e8f4fd; color: #185FA5; padding: 2px 7px; border-radius: 4px; }
-
-  /* ── SECTION DIVIDER ── */
   .divider { height: 1px; background: var(--border); margin: 18px 0; }
-  .section-title {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .08em; color: var(--text-muted);
-    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
-  }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
   .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
-
-  /* ── ITEM LIST ── */
   .items-list { margin-bottom: 10px; }
-  .item-row {
-    background: var(--input-bg); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 12px;
-    margin-bottom: 8px; position: relative;
-  }
-  .item-row-head {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 10px;
-  }
-  .item-num {
-    font-size: 11px; font-weight: 700; letter-spacing: .05em;
-    padding: 2px 8px; border-radius: 20px;
-  }
+  .item-row { background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 8px; }
+  .item-row-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .item-num { font-size: 11px; font-weight: 700; letter-spacing: .05em; padding: 2px 8px; border-radius: 20px; }
   .nhap-mode .item-num { color: var(--green-dark); background: var(--green-light); border: 1px solid var(--green-border); }
-  .xuat-mode .item-num { color: var(--red-dark);   background: var(--red-light);   border: 1px solid var(--red-border); }
-  .btn-del-item {
-    width: 26px; height: 26px; border-radius: 6px;
-    border: 1px solid #fecaca; background: #fee2e2;
-    color: #dc2626; font-size: 16px; font-weight: 700;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    line-height: 1;
-  }
+  .xuat-mode .item-num { color: var(--red-dark); background: var(--red-light); border: 1px solid var(--red-border); }
+  .btn-del-item { width: 26px; height: 26px; border-radius: 6px; border: 1px solid #fecaca; background: #fee2e2; color: #dc2626; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
   .btn-del-item:hover { background: #fecaca; }
-  .item-row .row3 { margin-bottom: 0; }
   .item-row .field { margin-bottom: 10px; }
   .item-row .field:last-child { margin-bottom: 0; }
-
-  /* ── ADD ITEM BUTTON ── */
-  .btn-add-item {
-    width: 100%; padding: 9px; border-radius: var(--radius);
-    border: 1.5px dashed var(--border); background: transparent;
-    color: var(--text-muted); font-size: 13px; font-weight: 500;
-    cursor: pointer; font-family: var(--font); margin-bottom: 4px;
-    transition: all .15s;
-  }
+  .btn-add-item { width: 100%; padding: 9px; border-radius: var(--radius); border: 1.5px dashed var(--border); background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font); margin-bottom: 4px; transition: all .15s; }
   .btn-add-item:hover { border-color: #94a3b8; color: #475569; background: var(--bg); }
-
-  /* ── SUBMIT ROW ── */
   .btn-row { display: flex; gap: 8px; }
-  .btn-submit {
-    flex: 1; padding: 11px 16px; border-radius: var(--radius); border: none;
-    font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font);
-    display: flex; align-items: center; justify-content: center; gap: 7px;
-    transition: all .15s;
-  }
+  .btn-submit { flex: 1; padding: 11px 16px; border-radius: var(--radius); border: none; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font); display: flex; align-items: center; justify-content: center; gap: 7px; transition: all .15s; }
   .btn-submit:disabled { opacity: .7; cursor: not-allowed; }
   .btn-submit:not(:disabled):active { transform: scale(.98); }
   .btn-nhap { background: var(--green-mid); color: var(--green-light); }
   .btn-nhap:not(:disabled):hover { background: var(--green-dark); }
   .btn-xuat { background: var(--red-mid); color: var(--red-light); }
   .btn-xuat:not(:disabled):hover { background: var(--red-dark); }
-  .btn-clear {
-    padding: 11px 14px; border-radius: var(--radius);
-    border: 1px solid var(--border); background: transparent;
-    color: var(--text-muted); font-size: 16px; cursor: pointer;
-    font-family: var(--font); transition: background .15s;
-  }
+  .btn-clear { padding: 11px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 16px; cursor: pointer; font-family: var(--font); transition: background .15s; }
   .btn-clear:hover { background: var(--bg); }
 
-  /* ── TOAST ── */
-  .toast {
-    display: none; margin-top: 14px; padding: 11px 14px;
-    border-radius: var(--radius); font-size: 13.5px;
-    font-weight: 500; line-height: 1.5;
-  }
+  /* ── PENDING NOTE ── */
+  .pending-note { background: #fffbea; border: 1px solid #f5c518; border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: #7a6000; margin-bottom: 14px; line-height: 1.5; display: none; }
+
+  .toast { display: none; margin-top: 14px; padding: 11px 14px; border-radius: var(--radius); font-size: 13.5px; font-weight: 500; line-height: 1.5; }
   .toast.ok  { display: block; background: var(--green-light); color: var(--green-dark); border: 1px solid var(--green-border); }
-  .toast.err { display: block; background: var(--red-light);   color: var(--red-dark);   border: 1px solid var(--red-border); }
-
-  /* ── SPINNER ── */
-  .spinner {
-    display: inline-block; width: 14px; height: 14px;
-    border: 2px solid rgba(255,255,255,.35); border-top-color: #fff;
-    border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -2px;
-  }
+  .toast.err { display: block; background: var(--red-light); color: var(--red-dark); border: 1px solid var(--red-border); }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -2px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  @media (max-width: 420px) {
-    .row2, .row3 { grid-template-columns: 1fr; }
-    body { padding: 16px 12px 48px; }
-    .item-row .row3 { grid-template-columns: 2fr 1fr; }
-  }
+  @media (max-width: 420px) { .row2, .row3 { grid-template-columns: 1fr; } body { padding: 16px 12px 48px; } .item-row .row3 { grid-template-columns: 2fr 1fr; } }
 </style>
 </head>
 <body>
@@ -236,17 +101,12 @@
   <p>Ghi nhận nhập / xuất hàng hóa &amp; nguyên vật liệu</p>
 </div>
 
-<div class="card" id="mainCard">
-
-
-
-  <!-- TABS -->
+<div class="card">
   <div class="tabs">
     <button class="tab active-nhap" id="tabN" onclick="switchTab('nhap')">⬇️ Nhập kho (ủng hộ)</button>
     <button class="tab"            id="tabX" onclick="switchTab('xuat')">⬆️ Xuất kho</button>
   </div>
 
-  <!-- THÔNG TIN CHUNG -->
   <div class="section-title">Thông tin chung</div>
   <div class="row2">
     <div class="field">
@@ -254,17 +114,15 @@
       <input type="date" id="ngay">
     </div>
     <div class="field">
-      <label id="labelNguoi">Người thực hiện <span class="req">*</span></label>
+      <label>Người thực hiện <span class="req">*</span></label>
       <input type="text" id="nguoi" placeholder="Họ tên người ghi nhận">
     </div>
   </div>
 
-  <!-- TRƯỜNG RIÊNG NHẬP: Nguồn / MTQ -->
   <div id="fieldNguon" class="field">
     <label>Người ủng hộ / Nguồn nhận <span class="req">*</span></label>
     <input type="text" id="nguon" placeholder="VD: MTQ ẩn danh, Cô Thủy Quận 10…">
   </div>
-  <!-- TRƯỜNG RIÊNG XUẤT: Diễn giải -->
   <div id="fieldDienGiai" class="field" style="display:none">
     <label>Diễn giải / Mục đích xuất <span class="req">*</span></label>
     <input type="text" id="dienGiai" placeholder="VD: Nấu ăn ngày 26/06, Phát từ thiện…">
@@ -283,318 +141,224 @@
 
   <div class="divider"></div>
 
-  <!-- DANH SÁCH HÀNG HÓA -->
   <div class="section-title" id="sectionHang">Danh sách hàng nhập</div>
   <div class="items-list nhap-mode" id="itemsList"></div>
   <button class="btn-add-item" onclick="addItem()">＋ Thêm mặt hàng</button>
 
   <div class="divider"></div>
 
-  <!-- NÚT GỬI -->
+  <!-- Thông báo chờ duyệt (chỉ hiện khi tab Nhập) -->
+  <div class="pending-note" id="pendingNote">
+    📋 <strong>Lưu ý:</strong> Phiếu nhập kho sẽ được gửi cho admin phê duyệt trước khi cập nhật vào kho chính.
+  </div>
+
   <div class="btn-row">
     <button class="btn-submit btn-nhap" id="btnSubmit" onclick="submitForm()">
       <span id="btnIcon">✓</span>
-      <span id="btnLabel">Ghi nhận nhập kho</span>
+      <span id="btnLabel">Gửi chờ duyệt</span>
     </button>
     <button class="btn-clear" onclick="clearForm()" title="Xoá form">↺</button>
   </div>
-
   <div class="toast" id="toast"></div>
-</div><!-- /card -->
+</div>
 
 <script>
 // ════════════════════════════════════════════════════════
 //  🔧 CẤU HÌNH — dán URL Apps Script của bạn vào đây
 // ════════════════════════════════════════════════════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwKFfhsjhkPCltIk3LMKFkBi7-szahyCzR3UtoyNy90nTaY_UsX_WVA-Z_cY8086dDU/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxKUcQfXQFdh6pphh0K2TQlpdLFnwacEn6hP7a1wEM7_VkIhuNk9Pms_-IHn2PQpsAB/exec';
 // ════════════════════════════════════════════════════════
 
-// ── DANH MỤC NVL (từ sheet "Bảng mã") ──
 const HANG_HOA = [
-  {ma:'GA',  ten:'Gạo',           dvt:'kg'  },
-  {ma:'DA',  ten:'Dầu ăn',        dvt:'lít' },
-  {ma:'NM',  ten:'Nước mắm',      dvt:'lít' },
-  {ma:'NT',  ten:'Nước tương',    dvt:'lít' },
-  {ma:'HN',  ten:'Hạt nêm',       dvt:'kg'  },
-  {ma:'BN',  ten:'Bột ngọt',      dvt:'kg'  },
-  {ma:'MU',  ten:'Muối',          dvt:'kg'  },
-  {ma:'DU',  ten:'Đường',         dvt:'kg'  },
-  {ma:'TI',  ten:'Tiêu',          dvt:'kg'  },
-  {ma:'TU',  ten:'Tương ớt',      dvt:'lít' },
-  {ma:'HE',  ten:'Thịt heo',      dvt:'kg'  },
-  {ma:'XX',  ten:'Xúc xích',      dvt:'kg'  },
-  {ma:'TR',  ten:'Trứng',         dvt:'cái' },
-  {ma:'LX',  ten:'Lạp xưởng',     dvt:'kg'  },
-  {ma:'NRC', ten:'Nước rửa chén', dvt:'kg'  },
-  {ma:'DH',  ten:'Dầu hào',       dvt:'lít' },
-  {ma:'CH',  ten:'Cá hộp',        dvt:'hộp' },
-  {ma:'MI',  ten:'Mì gói',        dvt:'gói' },
-  {ma:'N',   ten:'Nấm',           dvt:'kg'  },
-  {ma:'ME',  ten:'Nấm mèo',       dvt:'kg'  },
-  {ma:'BUN', ten:'Bún gạo',       dvt:'kg'  },
-  {ma:'RAU', ten:'Rau củ',        dvt:'kg'  },
-  {ma:'TC',  ten:'Trái cây',      dvt:'kg'  },
+  {ma:'GA', ten:'Gạo',dvt:'kg'},{ma:'DA',ten:'Dầu ăn',dvt:'lít'},
+  {ma:'NM',ten:'Nước mắm',dvt:'lít'},{ma:'NT',ten:'Nước tương',dvt:'lít'},
+  {ma:'HN',ten:'Hạt nêm',dvt:'kg'},{ma:'BN',ten:'Bột ngọt',dvt:'kg'},
+  {ma:'MU',ten:'Muối',dvt:'kg'},{ma:'DU',ten:'Đường',dvt:'kg'},
+  {ma:'TI',ten:'Tiêu',dvt:'kg'},{ma:'TU',ten:'Tương ớt',dvt:'lít'},
+  {ma:'HE',ten:'Thịt heo',dvt:'kg'},{ma:'XX',ten:'Xúc xích',dvt:'kg'},
+  {ma:'TR',ten:'Trứng',dvt:'cái'},{ma:'LX',ten:'Lạp xưởng',dvt:'kg'},
+  {ma:'NRC',ten:'Nước rửa chén',dvt:'kg'},{ma:'DH',ten:'Dầu hào',dvt:'lít'},
+  {ma:'CH',ten:'Cá hộp',dvt:'hộp'},{ma:'MI',ten:'Mì gói',dvt:'gói'},
+  {ma:'N',ten:'Nấm',dvt:'kg'},{ma:'ME',ten:'Nấm mèo',dvt:'kg'},
+  {ma:'BUN',ten:'Bún gạo',dvt:'kg'},{ma:'RAU',ten:'Rau củ',dvt:'kg'},
+  {ma:'TC',ten:'Trái cây',dvt:'kg'},
 ];
 
 let loai = 'nhap';
 let itemCount = 0;
-let activeInput = null; // ô input đang focus (để biết suggest gắn vào đâu)
 
-// ── ẨN NOTICE NẾU ĐÃ CẤU HÌNH ──
-if (!SHEET_URL.includes('https://script.google.com/macros/s/AKfycbwKFfhsjhkPCltIk3LMKFkBi7-szahyCzR3UtoyNy90nTaY_UsX_WVA-Z_cY8086dDU/exec')) {
-  document.getElementById('configNotice').style.display = 'none';
-}
-
-// ── KHỞI ĐỘNG ──
 window.onload = () => {
   document.getElementById('ngay').value = new Date().toISOString().split('T')[0];
-  addItem(); // thêm 1 dòng hàng hóa mặc định
+  addItem();
+  // Hiện pending note mặc định (tab nhập)
+  document.getElementById('pendingNote').style.display = 'block';
 };
 
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
 //  CHUYỂN TAB
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
 function switchTab(l) {
   loai = l;
   const isN = l === 'nhap';
-
   document.getElementById('tabN').className = 'tab' + (isN ? ' active-nhap' : '');
   document.getElementById('tabX').className = 'tab' + (isN ? '' : ' active-xuat');
-
-  // Trường riêng mỗi tab
   document.getElementById('fieldNguon').style.display    = isN ? 'block' : 'none';
   document.getElementById('fieldDienGiai').style.display = isN ? 'none'  : 'block';
-
-  // Label section
   document.getElementById('sectionHang').textContent = isN ? 'Danh sách hàng nhập' : 'Danh sách hàng xuất';
-
-  // Màu item badge
   document.getElementById('itemsList').className = 'items-list ' + (isN ? 'nhap-mode' : 'xuat-mode');
-
-  // Nút submit
   document.getElementById('btnSubmit').className = 'btn-submit ' + (isN ? 'btn-nhap' : 'btn-xuat');
-  document.getElementById('btnLabel').textContent = 'Ghi nhận ' + (isN ? 'nhập' : 'xuất') + ' kho';
-
+  // ── NÚT VÀ PENDING NOTE THAY ĐỔI THEO TAB ──
+  document.getElementById('btnLabel').textContent = isN ? 'Gửi chờ duyệt' : 'Ghi nhận xuất kho';
+  document.getElementById('pendingNote').style.display = isN ? 'block' : 'none';
   document.getElementById('toast').className = 'toast';
 }
 
-// ════════════════════════════════════════════════════════
-//  THÊM DÒNG HÀNG HÓA
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
+//  THÊM / XÓA HÀNG
+// ════════════════════════════════════════
 function addItem() {
   itemCount++;
-  const id  = itemCount;
+  const id = itemCount;
   const lst = document.getElementById('itemsList');
   const div = document.createElement('div');
-  div.className = 'item-row';
-  div.id = `item-${id}`;
-
+  div.className = 'item-row'; div.id = 'item-' + id;
   div.innerHTML = `
     <div class="item-row-head">
       <span class="item-num">Hàng #${id}</span>
-      <button class="btn-del-item" onclick="delItem(${id})" title="Xoá">×</button>
+      <button class="btn-del-item" onclick="delItem(${id})">×</button>
     </div>
-
-    <!-- Tên hàng với autocomplete -->
     <div class="field suggest-wrap">
       <label>Tên hàng hóa <span class="req">*</span></label>
-      <input type="text" id="ten-${id}"
-        placeholder="Gõ tên hoặc mã để tìm (ga, nm, tr, rau…)"
-        oninput="onSearch(this.value, ${id})"
-        onfocus="activeInput=${id}"
-        autocomplete="off">
+      <input type="text" id="ten-${id}" placeholder="Gõ tên hoặc mã (ga, nm, tr, rau…)"
+        oninput="onSearch(this.value,${id})" autocomplete="off">
       <div class="suggest-box" id="sbox-${id}"></div>
     </div>
-
-    <!-- Mã + ĐVT + Số lượng -->
     <div class="row3">
-      <div class="field">
-        <label>Mã NVL</label>
-        <input type="text" id="ma-${id}" readonly placeholder="Tự điền">
-      </div>
-      <div class="field">
-        <label>Đơn vị</label>
-        <input type="text" id="dvt-${id}" readonly placeholder="Tự điền">
-      </div>
-      <div class="field">
-        <label>Số lượng <span class="req">*</span></label>
+      <div class="field"><label>Mã NVL</label><input type="text" id="ma-${id}" readonly placeholder="Tự điền"></div>
+      <div class="field"><label>Đơn vị</label><input type="text" id="dvt-${id}" readonly placeholder="Tự điền"></div>
+      <div class="field"><label>Số lượng <span class="req">*</span></label>
         <input type="number" id="qty-${id}" placeholder="0" min="0" step="0.01" inputmode="decimal">
       </div>
     </div>`;
-
   lst.appendChild(div);
-  setTimeout(() => div.scrollIntoView({behavior:'smooth', block:'nearest'}), 80);
+  setTimeout(() => div.scrollIntoView({behavior:'smooth',block:'nearest'}), 80);
 }
 
 function delItem(id) {
-  const el = document.getElementById(`item-${id}`);
+  const el = document.getElementById('item-' + id);
   if (!el) return;
-  // Không cho xoá nếu chỉ còn 1 dòng
   if (document.querySelectorAll('.item-row').length <= 1) {
-    // Reset dòng đó thay vì xoá
     ['ten','ma','dvt','qty'].forEach(f => {
-      const inp = document.getElementById(`${f}-${id}`);
-      if(inp) { inp.value=''; inp.classList.remove('err'); }
+      const inp = document.getElementById(f+'-'+id);
+      if (inp) { inp.value=''; inp.classList.remove('err'); }
     });
-    document.getElementById(`sbox-${id}`).style.display='none';
+    document.getElementById('sbox-'+id).style.display='none';
     return;
   }
   el.style.cssText = 'transition:all .2s;opacity:0;transform:scale(.97)';
   setTimeout(() => el.remove(), 200);
 }
 
-// ════════════════════════════════════════════════════════
-//  AUTOCOMPLETE TÌM KIẾM NVL
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
+//  AUTOCOMPLETE
+// ════════════════════════════════════════
 function norm(s) {
-  return (s||'').toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/đ/g,'d');
+  return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d');
 }
 
 function onSearch(val, id) {
-  const box = document.getElementById(`sbox-${id}`);
-  document.getElementById(`ma-${id}`).value  = '';
-  document.getElementById(`dvt-${id}`).value = '';
-  document.getElementById(`ten-${id}`).classList.remove('err');
-
+  const box = document.getElementById('sbox-'+id);
+  document.getElementById('ma-'+id).value = '';
+  document.getElementById('dvt-'+id).value = '';
+  document.getElementById('ten-'+id).classList.remove('err');
   if (!val.trim()) { box.style.display='none'; return; }
   const q = norm(val);
-  const hits = HANG_HOA.filter(h =>
-    norm(h.ten).includes(q) || h.ma.toLowerCase().includes(q)
-  );
+  const hits = HANG_HOA.filter(h => norm(h.ten).includes(q) || h.ma.toLowerCase().includes(q));
   if (!hits.length) { box.style.display='none'; return; }
-
   box.innerHTML = hits.map(h =>
     `<div class="sitem" onclick="chon(${id},'${h.ma}','${h.ten}','${h.dvt}')">
       <span>${h.ten}</span>
-      <span class="sitem-right">
-        <span class="sitem-ma">${h.ma}</span>
-        <span class="sitem-dv">${h.dvt}</span>
-      </span>
-    </div>`
-  ).join('');
+      <span class="sitem-right"><span class="sitem-ma">${h.ma}</span><span class="sitem-dv">${h.dvt}</span></span>
+    </div>`).join('');
   box.style.display = 'block';
 }
 
 function chon(id, ma, ten, dvt) {
-  document.getElementById(`ten-${id}`).value = ten;
-  document.getElementById(`ma-${id}`).value  = ma;
-  document.getElementById(`dvt-${id}`).value = dvt;
-  document.getElementById(`sbox-${id}`).style.display = 'none';
-  document.getElementById(`ten-${id}`).classList.remove('err');
-  document.getElementById(`qty-${id}`).focus();
+  document.getElementById('ten-'+id).value = ten;
+  document.getElementById('ma-'+id).value  = ma;
+  document.getElementById('dvt-'+id).value = dvt;
+  document.getElementById('sbox-'+id).style.display = 'none';
+  document.getElementById('ten-'+id).classList.remove('err');
+  document.getElementById('qty-'+id).focus();
 }
 
-// Đóng suggest khi click bên ngoài
 document.addEventListener('click', e => {
-  document.querySelectorAll('.suggest-box').forEach(box => {
-    if (!e.target.closest('.suggest-wrap')) box.style.display = 'none';
-  });
+  if (!e.target.closest('.suggest-wrap'))
+    document.querySelectorAll('.suggest-box').forEach(b => b.style.display='none');
 });
 
-// ════════════════════════════════════════════════════════
-//  THU THẬP DỮ LIỆU HÀNG HÓA
-// ════════════════════════════════════════════════════════
-function collectItems() {
-  const items = [];
-  let hasErr  = false;
+// ════════════════════════════════════════
+//  VALIDATE & COLLECT
+// ════════════════════════════════════════
+function validate() {
+  let err = null;
+  const mark = (id, lbl) => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.classList.add('err'); if (!err) err='Vui lòng điền: '+lbl; }
+    else el.classList.remove('err');
+  };
+  mark('ngay','Ngày'); mark('nguoi','Người thực hiện');
+  if (loai==='nhap') mark('nguon','Người ủng hộ / Nguồn nhận');
+  else               mark('dienGiai','Diễn giải / Mục đích xuất');
+  return err;
+}
 
+function collectItems() {
+  const items = []; let hasErr = false;
   document.querySelectorAll('.item-row').forEach(row => {
     const id  = row.id.replace('item-','');
-    const ten = document.getElementById(`ten-${id}`)?.value.trim() || '';
-    const ma  = document.getElementById(`ma-${id}`)?.value.trim()  || '';
-    const dvt = document.getElementById(`dvt-${id}`)?.value.trim() || '';
-    const qty = parseFloat(document.getElementById(`qty-${id}`)?.value) || 0;
-
-    // Validate từng dòng
-    if (!ten) {
-      document.getElementById(`ten-${id}`).classList.add('err');
-      hasErr = true;
-    }
-    if (!qty || qty <= 0) {
-      document.getElementById(`qty-${id}`).classList.add('err');
-      hasErr = true;
-    }
-
-    if (ten && qty > 0) {
-      items.push({ma, ten, dvt, qty});
-    }
+    const ten = (document.getElementById('ten-'+id)?.value||'').trim();
+    const ma  = (document.getElementById('ma-'+id)?.value||'').trim();
+    const dvt = (document.getElementById('dvt-'+id)?.value||'').trim();
+    const qty = parseFloat(document.getElementById('qty-'+id)?.value)||0;
+    if (!ten) { document.getElementById('ten-'+id).classList.add('err'); hasErr=true; }
+    if (!qty||qty<=0) { document.getElementById('qty-'+id).classList.add('err'); hasErr=true; }
+    if (ten && qty>0) items.push({ma,ten,dvt,qty});
   });
-
   return {items, hasErr};
 }
 
-// ════════════════════════════════════════════════════════
-//  VALIDATE FORM
-// ════════════════════════════════════════════════════════
-function validate() {
-  let firstErr = null;
-  const mark = (id, lbl) => {
-    const el = document.getElementById(id);
-    if (!el.value.trim()) {
-      el.classList.add('err');
-      if (!firstErr) firstErr = 'Vui lòng điền: ' + lbl;
-    } else {
-      el.classList.remove('err');
-    }
-  };
-
-  mark('ngay',  'Ngày');
-  mark('nguoi', 'Người thực hiện');
-
-  if (loai === 'nhap') {
-    mark('nguon',    'Người ủng hộ / Nguồn nhận');
-  } else {
-    mark('dienGiai', 'Diễn giải / Mục đích xuất');
-  }
-
-  return firstErr;
-}
-
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
 //  GỬI DỮ LIỆU
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════
 function setLoading(on) {
-  const btn  = document.getElementById('btnSubmit');
-  const icon = document.getElementById('btnIcon');
-  btn.disabled   = on;
-  icon.innerHTML = on ? '<span class="spinner"></span>' : '✓';
+  const btn=document.getElementById('btnSubmit'), icon=document.getElementById('btnIcon');
+  btn.disabled=on;
+  icon.innerHTML=on?'<span class="spinner"></span>':'✓';
 }
 
 async function submitForm() {
   const formErr = validate();
-  if (formErr) { showToast(formErr, 'err'); return; }
-
+  if (formErr) { showToast(formErr,'err'); return; }
   const {items, hasErr} = collectItems();
-  if (hasErr || items.length === 0) {
-    showToast('Vui lòng điền đầy đủ tên hàng và số lượng cho tất cả các dòng!', 'err');
-    return;
-  }
-
-  if (SHEET_URL.includes('YOUR_APPS_SCRIPT')) {
-    showToast('⚠️ Chưa cấu hình URL Apps Script. Mở file và dán URL vào dòng SHEET_URL.', 'err');
-    return;
-  }
+  if (hasErr || !items.length) { showToast('Điền đầy đủ tên hàng và số lượng!','err'); return; }
 
   const ngay  = document.getElementById('ngay').value;
   const nguoi = document.getElementById('nguoi').value.trim();
 
-  // Build payload khớp cột Excel
+  // ── ACTION ĐÚNG để Code.gs nhận ra ──
   const payload = loai === 'nhap'
     ? {
-        loai:     'nhap',
-        ngay,
-        nguoi,
+        action:   'submit_nhap',   // ← ghi vào sheet "CHỜ DUYỆT"
+        ngay, nguoi,
         nguon:    document.getElementById('nguon').value.trim(),
         diaChi:   document.getElementById('diaChi').value.trim(),
         sdt:      document.getElementById('sdt').value.trim(),
         items,
       }
     : {
-        loai:     'xuat',
-        ngay,
-        nguoi,
+        action:   'submit_xuat',   // ← ghi thẳng vào sheet "XUẤT KHO"
+        ngay, nguoi,
         dienGiai: document.getElementById('dienGiai').value.trim(),
         diaChi:   document.getElementById('diaChi').value.trim(),
         sdt:      document.getElementById('sdt').value.trim(),
@@ -602,7 +366,7 @@ async function submitForm() {
       };
 
   setLoading(true);
-  showToast(`Đang gửi ${items.length} mặt hàng lên Google Sheets…`, 'ok');
+  showToast('Đang gửi…','ok');
 
   try {
     const resp = await fetch(SHEET_URL, {
@@ -613,14 +377,15 @@ async function submitForm() {
     const json = await resp.json();
 
     if (json.status === 'ok') {
-      const summary = items.map(i => `${i.qty} ${i.dvt||''} ${i.ten}`).join(', ');
-      showToast(
-        `✅ Lưu thành công! ${loai === 'nhap' ? 'Nhập' : 'Xuất'} kho: ${summary}`,
-        'ok'
-      );
-      clearForm(true); // giữ ngày + người TH để nhập nhanh
+      if (loai === 'nhap') {
+        showToast('📋 Đã gửi chờ duyệt! Admin sẽ phê duyệt trước khi vào kho.', 'ok');
+      } else {
+        const summary = items.map(i => `${i.qty} ${i.dvt} ${i.ten}`).join(', ');
+        showToast('✅ Xuất kho thành công: ' + summary, 'ok');
+      }
+      clearForm(true);
     } else {
-      showToast('Lỗi: ' + (json.message || 'Không rõ nguyên nhân'), 'err');
+      showToast('Lỗi: ' + (json.message||'Không rõ nguyên nhân'), 'err');
     }
   } catch(e) {
     showToast('Không kết nối được. Kiểm tra mạng hoặc URL Apps Script.', 'err');
@@ -629,34 +394,26 @@ async function submitForm() {
   }
 }
 
-// ════════════════════════════════════════════════════════
-//  CLEAR FORM
-// ════════════════════════════════════════════════════════
-function clearForm(keepBasic = false) {
+// ════════════════════════════════════════
+//  CLEAR & TOAST
+// ════════════════════════════════════════
+function clearForm(keepBasic=false) {
   if (!keepBasic) {
-    document.getElementById('nguoi').value = '';
+    document.getElementById('nguoi').value='';
     document.getElementById('nguoi').classList.remove('err');
-    document.getElementById('ngay').classList.remove('err');
-    document.getElementById('toast').className = 'toast';
+    document.getElementById('toast').className='toast';
   }
-  ['nguon','dienGiai','diaChi','sdt'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.value = ''; el.classList.remove('err'); }
+  ['nguon','dienGiai','diaChi','sdt'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.value='';el.classList.remove('err');}
   });
-
-  // Reset item list
-  document.getElementById('itemsList').innerHTML = '';
-  itemCount = 0;
-  addItem();
+  document.getElementById('itemsList').innerHTML='';
+  itemCount=0; addItem();
 }
 
-// ════════════════════════════════════════════════════════
-//  TOAST
-// ════════════════════════════════════════════════════════
-function showToast(msg, type) {
-  const t = document.getElementById('toast');
-  t.innerHTML = msg;
-  t.className = 'toast ' + type;
+function showToast(msg,type) {
+  const t=document.getElementById('toast');
+  t.innerHTML=msg; t.className='toast '+type;
 }
 </script>
 </body>
