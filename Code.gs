@@ -1,263 +1,466 @@
-// ============================================================
-//  Code.gs — Webhook cho hệ thống quản lý kho
-//  Quán Cơm 2000đ Sài Gòn
-// ============================================================
+/**
+ * ════════════════════════════════════════════════════════════════
+ * APPS SCRIPT — Kho Quán Cơm 2000đ  (Code.gs)
+ * Xử lý toàn bộ API cho cả form nhân viên & trang admin
+ *
+ * Sheets cần có trong Google Spreadsheet:
+ *   "ỦNG HỘ HIỆN VẬT"  — nhập kho đã duyệt
+ *   "XUẤT KHO"          — xuất kho (ghi thẳng)
+ *   "CHỜ DUYỆT"         — nhập kho chờ admin phê duyệt (tự tạo)
+ *
+ * DEPLOY (làm 1 lần):
+ *   Extensions → Apps Script → dán code → Save
+ *   Deploy → New deployment → Web app
+ *   Execute as: Me | Who has access: Anyone
+ *   → Copy URL → dán vào SHEET_URL trong cả 2 file HTML
+ * ════════════════════════════════════════════════════════════════
+ */
 
-const SHEET_GIAO_DICH = 'SoGiaoDich';
-const SHEET_TON_KHO   = 'TonKho';
+// ── CẤU HÌNH ────────────────────────────────────────────────────
+const SH_NHAP    = "ỦNG HỘ HIỆN VẬT";
+const SH_XUAT    = "XUẤT KHO";
+const SH_PENDING = "CHỜ DUYỆT";
 
-// ------------------------------------------------------------
-//  doPost — Nhận dữ liệu từ Web Form (GitHub Pages)
-// ------------------------------------------------------------
+// Email admin được phép truy cập (thêm email vào đây)
+const ADMIN_EMAILS = [
+  "leq662005gmail.com",   // ← thay bằng email của bạn
+  // "another_admin@gmail.com",
+];
+
+// ── ROUTER ───────────────────────────────────────────────────────
 function doPost(e) {
   try {
-    // Parse JSON body
-    const raw  = e.postData ? e.postData.contents : '{}';
-    const data = JSON.parse(raw);
+    const body   = JSON.parse(e.postData.contents);
+    const action = body.action;
 
-    const loai         = (data.loaiGiaoDich  || '').trim();
-    const nguoi        = (data.nguoiThucHien || '').trim();
-    const sanPham      = (data.sanPham       || '').trim();
-    const soLuong      = parseFloat(data.soLuong) || 0;
-    const donVi        = (data.donVi         || '').trim();
-    const ghiChu       = (data.ghiChu        || '').trim();
-
-    // Validation cơ bản
-    if (!loai || !nguoi || !sanPham || soLuong <= 0 || !donVi) {
-      return jsonResponse({ status: 'error', message: 'Thiếu thông tin bắt buộc.' });
+    switch(action) {
+      case "submit_nhap":    return submitNhap(body);
+      case "submit_xuat":    return submitXuat(body);
+      case "get_pending":    return getPending(body);
+      case "approve":        return approve(body);
+      case "reject":         return reject(body);
+      case "get_dashboard":  return getDashboard(body);
+      case "get_history":    return getHistory(body);
+      default:
+        return res({status:"error", message:"action không hợp lệ: " + action});
     }
-
-    const ss    = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName(SHEET_GIAO_DICH);
-
-    if (!sheet) {
-      return jsonResponse({ status: 'error', message: `Không tìm thấy sheet "${SHEET_GIAO_DICH}".` });
-    }
-
-    // Xác định trạng thái duyệt:
-    //   Xuất kho  → TRUE  (tự động duyệt, trừ ngay vào kho)
-    //   Nhập kho  → FALSE (chờ Admin tick duyệt)
-    const duyet = (loai === 'Xuất kho');
-
-    const timestamp = new Date();
-
-    // Thêm dòng mới vào cuối sheet
-    sheet.appendRow([
-      timestamp,    // A — Thời gian
-      loai,         // B — Loại giao dịch
-      nguoi,        // C — Người thực hiện
-      sanPham,      // D — Sản phẩm
-      soLuong,      // E — Số lượng
-      donVi,        // F — Đơn vị
-      ghiChu,       // G — Ghi chú
-      duyet,        // H — Trạng thái Duyệt (checkbox / boolean)
-    ]);
-
-    // Format cột Thời gian cho dòng vừa thêm
-    const lastRow = sheet.getLastRow();
-    sheet.getRange(lastRow, 1).setNumberFormat('dd/MM/yyyy HH:mm:ss');
-
-    return jsonResponse({ status: 'success', message: 'Ghi nhận thành công.' });
-
-  } catch (err) {
-    console.error('doPost error:', err);
-    return jsonResponse({ status: 'error', message: err.toString() });
+  } catch(err) {
+    return res({status:"error", message: err.toString()});
   }
 }
 
-// ------------------------------------------------------------
-//  doGet — Health-check / ping để kiểm tra deploy
-// ------------------------------------------------------------
 function doGet(e) {
-  return jsonResponse({ status: 'ok', message: 'Webhook đang hoạt động.' });
+  const action = e.parameter.action;
+  if (action === "ping") return res({status:"ok", message:"API đang hoạt động 🟢"});
+  return res({status:"ok", message:"Kho API 🟢"});
 }
 
-// ------------------------------------------------------------
-//  Helper — trả về JSON với CORS headers
-// ------------------------------------------------------------
-function jsonResponse(obj) {
-  const output = ContentService
-    .createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
-  return output;
+
+// ════════════════════════════════════════════════════════════════
+//  KIỂM TRA QUYỀN ADMIN
+// ════════════════════════════════════════════════════════════════
+function checkAdmin(token) {
+  // token là Google ID token từ frontend
+  // Verify bằng Google tokeninfo endpoint
+  try {
+    const url  = `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`;
+    const resp = UrlFetchApp.fetch(url);
+    const info = JSON.parse(resp.getContentText());
+
+    if (info.error) return {ok: false, reason: "Token không hợp lệ"};
+
+    const email = info.email;
+    if (!ADMIN_EMAILS.includes(email)) {
+      return {ok: false, reason: `Email ${email} không có quyền admin`};
+    }
+    return {ok: true, email};
+  } catch(e) {
+    return {ok: false, reason: "Không xác thực được token: " + e.toString()};
+  }
 }
 
-// ============================================================
-//  setupSheets — Chạy MỘT LẦN để tạo header và định dạng
-//  Menu: Extensions → Apps Script → Run → setupSheets
-// ============================================================
-function setupSheets() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-  // ── Sheet 1: SoGiaoDich ──────────────────────────────────
-  let gdSheet = ss.getSheetByName(SHEET_GIAO_DICH);
-  if (!gdSheet) {
-    gdSheet = ss.insertSheet(SHEET_GIAO_DICH);
-  }
+// ════════════════════════════════════════════════════════════════
+//  NHÂN VIÊN: NỘP PHIẾU NHẬP → GHI VÀO "CHỜ DUYỆT"
+// ════════════════════════════════════════════════════════════════
+function submitNhap(body) {
+  ensurePendingSheet();
+  const sheet = getSheet(SH_PENDING);
+  const items = body.items || [];
+  const ts    = new Date();
+  // Tạo ID phiếu duy nhất: PND + timestamp milliseconds
+  const phieuId = "PND" + ts.getTime();
 
-  // Header row
-  const gdHeaders = [
-    'Thời gian', 'Loại giao dịch', 'Người thực hiện',
-    'Sản phẩm', 'Số lượng', 'Đơn vị', 'Ghi chú', 'Trạng thái Duyệt'
-  ];
-  const gdHeader = gdSheet.getRange(1, 1, 1, gdHeaders.length);
-  gdHeader.setValues([gdHeaders]);
-  gdHeader.setFontWeight('bold');
-  gdHeader.setBackground('#C84B2F');
-  gdHeader.setFontColor('#ffffff');
-  gdSheet.setFrozenRows(1);
-
-  // Column widths
-  gdSheet.setColumnWidth(1, 160);  // Thời gian
-  gdSheet.setColumnWidth(2, 110);  // Loại
-  gdSheet.setColumnWidth(3, 160);  // Người
-  gdSheet.setColumnWidth(4, 140);  // Sản phẩm
-  gdSheet.setColumnWidth(5, 90);   // Số lượng
-  gdSheet.setColumnWidth(6, 80);   // Đơn vị
-  gdSheet.setColumnWidth(7, 200);  // Ghi chú
-  gdSheet.setColumnWidth(8, 130);  // Duyệt
-
-  // Đặt validation Checkbox cho cột H (từ hàng 2)
-  const checkboxRule = SpreadsheetApp.newDataValidation()
-    .requireCheckbox()
-    .build();
-  gdSheet.getRange('H2:H1000').setDataValidation(checkboxRule);
-
-  // ── Sheet 2: TonKho ─────────────────────────────────────
-  let tkSheet = ss.getSheetByName(SHEET_TON_KHO);
-  if (!tkSheet) {
-    tkSheet = ss.insertSheet(SHEET_TON_KHO);
-  }
-
-  const tkHeaders = [
-    'Sản phẩm', 'Đơn vị', 'Tổng Nhập (đã duyệt)', 'Tổng Xuất', 'Tồn kho hiện tại'
-  ];
-  const tkHeader = tkSheet.getRange(1, 1, 1, tkHeaders.length);
-  tkHeader.setValues([tkHeaders]);
-  tkHeader.setFontWeight('bold');
-  tkHeader.setBackground('#2E7D5A');
-  tkHeader.setFontColor('#ffffff');
-  tkSheet.setFrozenRows(1);
-
-  // Danh sách sản phẩm mẫu (từ file Bảng mã)
-  const products = [
-    ['Gạo','kg'], ['Dầu ăn','lít'], ['Nước mắm','lít'], ['Nước tương','lít'],
-    ['Hạt nêm','kg'], ['Bột ngọt','kg'], ['Muối','kg'], ['Đường','kg'],
-    ['Tiêu','kg'], ['Tương ớt','lít'], ['Dầu hào','lít'],
-    ['Thịt heo','kg'], ['Xúc xích','kg'], ['Trứng','cái'], ['Lạp xưởng','kg'],
-    ['Cá hộp','hộp'], ['Mì gói','gói'], ['Nấm','kg'], ['Nấm mèo','kg'],
-    ['Bún gạo','kg'], ['Rau củ','kg'], ['Trái cây','kg'],
-    ['Nước rửa chén','kg'],
-  ];
-
-  products.forEach(([ten, dvt], i) => {
-    const row = i + 2;
-    tkSheet.getRange(row, 1).setValue(ten);
-    tkSheet.getRange(row, 2).setValue(dvt);
-
-    // Tổng Nhập — chỉ tính dòng đã duyệt (H=TRUE) và loại = "Nhập kho"
-    tkSheet.getRange(row, 3).setFormula(
-      `=IFERROR(SUMPRODUCT((SoGiaoDich!D$2:D$5000=A${row})*(SoGiaoDich!B$2:B$5000="Nhập kho")*(SoGiaoDich!H$2:H$5000=TRUE)*SoGiaoDich!E$2:E$5000),0)`
-    );
-
-    // Tổng Xuất — chỉ tính dòng đã duyệt (H=TRUE) và loại = "Xuất kho"
-    tkSheet.getRange(row, 4).setFormula(
-      `=IFERROR(SUMPRODUCT((SoGiaoDich!D$2:D$5000=A${row})*(SoGiaoDich!B$2:B$5000="Xuất kho")*(SoGiaoDich!H$2:H$5000=TRUE)*SoGiaoDich!E$2:E$5000),0)`
-    );
-
-    // Tồn kho = Nhập - Xuất
-    tkSheet.getRange(row, 5).setFormula(`=C${row}-D${row}`);
+  items.forEach(item => {
+    sheet.appendRow([
+      phieuId,             // A: Mã phiếu (để nhóm các dòng cùng phiếu)
+      ts,                  // B: Thời gian nộp
+      formatDateVN(body.ngay), // C: Ngày ghi nhận
+      body.nguon,          // D: Người ủng hộ
+      body.nguoi,          // E: Người ghi nhận
+      body.diaChi,         // F: Địa chỉ
+      body.sdt,            // G: SĐT
+      (item.ma||'').toLowerCase(), // H: Mã NVL
+      item.ten,            // I: Tên hàng
+      item.qty,            // J: Số lượng
+      item.dvt,            // K: ĐVT
+      "CHỜ DUYỆT",        // L: Trạng thái
+    ]);
   });
 
-  // Conditional formatting: tồn kho < 0 → đỏ cảnh báo
-  const tonKhoRange = tkSheet.getRange('E2:E100');
-  const rule = SpreadsheetApp.newConditionalFormatRule()
-    .whenNumberLessThan(0)
-    .setBackground('#FDECEA')
-    .setFontColor('#C84B2F')
-    .setRanges([tonKhoRange])
-    .build();
-  tkSheet.setConditionalFormatRules([rule]);
-
-  // Column widths
-  tkSheet.setColumnWidth(1, 160);
-  tkSheet.setColumnWidth(2, 80);
-  tkSheet.setColumnWidth(3, 160);
-  tkSheet.setColumnWidth(4, 110);
-  tkSheet.setColumnWidth(5, 150);
-
-  SpreadsheetApp.getUi().alert('✅ Thiết lập hoàn tất! Sheet SoGiaoDich và TonKho đã sẵn sàng.');
+  return res({
+    status: "ok",
+    message: `Đã gửi ${items.length} mặt hàng. Chờ admin phê duyệt!`,
+    phieuId,
+    rows: items.length,
+  });
 }
 
 
-// ============================================================
-//  ADMIN API — đọc dữ liệu & cập nhật trạng thái duyệt
-// ============================================================
+// ════════════════════════════════════════════════════════════════
+//  NHÂN VIÊN: XUẤT KHO → GHI THẲNG VÀO "XUẤT KHO"
+// ════════════════════════════════════════════════════════════════
+function submitXuat(body) {
+  const sheet = getSheet(SH_XUAT);
+  if (!sheet) return res({status:"error", message:`Không tìm thấy sheet "${SH_XUAT}"`});
 
-function doGet(e) {
-  const action = e.parameter.action || 'ping';
+  const items = body.items || [];
+  const ts    = parseDate(body.ngay);
 
-  if (action === 'ping') {
-    return jsonResponse({ status: 'ok', message: 'Webhook đang hoạt động.' });
-  }
+  items.forEach(item => {
+    sheet.appendRow([
+      null,                // A: trống
+      ts,                  // B: Thời gian
+      body.dienGiai,       // C: Diễn giải
+      body.diaChi,         // D: Địa chỉ
+      body.sdt,            // E: SĐT
+      null,                // F: Địa chỉ 2
+      (item.ma||'').toLowerCase(), // G: Mã
+      item.ten,            // H: Tên
+      item.qty,            // I: Số lượng
+      item.dvt,            // J: ĐVT
+    ]);
+  });
 
-  if (action === 'getAll') {
-    return getAllData();
-  }
-
-  return jsonResponse({ status: 'error', message: 'Unknown action.' });
+  fmtNewRows(sheet, items.length, 9);
+  return res({status:"ok", message:`Đã xuất kho ${items.length} mặt hàng`, rows: items.length});
 }
 
-function getAllData() {
-  const ss    = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName(SHEET_GIAO_DICH);
-  if (!sheet) return jsonResponse({ status: 'error', message: 'Sheet not found.' });
 
-  const lastRow = sheet.getLastRow();
-  if (lastRow < 2) return jsonResponse({ status: 'ok', transactions: [] });
+// ════════════════════════════════════════════════════════════════
+//  ADMIN: LẤY DANH SÁCH CHỜ DUYỆT
+// ════════════════════════════════════════════════════════════════
+function getPending(body) {
+  const auth = checkAdmin(body.token);
+  if (!auth.ok) return res({status:"error", message: auth.reason});
 
-  const data  = sheet.getRange(2, 1, lastRow - 1, 8).getValues();
-  const rows  = data
-    .filter(r => r[0] !== '')   // bỏ dòng trống
-    .map((r, i) => ({
-      id:       i + 2,          // row number in sheet (for update)
-      time:     r[0] ? Utilities.formatDate(new Date(r[0]), 'Asia/Ho_Chi_Minh', 'dd/MM/yyyy HH:mm') : '',
-      type:     r[1] || '',
-      person:   r[2] || '',
-      product:  r[3] || '',
-      qty:      parseFloat(r[4]) || 0,
-      unit:     r[5] || '',
-      note:     r[6] || '',
-      approved: r[7] === true,
-    }));
+  ensurePendingSheet();
+  const sheet = getSheet(SH_PENDING);
+  const data  = sheet.getDataRange().getValues();
 
-  return jsonResponse({ status: 'ok', transactions: rows });
-}
+  // Nhóm các dòng theo phieuId
+  const phieuMap = {};
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    const [phieuId, thoiGianNop, ngay, nguon, nguoi, diaChi, sdt, maNVL, ten, qty, dvt, ttrang] = row;
+    if (!phieuId) continue;
 
-// Hàm doPost mở rộng để xử lý cả "approve" action
-// (thêm vào đầu hàm doPost cũ, trước phần parse giao dịch)
-function doPostAdmin(e) {
-  try {
-    const raw  = e.postData ? e.postData.contents : '{}';
-    const data = JSON.parse(raw);
-
-    // Action: duyệt / bỏ duyệt
-    if (data.action === 'approve') {
-      const ss    = SpreadsheetApp.getActiveSpreadsheet();
-      const sheet = ss.getSheetByName(SHEET_GIAO_DICH);
-      if (!sheet) return jsonResponse({ status:'error', message:'Sheet not found.' });
-
-      const rowNum = parseInt(data.id);
-      if (isNaN(rowNum) || rowNum < 2) return jsonResponse({ status:'error', message:'Invalid row id.' });
-
-      sheet.getRange(rowNum, 8).setValue(data.approved === true);
-      return jsonResponse({ status:'success', message:'Đã cập nhật trạng thái.' });
+    if (!phieuMap[phieuId]) {
+      phieuMap[phieuId] = {
+        phieuId,
+        thoiGianNop: thoiGianNop ? new Date(thoiGianNop).toLocaleString("vi-VN") : "",
+        ngay: ngay || "",
+        nguon: nguon || "",
+        nguoi: nguoi || "",
+        diaChi: diaChi || "",
+        sdt: sdt || "",
+        trangThai: ttrang || "CHỜ DUYỆT",
+        items: [],
+        rowStart: i + 1, // 1-indexed
+        rowCount: 0,
+      };
     }
-
-    // Delegate to original doPost logic (nhận giao dịch mới)
-    return doPost(e);
-
-  } catch(err) {
-    return jsonResponse({ status:'error', message: err.toString() });
+    phieuMap[phieuId].items.push({maNVL, ten, qty, dvt, rowIdx: i + 1});
+    phieuMap[phieuId].rowCount++;
   }
+
+  // Chỉ trả về phiếu còn CHỜ DUYỆT
+  const pending = Object.values(phieuMap).filter(p => p.trangThai === "CHỜ DUYỆT");
+
+  return res({status:"ok", data: pending, total: pending.length});
+}
+
+
+// ════════════════════════════════════════════════════════════════
+//  ADMIN: PHÊ DUYỆT → CHUYỂN SANG "ỦNG HỘ HIỆN VẬT"
+// ════════════════════════════════════════════════════════════════
+function approve(body) {
+  const auth = checkAdmin(body.token);
+  if (!auth.ok) return res({status:"error", message: auth.reason});
+
+  const { phieuId } = body;
+  if (!phieuId) return res({status:"error", message:"Thiếu phieuId"});
+
+  const pendingSheet = getSheet(SH_PENDING);
+  const nhapSheet    = getSheet(SH_NHAP);
+  if (!nhapSheet) return res({status:"error", message:`Không tìm thấy sheet "${SH_NHAP}"`});
+
+  const data     = pendingSheet.getDataRange().getValues();
+  const tsApprove = new Date();
+  let   count    = 0;
+
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (row[0] !== phieuId) continue;
+    if (row[11] !== "CHỜ DUYỆT") continue;
+
+    // Ghi vào sheet chính
+    nhapSheet.appendRow([
+      null,           // A: trống
+      parseDate(row[2]), // B: Ngày ghi nhận gốc
+      row[3],         // C: Người ủng hộ
+      row[5],         // D: Địa chỉ
+      row[6],         // E: SĐT
+      null,           // F: Địa chỉ 2
+      row[7],         // G: Mã NVL
+      row[8],         // H: Tên
+      row[9],         // I: Số lượng
+      row[10],        // J: ĐVT
+    ]);
+
+    // Cập nhật trạng thái trong CHỜ DUYỆT
+    pendingSheet.getRange(i + 1, 12).setValue("ĐÃ DUYỆT");
+    pendingSheet.getRange(i + 1, 13).setValue(auth.email);
+    pendingSheet.getRange(i + 1, 14).setValue(tsApprove);
+    count++;
+  }
+
+  fmtNewRows(nhapSheet, count, 9);
+
+  return res({
+    status: "ok",
+    message: `Đã duyệt phiếu ${phieuId} (${count} mặt hàng)`,
+    approved: count,
+  });
+}
+
+
+// ════════════════════════════════════════════════════════════════
+//  ADMIN: TỪ CHỐI PHIẾU
+// ════════════════════════════════════════════════════════════════
+function reject(body) {
+  const auth = checkAdmin(body.token);
+  if (!auth.ok) return res({status:"error", message: auth.reason});
+
+  const { phieuId, lyDo } = body;
+  if (!phieuId) return res({status:"error", message:"Thiếu phieuId"});
+
+  const pendingSheet = getSheet(SH_PENDING);
+  const data         = pendingSheet.getDataRange().getValues();
+  const ts           = new Date();
+  let   count        = 0;
+
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (row[0] !== phieuId || row[11] !== "CHỜ DUYỆT") continue;
+
+    pendingSheet.getRange(i + 1, 12).setValue("TỪ CHỐI");
+    pendingSheet.getRange(i + 1, 13).setValue(auth.email);
+    pendingSheet.getRange(i + 1, 14).setValue(ts);
+    pendingSheet.getRange(i + 1, 15).setValue(lyDo || "");
+    count++;
+  }
+
+  return res({
+    status: "ok",
+    message: `Đã từ chối phiếu ${phieuId}`,
+    rejected: count,
+  });
+}
+
+
+// ════════════════════════════════════════════════════════════════
+//  ADMIN: DASHBOARD — THỐNG KÊ TỔNG QUAN
+// ════════════════════════════════════════════════════════════════
+function getDashboard(body) {
+  const auth = checkAdmin(body.token);
+  if (!auth.ok) return res({status:"error", message: auth.reason});
+
+  const nhapData    = getSheetValues(SH_NHAP,    5); // data từ dòng 5
+  const xuatData    = getSheetValues(SH_XUAT,    5);
+  const pendingData = getSheetValues(SH_PENDING, 2); // header dòng 1
+
+  // ── THỐNG KÊ NHẬP ──
+  // Nhóm theo tên hàng, tính tổng số lượng
+  const nhapByItem  = {};
+  nhapData.forEach(r => {
+    const ten = r[7] || ""; // cột H: Tên
+    const qty = parseFloat(r[8]) || 0; // cột I: SL
+    const dvt = r[9] || "";
+    if (!ten) return;
+    if (!nhapByItem[ten]) nhapByItem[ten] = {ten, dvt, tongNhap: 0};
+    nhapByItem[ten].tongNhap += qty;
+  });
+
+  // ── THỐNG KÊ XUẤT ──
+  const xuatByItem = {};
+  xuatData.forEach(r => {
+    const ten = r[7] || "";
+    const qty = parseFloat(r[8]) || 0;
+    const dvt = r[9] || "";
+    if (!ten) return;
+    if (!xuatByItem[ten]) xuatByItem[ten] = {ten, dvt, tongXuat: 0};
+    xuatByItem[ten].tongXuat += qty;
+  });
+
+  // ── TỒN KHO = NHẬP - XUẤT ──
+  const allItems = new Set([...Object.keys(nhapByItem), ...Object.keys(xuatByItem)]);
+  const tonKho   = [];
+  allItems.forEach(ten => {
+    const nhap = nhapByItem[ten]?.tongNhap || 0;
+    const xuat = xuatByItem[ten]?.tongXuat || 0;
+    const dvt  = nhapByItem[ten]?.dvt || xuatByItem[ten]?.dvt || "";
+    tonKho.push({ten, dvt, tongNhap: nhap, tongXuat: xuat, ton: nhap - xuat});
+  });
+  tonKho.sort((a,b) => a.ten.localeCompare(b.ten, 'vi'));
+
+  // ── CHỜ DUYỆT ──
+  const chouDuyet = pendingData.filter(r => r[11] === "CHỜ DUYỆT");
+  const pendingPhieu = {};
+  chouDuyet.forEach(r => {
+    const id = r[0];
+    if (!pendingPhieu[id]) pendingPhieu[id] = 0;
+    pendingPhieu[id]++;
+  });
+
+  // ── GIAO DỊCH GẦN ĐÂY ──
+  const recent = [];
+
+  // 10 dòng nhập gần nhất
+  nhapData.slice(-10).reverse().forEach(r => {
+    if (!r[7]) return;
+    recent.push({
+      loai: "nhap", thoiGian: r[1] ? formatDateStr(r[1]) : "",
+      nguon: r[2] || "", ten: r[7], qty: r[8], dvt: r[9],
+    });
+  });
+
+  // 10 dòng xuất gần nhất
+  xuatData.slice(-10).reverse().forEach(r => {
+    if (!r[7]) return;
+    recent.push({
+      loai: "xuat", thoiGian: r[1] ? formatDateStr(r[1]) : "",
+      dienGiai: r[2] || "", ten: r[7], qty: r[8], dvt: r[9],
+    });
+  });
+
+  // Sắp xếp giao dịch gần nhất lên đầu
+  recent.sort((a,b) => b.thoiGian.localeCompare(a.thoiGian));
+
+  return res({
+    status: "ok",
+    data: {
+      tongNhapPhieu:   nhapData.filter(r => r[7]).length,
+      tongXuatPhieu:   xuatData.filter(r => r[7]).length,
+      pendingCount:    Object.keys(pendingPhieu).length,
+      pendingItemCount: chouDuyet.length,
+      tonKho,
+      recent: recent.slice(0, 20),
+    }
+  });
+}
+
+
+// ════════════════════════════════════════════════════════════════
+//  ADMIN: LỊCH SỬ CHI TIẾT (NHẬP hoặc XUẤT)
+// ════════════════════════════════════════════════════════════════
+function getHistory(body) {
+  const auth = checkAdmin(body.token);
+  if (!auth.ok) return res({status:"error", message: auth.reason});
+
+  const { loai, page = 1, pageSize = 30 } = body;
+  const sheetName = loai === "nhap" ? SH_NHAP : SH_XUAT;
+  const allData   = getSheetValues(sheetName, 5).filter(r => r[7]);
+
+  // Phân trang từ mới nhất
+  const reversed = [...allData].reverse();
+  const total    = reversed.length;
+  const start    = (page - 1) * pageSize;
+  const rows     = reversed.slice(start, start + pageSize).map(r => ({
+    thoiGian: r[1] ? formatDateStr(r[1]) : "",
+    col3:     r[2] || "",   // nguon (nhập) hoặc dienGiai (xuất)
+    diaChi:   r[3] || "",
+    sdt:      r[4] || "",
+    maNVL:    r[6] || "",
+    ten:      r[7] || "",
+    qty:      r[8] || 0,
+    dvt:      r[9] || "",
+  }));
+
+  return res({status:"ok", data:{rows, total, page, pageSize, totalPages: Math.ceil(total/pageSize)}});
+}
+
+
+// ════════════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════════════
+function ensurePendingSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss.getSheetByName(SH_PENDING)) {
+    const sh = ss.insertSheet(SH_PENDING);
+    sh.appendRow([
+      "Mã phiếu","Thời gian nộp","Ngày","Người ủng hộ","Người ghi nhận",
+      "Địa chỉ","SĐT","Mã NVL","Tên hàng","Số lượng","ĐVT",
+      "Trạng thái","Admin xử lý","Thời gian xử lý","Lý do từ chối"
+    ]);
+    // Style header
+    sh.getRange(1,1,1,15).setBackground("#1a3050").setFontColor("#fff").setFontWeight("bold");
+    sh.setFrozenRows(1);
+  }
+}
+
+function getSheet(name) {
+  return SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name);
+}
+
+// Lấy values từ dòng startRow trở xuống, bỏ qua dòng header/tiêu đề
+function getSheetValues(sheetName, startRow) {
+  const sh = getSheet(sheetName);
+  if (!sh || sh.getLastRow() < startRow) return [];
+  return sh.getRange(startRow, 1, sh.getLastRow() - startRow + 1, sh.getLastColumn()).getValues();
+}
+
+function fmtNewRows(sheet, count, qtyCol) {
+  if (count <= 0) return;
+  const last  = sheet.getLastRow();
+  const first = last - count + 1;
+  sheet.getRange(first, qtyCol, count, 1).setNumberFormat('#,##0.##');
+  sheet.getRange(first, 2, count, 1).setHorizontalAlignment('center');
+  sheet.getRange(first, 10, count, 1).setHorizontalAlignment('center');
+}
+
+function parseDate(dateStr) {
+  if (!dateStr) return new Date();
+  if (dateStr instanceof Date) return dateStr;
+  const [y,m,d] = String(dateStr).split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+function formatDateVN(dateStr) {
+  if (!dateStr) return "";
+  const d = parseDate(dateStr);
+  return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+}
+
+function formatDateStr(val) {
+  try {
+    const d = new Date(val);
+    return d.toLocaleDateString("vi-VN") + " " + d.toLocaleTimeString("vi-VN", {hour:"2-digit",minute:"2-digit"});
+  } catch(e) { return String(val); }
+}
+
+function res(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
 }

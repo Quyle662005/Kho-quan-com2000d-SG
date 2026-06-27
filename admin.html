@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Kho Quán Cơm 2.000đ</title>
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+<style>
+  :root {
+    --green-dark:#085041;--green-mid:#0F6E56;--green-light:#E1F5EE;--green-border:#5DCAA5;
+    --red-dark:#712B13;--red-mid:#993C1D;--red-light:#FAECE7;--red-border:#D85A30;
+    --blue:#1d4ed8;--blue-light:#eff6ff;--blue-border:#bfdbfe;
+    --yellow:#92400e;--yellow-light:#fffbea;--yellow-border:#f5c518;
+    --text:#1a1a18;--text-muted:#6b6b67;--border:#d4d2c9;--bg:#f5f4ef;
+    --card:#fff;--sidebar-w:220px;--font:'Segoe UI',system-ui,-apple-system,sans-serif;
+    --radius:8px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+
+  /* ── LOGIN SCREEN ── */
+  #loginScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:20px;padding:20px}
+  .login-logo{font-size:48px}
+  .login-title{font-size:22px;font-weight:700;color:var(--green-dark)}
+  .login-sub{font-size:14px;color:var(--text-muted);text-align:center;line-height:1.5;max-width:300px}
+  .login-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.08);width:100%;max-width:380px}
+  .login-err{background:var(--red-light);border:1px solid var(--red-border);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--red-dark);margin-top:14px;display:none}
+
+  /* ── APP SHELL ── */
+  #app{display:none}
+  .shell{display:flex;min-height:100vh}
+
+  /* ── SIDEBAR ── */
+  .sidebar{width:var(--sidebar-w);background:var(--green-dark);color:#fff;flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:20}
+  .sidebar-logo{padding:20px 16px 14px;border-bottom:1px solid rgba(255,255,255,.12)}
+  .sidebar-logo .ico{font-size:24px;margin-bottom:4px}
+  .sidebar-logo .name{font-size:14px;font-weight:700;line-height:1.3}
+  .sidebar-logo .sub{font-size:11px;opacity:.65;margin-top:2px}
+  .nav{flex:1;padding:12px 8px;display:flex;flex-direction:column;gap:2px}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:8px;font-size:13.5px;cursor:pointer;color:rgba(255,255,255,.75);transition:all .15s;border:none;background:transparent;width:100%;text-align:left;font-family:var(--font)}
+  .nav-item:hover{background:rgba(255,255,255,.1);color:#fff}
+  .nav-item.active{background:rgba(255,255,255,.18);color:#fff;font-weight:600}
+  .nav-item .ico{font-size:17px;flex-shrink:0}
+  .badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;min-width:18px;text-align:center}
+  .sidebar-user{padding:14px 12px;border-top:1px solid rgba(255,255,255,.12);font-size:12px}
+  .sidebar-user .email{opacity:.7;word-break:break-all;margin-bottom:8px}
+  .btn-logout{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer;width:100%;font-family:var(--font)}
+  .btn-logout:hover{background:rgba(255,255,255,.2)}
+
+  /* ── MAIN ── */
+  .main{margin-left:var(--sidebar-w);flex:1;padding:24px;min-width:0}
+  .page{display:none}
+  .page.show{display:block}
+  .page-title{font-size:20px;font-weight:700;color:var(--green-dark);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .page-title .ico{font-size:22px}
+
+  /* ── STAT CARDS ── */
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .stat-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+  .stat-val{font-size:28px;font-weight:800;line-height:1}
+  .stat-card.green .stat-val{color:var(--green-dark)}
+  .stat-card.red   .stat-val{color:var(--red-dark)}
+  .stat-card.blue  .stat-val{color:var(--blue)}
+  .stat-card.warn  .stat-val{color:var(--yellow)}
+  .stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+  /* ── TON KHO TABLE ── */
+  .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);margin-bottom:24px}
+  .table-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .table-title{font-size:14px;font-weight:700}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;background:#fafaf8;border-bottom:1px solid var(--border)}
+  td{padding:10px 14px;border-bottom:1px solid #f4f3ee;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#fafaf8}
+  .tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11.5px;font-weight:600}
+  .tag-nhap{background:var(--green-light);color:var(--green-dark);border:1px solid var(--green-border)}
+  .tag-xuat{background:var(--red-light);color:var(--red-dark);border:1px solid var(--red-border)}
+  .tag-pending{background:var(--yellow-light);color:var(--yellow);border:1px solid var(--yellow-border)}
+  .tag-ok{background:var(--green-light);color:var(--green-dark);border:1px solid var(--green-border)}
+  .tag-reject{background:var(--red-light);color:var(--red-dark);border:1px solid var(--red-border)}
+  .num{font-variant-numeric:tabular-nums}
+  .ton-neg{color:var(--red-dark);font-weight:700}
+  .ton-zero{color:var(--text-muted)}
+  .ton-pos{color:var(--green-dark);font-weight:600}
+
+  /* ── PENDING CARDS ── */
+  .pending-list{display:flex;flex-direction:column;gap:14px}
+  .phieu-card{background:var(--card);border:1px solid var(--yellow-border);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .phieu-head{padding:14px 16px;background:var(--yellow-light);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .phieu-id{font-size:11px;font-family:monospace;color:var(--text-muted);margin-bottom:4px}
+  .phieu-nguon{font-size:15px;font-weight:700}
+  .phieu-meta{font-size:12px;color:var(--text-muted);margin-top:3px}
+  .phieu-actions{display:flex;gap:8px;flex-shrink:0;margin-top:2px}
+  .btn-approve{padding:8px 16px;background:var(--green-mid);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:background .15s}
+  .btn-approve:hover{background:var(--green-dark)}
+  .btn-approve:disabled{opacity:.6;cursor:not-allowed}
+  .btn-reject-btn{padding:8px 14px;background:transparent;color:var(--red-dark);border:1px solid var(--red-border);border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s}
+  .btn-reject-btn:hover{background:var(--red-light)}
+  .phieu-items table{margin:0}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--text-muted)}
+  .empty-state .ico{font-size:40px;margin-bottom:12px}
+  .empty-state p{font-size:14px}
+
+  /* ── REJECT MODAL ── */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:20px}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--card);border-radius:14px;padding:24px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+  .modal-title{font-size:16px;font-weight:700;margin-bottom:14px}
+  .modal textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:var(--font);resize:vertical;min-height:90px;margin-bottom:14px}
+  .modal textarea:focus{outline:none;border-color:var(--red-mid);box-shadow:0 0 0 3px rgba(153,60,29,.1)}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end}
+  .btn-modal-cancel{padding:9px 16px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;cursor:pointer;font-family:var(--font)}
+  .btn-modal-ok{padding:9px 16px;background:var(--red-mid);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)}
+  .btn-modal-ok:hover{background:var(--red-dark)}
+
+  /* ── SEARCH / FILTER ── */
+  .filter-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .filter-row input,.filter-row select{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13.5px;font-family:var(--font);background:var(--card)}
+  .filter-row input{flex:1;min-width:160px}
+  .filter-row input:focus,.filter-row select:focus{outline:none;border-color:var(--green-mid)}
+
+  /* ── PAGINATION ── */
+  .paging{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted)}
+  .paging-btns{display:flex;gap:6px}
+  .btn-page{padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:transparent;font-size:13px;cursor:pointer;font-family:var(--font)}
+  .btn-page:hover{background:var(--bg)}
+  .btn-page:disabled{opacity:.4;cursor:not-allowed}
+
+  /* ── LOADING ── */
+  .loading-overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,.7);z-index:50;align-items:center;justify-content:center}
+  .loading-overlay.show{display:flex}
+  .spinner-big{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green-mid);border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .refresh-btn{padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);font-size:13px;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px}
+  .refresh-btn:hover{background:var(--bg)}
+
+  /* ── MOBILE ── */
+  @media(max-width:680px){
+    .sidebar{width:100%;height:auto;position:sticky;flex-direction:row;flex-wrap:wrap}
+    .sidebar-logo{flex:1}
+    .nav{flex-direction:row;padding:8px;overflow-x:auto}
+    .sidebar-user{display:none}
+    .main{margin-left:0;padding:16px}
+    .stat-grid{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══════════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-logo">🍚</div>
+  <div class="login-title">Trang quản trị kho</div>
+  <div class="login-sub">Chỉ dành cho admin Quán Cơm 2.000đ Sài Gòn.<br>Đăng nhập bằng Google Account được cấp quyền.</div>
+  <div class="login-card">
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:18px">Nhấn nút bên dưới để xác thực</p>
+    <!-- Google Sign-In button (render bằng GSI) -->
+    <div id="g_id_onload"
+      data-client_id="1033268582179-55e9i0hhmdaa27kjhs19f5bdau46n2uv.apps.googleusercontent.com"
+      data-callback="onGoogleLogin"
+      data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"
+      data-type="standard"
+      data-shape="pill"
+      data-theme="outline"
+      data-text="signin_with"
+      data-size="large"
+      data-locale="vi"
+      data-width="280">
+    </div>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+  <p style="font-size:12px;color:var(--text-muted)">
+    Cần hỗ trợ? Liên hệ quản lý hệ thống.
+  </p>
+</div>
+
+<!-- ══ APP ════════════════════════════════════════════════ -->
+<div id="app">
+  <div class="shell">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <div class="ico">🍚</div>
+        <div class="name">Cơm 2.000đ SG</div>
+        <div class="sub">Trang quản trị kho</div>
+      </div>
+      <div class="nav">
+        <button class="nav-item active" onclick="goto('dashboard')">
+          <span class="ico">📊</span> Tổng quan
+        </button>
+        <button class="nav-item" onclick="goto('pending')" id="navPending">
+          <span class="ico">📋</span> Chờ duyệt
+          <span class="badge" id="pendingBadge" style="display:none"></span>
+        </button>
+        <button class="nav-item" onclick="goto('history-nhap')">
+          <span class="ico">⬇️</span> Lịch sử nhập
+        </button>
+        <button class="nav-item" onclick="goto('history-xuat')">
+          <span class="ico">⬆️</span> Lịch sử xuất
+        </button>
+        <button class="nav-item" onclick="goto('tonkho')">
+          <span class="ico">📦</span> Tồn kho
+        </button>
+      </div>
+      <div class="sidebar-user">
+        <div class="email" id="adminEmail">—</div>
+        <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="page show" id="page-dashboard">
+        <div class="page-title"><span class="ico">📊</span> Tổng quan kho</div>
+
+        <div class="stat-grid">
+          <div class="stat-card green">
+            <div class="stat-label">Tổng dòng nhập</div>
+            <div class="stat-val" id="st-nhap">—</div>
+            <div class="stat-sub">mặt hàng đã nhập</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-label">Tổng dòng xuất</div>
+            <div class="stat-val" id="st-xuat">—</div>
+            <div class="stat-sub">mặt hàng đã xuất</div>
+          </div>
+          <div class="stat-card warn">
+            <div class="stat-label">Chờ phê duyệt</div>
+            <div class="stat-val" id="st-pending">—</div>
+            <div class="stat-sub" id="st-pending-items">phiếu cần xử lý</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-label">Loại NVL</div>
+            <div class="stat-val" id="st-loai">—</div>
+            <div class="stat-sub">đang theo dõi</div>
+          </div>
+        </div>
+
+        <!-- Giao dịch gần đây -->
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title">⏱️ Giao dịch gần đây</div>
+            <button class="refresh-btn" onclick="loadDashboard()">🔄 Làm mới</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr>
+                <th>Loại</th><th>Thời gian</th><th>Nguồn / Diễn giải</th>
+                <th>Tên hàng</th><th style="text-align:right">Số lượng</th><th>ĐVT</th>
+              </tr></thead>
+              <tbody id="recentBody">
+                <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted)">Đang tải…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PENDING ── -->
+      <div class="page" id="page-pending">
+        <div class="page-title" style="justify-content:space-between">
+          <span><span class="ico">📋</span> Phiếu chờ phê duyệt</span>
+          <button class="refresh-btn" onclick="loadPending()">🔄 Làm mới</button>
+        </div>
+        <div class="pending-list" id="pendingList">
+          <div style="text-align:center;padding:40px;color:var(--text-muted)">Đang tải…</div>
+        </div>
+      </div>
+
+      <!-- ── HISTORY NHẬP ── -->
+      <div class="page" id="page-history-nhap">
+        <div class="page-title"><span class="ico">⬇️</span> Lịch sử nhập kho</div>
+        <div class="filter-row">
+          <input type="text" id="searchNhap" placeholder="🔍 Tìm tên hàng, người ủng hộ…" oninput="filterHistory('nhap')">
+        </div>
+        <div class="table-wrap">
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr>
+                <th>Thời gian</th><th>Người ủng hộ</th><th>Địa chỉ</th>
+                <th>Mã</th><th>Tên hàng</th><th style="text-align:right">Số lượng</th><th>ĐVT</th>
+              </tr></thead>
+              <tbody id="histNhapBody"></tbody>
+            </table>
+          </div>
+          <div class="paging" id="pagingNhap">
+            <span id="pagingNhapInfo"></span>
+            <div class="paging-btns">
+              <button class="btn-page" id="btnNhapPrev" onclick="changePage('nhap',-1)">← Trước</button>
+              <button class="btn-page" id="btnNhapNext" onclick="changePage('nhap',1)">Sau →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── HISTORY XUẤT ── -->
+      <div class="page" id="page-history-xuat">
+        <div class="page-title"><span class="ico">⬆️</span> Lịch sử xuất kho</div>
+        <div class="filter-row">
+          <input type="text" id="searchXuat" placeholder="🔍 Tìm tên hàng, diễn giải…" oninput="filterHistory('xuat')">
+        </div>
+        <div class="table-wrap">
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr>
+                <th>Thời gian</th><th>Diễn giải</th><th>Địa chỉ</th>
+                <th>Mã</th><th>Tên hàng</th><th style="text-align:right">Số lượng</th><th>ĐVT</th>
+              </tr></thead>
+              <tbody id="histXuatBody"></tbody>
+            </table>
+          </div>
+          <div class="paging" id="pagingXuat">
+            <span id="pagingXuatInfo"></span>
+            <div class="paging-btns">
+              <button class="btn-page" id="btnXuatPrev" onclick="changePage('xuat',-1)">← Trước</button>
+              <button class="btn-page" id="btnXuatNext" onclick="changePage('xuat',1)">Sau →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TỒN KHO ── -->
+      <div class="page" id="page-tonkho">
+        <div class="page-title" style="justify-content:space-between">
+          <span><span class="ico">📦</span> Tồn kho hiện tại</span>
+          <button class="refresh-btn" onclick="loadDashboard()">🔄 Làm mới</button>
+        </div>
+        <div class="table-wrap">
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr>
+                <th>Tên NVL</th><th>ĐVT</th>
+                <th style="text-align:right">Tổng nhập</th>
+                <th style="text-align:right">Tổng xuất</th>
+                <th style="text-align:right">Tồn kho</th>
+              </tr></thead>
+              <tbody id="tonKhoBody">
+                <tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-muted)">Đang tải…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main><!-- /main -->
+  </div><!-- /shell -->
+</div><!-- /app -->
+
+<!-- REJECT MODAL -->
+<div class="modal-bg" id="rejectModal">
+  <div class="modal">
+    <div class="modal-title">❌ Lý do từ chối</div>
+    <textarea id="rejectReason" placeholder="Nhập lý do từ chối phiếu này…"></textarea>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeRejectModal()">Huỷ</button>
+      <button class="btn-modal-ok" onclick="confirmReject()">Xác nhận từ chối</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner-big"></div></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  ⚙️  CẤU HÌNH — SỬA 2 DÒNG NÀY
+// ════════════════════════════════════════════════════════
+const SHEET_URL     = 'https://script.google.com/macros/s/AKfycbyBaf01ZvKmN70jaWJZUCJBaVI0--yX6zfQ_B7Ypc6uamSWpC5IWX-Z2QJ5BRvjXooW/exec';
+const GOOGLE_CLIENT = '1033268582179-55e9i0hhmdaa27kjhs19f5bdau46n2uv.apps.googleusercontent.com';   // từ Google Cloud Console
+// ════════════════════════════════════════════════════════
+
+let TOKEN       = null;   // Google ID token
+let ADMIN_EMAIL = null;
+
+// State
+let historyData  = {nhap:[], xuat:[]};
+let historyPage  = {nhap:1, xuat:1};
+const PAGE_SIZE  = 30;
+let rejectTarget = null;   // phieuId đang từ chối
+let dashCache    = null;
+
+// ════════════════════════════════════════════════════════
+//  GOOGLE OAUTH
+// ════════════════════════════════════════════════════════
+function onGoogleLogin(resp) {
+  TOKEN = resp.credential;
+  // Decode JWT payload để lấy email hiển thị
+  const payload = JSON.parse(atob(TOKEN.split('.')[1]));
+  ADMIN_EMAIL   = payload.email;
+
+  // Thử call API để kiểm tra quyền admin
+  api('get_dashboard', {}).then(r => {
+    if (r.status === 'ok') {
+      showApp();
+    } else {
+      showLoginErr(r.message || 'Tài khoản này không có quyền admin.');
+    }
+  }).catch(() => showLoginErr('Không kết nối được server. Kiểm tra URL Apps Script.'));
+}
+
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('adminEmail').textContent = ADMIN_EMAIL;
+  goto('dashboard');
+}
+
+function showLoginErr(msg) {
+  const el = document.getElementById('loginErr');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function logout() {
+  TOKEN = null; ADMIN_EMAIL = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginErr').style.display = 'none';
+  google.accounts.id.disableAutoSelect();
+}
+
+// ════════════════════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════════════════════
+const PAGES = ['dashboard','pending','history-nhap','history-xuat','tonkho'];
+
+function goto(page) {
+  PAGES.forEach(p => {
+    document.getElementById('page-'+p).classList.toggle('show', p===page);
+  });
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const navMap = {dashboard:0, pending:1, 'history-nhap':2, 'history-xuat':3, tonkho:4};
+  document.querySelectorAll('.nav-item')[navMap[page]]?.classList.add('active');
+
+  // Lazy load khi chuyển trang
+  if (page==='dashboard') loadDashboard();
+  else if (page==='pending') loadPending();
+  else if (page==='history-nhap') loadHistory('nhap');
+  else if (page==='history-xuat') loadHistory('xuat');
+  else if (page==='tonkho') loadTonKho();
+}
+
+// ════════════════════════════════════════════════════════
+//  API HELPER
+// ════════════════════════════════════════════════════════
+async function api(action, payload) {
+  const body = JSON.stringify({action, token: TOKEN, ...payload});
+  const r = await fetch(SHEET_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'text/plain'},
+    body,
+  });
+  return r.json();
+}
+
+function loading(on) {
+  document.getElementById('loadingOverlay').classList.toggle('show', on);
+}
+
+// ════════════════════════════════════════════════════════
+//  DASHBOARD
+// ════════════════════════════════════════════════════════
+async function loadDashboard() {
+  loading(true);
+  try {
+    const r = await api('get_dashboard', {});
+    if (r.status !== 'ok') { alert(r.message); return; }
+    const d = r.data;
+    dashCache = d;
+
+    document.getElementById('st-nhap').textContent    = d.tongNhapPhieu.toLocaleString('vi');
+    document.getElementById('st-xuat').textContent    = d.tongXuatPhieu.toLocaleString('vi');
+    document.getElementById('st-pending').textContent = d.pendingCount;
+    document.getElementById('st-pending-items').textContent = `(${d.pendingItemCount} mặt hàng) phiếu cần xử lý`;
+    document.getElementById('st-loai').textContent    = d.tonKho.length;
+
+    // Badge sidebar
+    const badge = document.getElementById('pendingBadge');
+    badge.textContent = d.pendingCount;
+    badge.style.display = d.pendingCount > 0 ? 'inline-flex' : 'none';
+
+    // Recent
+    const tbody = document.getElementById('recentBody');
+    if (!d.recent.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted)">Chưa có giao dịch nào</td></tr>';
+      return;
+    }
+    tbody.innerHTML = d.recent.map(r => `
+      <tr>
+        <td><span class="tag ${r.loai==='nhap'?'tag-nhap':'tag-xuat'}">${r.loai==='nhap'?'⬇️ Nhập':'⬆️ Xuất'}</span></td>
+        <td style="white-space:nowrap;font-size:12px">${r.thoiGian}</td>
+        <td style="color:var(--text-muted);font-size:12.5px">${r.nguon||r.dienGiai||'—'}</td>
+        <td><strong>${r.ten}</strong></td>
+        <td style="text-align:right" class="num">${(+r.qty).toLocaleString('vi',{maximumFractionDigits:2})}</td>
+        <td>${r.dvt||''}</td>
+      </tr>`).join('');
+
+    // Tồn kho (dùng lại data)
+    renderTonKho(d.tonKho);
+
+  } finally { loading(false); }
+}
+
+// ════════════════════════════════════════════════════════
+//  TỒN KHO
+// ════════════════════════════════════════════════════════
+function loadTonKho() {
+  if (dashCache) { renderTonKho(dashCache.tonKho); return; }
+  loadDashboard();
+}
+
+function renderTonKho(list) {
+  const tbody = document.getElementById('tonKhoBody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-muted)">Chưa có dữ liệu</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(i => {
+    const tonCls = i.ton < 0 ? 'ton-neg' : i.ton === 0 ? 'ton-zero' : 'ton-pos';
+    const fmt = v => (+v).toLocaleString('vi',{maximumFractionDigits:2});
+    return `<tr>
+      <td><strong>${i.ten}</strong></td>
+      <td>${i.dvt}</td>
+      <td style="text-align:right" class="num">${fmt(i.tongNhap)}</td>
+      <td style="text-align:right" class="num">${fmt(i.tongXuat)}</td>
+      <td style="text-align:right" class="num ${tonCls}">${fmt(i.ton)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  PENDING
+// ════════════════════════════════════════════════════════
+async function loadPending() {
+  loading(true);
+  try {
+    const r = await api('get_pending', {});
+    if (r.status !== 'ok') { alert(r.message); return; }
+
+    // Update badge
+    const badge = document.getElementById('pendingBadge');
+    badge.textContent = r.total;
+    badge.style.display = r.total > 0 ? 'inline-flex' : 'none';
+
+    const list = document.getElementById('pendingList');
+    if (!r.data.length) {
+      list.innerHTML = `<div class="empty-state"><div class="ico">✅</div><p>Không có phiếu nào đang chờ duyệt!</p></div>`;
+      return;
+    }
+
+    list.innerHTML = r.data.map(phieu => `
+      <div class="phieu-card" id="phieu-${phieu.phieuId}">
+        <div class="phieu-head">
+          <div>
+            <div class="phieu-id">${phieu.phieuId}</div>
+            <div class="phieu-nguon">👤 ${phieu.nguon || 'MTQ ẩn danh'}</div>
+            <div class="phieu-meta">
+              📅 ${phieu.ngay} &nbsp;·&nbsp;
+              ✍️ ${phieu.nguoi} &nbsp;·&nbsp;
+              ${phieu.diaChi ? '📍 '+phieu.diaChi+' &nbsp;·&nbsp;' : ''}
+              ⏱️ Nộp lúc ${phieu.thoiGianNop}
+            </div>
+          </div>
+          <div class="phieu-actions">
+            <button class="btn-approve" onclick="approvePhieu('${phieu.phieuId}', this)">
+              ✅ Duyệt
+            </button>
+            <button class="btn-reject-btn" onclick="openRejectModal('${phieu.phieuId}')">
+              ❌ Từ chối
+            </button>
+          </div>
+        </div>
+        <div class="phieu-items">
+          <table>
+            <thead><tr>
+              <th>Mã</th><th>Tên hàng</th>
+              <th style="text-align:right">Số lượng</th><th>ĐVT</th>
+            </tr></thead>
+            <tbody>
+              ${phieu.items.map(it => `
+                <tr>
+                  <td><span style="font-family:monospace;font-size:12px">${it.maNVL||'—'}</span></td>
+                  <td><strong>${it.ten}</strong></td>
+                  <td style="text-align:right" class="num">${(+it.qty).toLocaleString('vi',{maximumFractionDigits:2})}</td>
+                  <td>${it.dvt}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`).join('');
+
+  } finally { loading(false); }
+}
+
+async function approvePhieu(phieuId, btn) {
+  if (!confirm(`Xác nhận DUYỆT phiếu ${phieuId}?`)) return;
+  btn.disabled = true;
+  btn.textContent = '⏳…';
+  loading(true);
+  try {
+    const r = await api('approve', {phieuId});
+    if (r.status === 'ok') {
+      // Xóa card khỏi giao diện
+      document.getElementById('phieu-'+phieuId)?.remove();
+      // Kiểm tra còn phiếu không
+      if (!document.querySelectorAll('.phieu-card').length) {
+        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><div class="ico">✅</div><p>Không còn phiếu nào chờ duyệt!</p></div>`;
+      }
+      dashCache = null; // reset cache
+    } else {
+      alert('Lỗi: ' + r.message);
+      btn.disabled = false; btn.textContent = '✅ Duyệt';
+    }
+  } catch(e) {
+    alert('Lỗi kết nối'); btn.disabled=false; btn.textContent='✅ Duyệt';
+  } finally { loading(false); }
+}
+
+// ── REJECT MODAL ──
+function openRejectModal(phieuId) {
+  rejectTarget = phieuId;
+  document.getElementById('rejectReason').value = '';
+  document.getElementById('rejectModal').classList.add('show');
+}
+function closeRejectModal() {
+  rejectTarget = null;
+  document.getElementById('rejectModal').classList.remove('show');
+}
+async function confirmReject() {
+  const lyDo = document.getElementById('rejectReason').value.trim();
+  if (!lyDo) { alert('Vui lòng nhập lý do từ chối!'); return; }
+  loading(true);
+  closeRejectModal();
+  try {
+    const r = await api('reject', {phieuId: rejectTarget, lyDo});
+    if (r.status === 'ok') {
+      document.getElementById('phieu-'+rejectTarget)?.remove();
+      if (!document.querySelectorAll('.phieu-card').length) {
+        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><div class="ico">✅</div><p>Không còn phiếu nào chờ duyệt!</p></div>`;
+      }
+      dashCache = null;
+    } else alert('Lỗi: ' + r.message);
+  } catch(e) { alert('Lỗi kết nối'); }
+  finally { loading(false); }
+}
+
+// ════════════════════════════════════════════════════════
+//  HISTORY
+// ════════════════════════════════════════════════════════
+async function loadHistory(loai) {
+  loading(true);
+  try {
+    const r = await api('get_history', {loai, page: historyPage[loai], pageSize: PAGE_SIZE});
+    if (r.status !== 'ok') { alert(r.message); return; }
+    historyData[loai] = r.data.rows;
+    renderHistory(loai, r.data);
+  } finally { loading(false); }
+}
+
+function renderHistory(loai, data) {
+  const rows   = data?.rows || historyData[loai];
+  const q      = (document.getElementById(loai==='nhap'?'searchNhap':'searchXuat').value||'').toLowerCase();
+  const filtered = rows.filter(r =>
+    !q ||
+    (r.ten||'').toLowerCase().includes(q) ||
+    (r.col3||'').toLowerCase().includes(q) ||
+    (r.maNVL||'').toLowerCase().includes(q)
+  );
+
+  const tbody = document.getElementById(`hist${loai==='nhap'?'Nhap':'Xuat'}Body`);
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-muted)">Không tìm thấy dữ liệu</td></tr>`;
+  } else {
+    const fmt = v => (+v).toLocaleString('vi',{maximumFractionDigits:2});
+    tbody.innerHTML = filtered.map(r => `
+      <tr>
+        <td style="white-space:nowrap;font-size:12px">${r.thoiGian}</td>
+        <td>${r.col3||'—'}</td>
+        <td style="font-size:12px;color:var(--text-muted)">${r.diaChi||'—'}</td>
+        <td><span style="font-family:monospace;font-size:11px">${r.maNVL||'—'}</span></td>
+        <td><strong>${r.ten}</strong></td>
+        <td style="text-align:right" class="num">${fmt(r.qty)}</td>
+        <td>${r.dvt}</td>
+      </tr>`).join('');
+  }
+
+  // Paging info
+  const cap = loai==='nhap'?'Nhap':'Xuat';
+  if (data) {
+    document.getElementById(`paging${cap}Info`).textContent =
+      `Hiển thị ${Math.min((data.page-1)*PAGE_SIZE+1, data.total)}–${Math.min(data.page*PAGE_SIZE, data.total)} / ${data.total} dòng`;
+    document.getElementById(`btn${cap}Prev`).disabled = data.page <= 1;
+    document.getElementById(`btn${cap}Next`).disabled = data.page >= data.totalPages;
+  }
+}
+
+function filterHistory(loai) {
+  renderHistory(loai, null);
+}
+
+function changePage(loai, dir) {
+  historyPage[loai] += dir;
+  loadHistory(loai);
+}
+
+// Đóng modal khi click bên ngoài
+document.getElementById('rejectModal').addEventListener('click', function(e) {
+  if (e.target === this) closeRejectModal();
+});
+</script>
+</body>
+</html>
