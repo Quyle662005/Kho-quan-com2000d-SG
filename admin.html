@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Kho Quán Cơm 2.000đ</title>
-<!-- Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async></script>
 <style>
   :root {
     --green-dark:#085041;--green-mid:#0F6E56;--green-light:#E1F5EE;--green-border:#5DCAA5;
@@ -154,29 +152,29 @@
 <div id="loginScreen">
   <div class="login-logo">🍚</div>
   <div class="login-title">Trang quản trị kho</div>
-  <div class="login-sub">Chỉ dành cho admin Quán Cơm 2.000đ Sài Gòn.<br>Đăng nhập bằng Google Account được cấp quyền.</div>
+  <div class="login-sub">Chỉ dành cho quản lý Quán Cơm 2.000đ Sài Gòn.</div>
   <div class="login-card">
-    <p style="font-size:13px;color:var(--text-muted);margin-bottom:18px">Nhấn nút bên dưới để xác thực</p>
-    <!-- Google Sign-In button (render bằng GSI) -->
-    <div id="g_id_onload"
-      data-client_id="1033268582179-55e9i0hhmdaa27kjhs19f5bdau46n2uv.apps.googleusercontent.com"
-      data-callback="onGoogleLogin"
-      data-auto_prompt="false">
+    <div class="field" style="margin-bottom:14px;text-align:left">
+      <label style="text-transform:uppercase;font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.05em;margin-bottom:5px;display:block">Tên đăng nhập</label>
+      <input type="text" id="loginUser" placeholder="Nhập tên đăng nhập"
+        style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font);background:var(--input-bg);color:var(--text);outline:none"
+        onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
     </div>
-    <div class="g_id_signin"
-      data-type="standard"
-      data-shape="pill"
-      data-theme="outline"
-      data-text="signin_with"
-      data-size="large"
-      data-locale="vi"
-      data-width="280">
+    <div class="field" style="margin-bottom:18px;text-align:left">
+      <label style="text-transform:uppercase;font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.05em;margin-bottom:5px;display:block">Mật khẩu</label>
+      <div style="position:relative">
+        <input type="password" id="loginPass" placeholder="Nhập mật khẩu"
+          style="width:100%;padding:10px 40px 10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font);background:var(--input-bg);color:var(--text);outline:none"
+          onkeydown="if(event.key==='Enter')doLogin()">
+        <button onclick="togglePw()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;padding:0;line-height:1">👁</button>
+      </div>
     </div>
+    <button onclick="doLogin()"
+      style="width:100%;padding:11px;background:var(--green-mid);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font)">
+      Đăng nhập
+    </button>
     <div class="login-err" id="loginErr"></div>
   </div>
-  <p style="font-size:12px;color:var(--text-muted)">
-    Cần hỗ trợ? Liên hệ quản lý hệ thống.
-  </p>
 </div>
 
 <!-- ══ APP ════════════════════════════════════════════════ -->
@@ -371,14 +369,20 @@
 
 <script>
 // ════════════════════════════════════════════════════════
-//  ⚙️  CẤU HÌNH — SỬA 2 DÒNG NÀY
+//  ⚙️  CẤU HÌNH — SỬA CÁC DÒNG NÀY
 // ════════════════════════════════════════════════════════
-const SHEET_URL     = 'https://script.google.com/macros/s/AKfycbyBaf01ZvKmN70jaWJZUCJBaVI0--yX6zfQ_B7Ypc6uamSWpC5IWX-Z2QJ5BRvjXooW/exec';
-const GOOGLE_CLIENT = '1033268582179-55e9i0hhmdaa27kjhs19f5bdau46n2uv.apps.googleusercontent.com';   // từ Google Cloud Console
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxKUcQfXQFdh6pphh0K2TQlpdLFnwacEn6hP7a1wEM7_VkIhuNk9Pms_-IHn2PQpsAB/exec';
+
+// Danh sách tài khoản admin (thêm nhiều tài khoản tùy ý)
+const ACCOUNTS = [
+  { user: 'admin',    pass: 'quancom2000', name: 'Quản lý' },
+  { user: 'bep',      pass: 'bep@2025',    name: 'Trưởng bếp' },
+  // { user: 'ketoan', pass: 'kt@2025',    name: 'Kế toán' },
+];
 // ════════════════════════════════════════════════════════
 
-let TOKEN       = null;   // Google ID token
-let ADMIN_EMAIL = null;
+let TOKEN       = null;   // username sau khi đăng nhập
+let ADMIN_EMAIL = null;   // tên hiển thị
 
 // State
 let historyData  = {nhap:[], xuat:[]};
@@ -388,22 +392,25 @@ let rejectTarget = null;   // phieuId đang từ chối
 let dashCache    = null;
 
 // ════════════════════════════════════════════════════════
-//  GOOGLE OAUTH
+//  ĐĂNG NHẬP HARDCODE
 // ════════════════════════════════════════════════════════
-function onGoogleLogin(resp) {
-  TOKEN = resp.credential;
-  // Decode JWT payload để lấy email hiển thị
-  const payload = JSON.parse(atob(TOKEN.split('.')[1]));
-  ADMIN_EMAIL   = payload.email;
+function togglePw() {
+  const inp = document.getElementById('loginPass');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
 
-  // Thử call API để kiểm tra quyền admin
-  api('get_dashboard', {}).then(r => {
-    if (r.status === 'ok') {
-      showApp();
-    } else {
-      showLoginErr(r.message || 'Tài khoản này không có quyền admin.');
-    }
-  }).catch(() => showLoginErr('Không kết nối được server. Kiểm tra URL Apps Script.'));
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const found = ACCOUNTS.find(a => a.user === user && a.pass === pass);
+  if (!found) {
+    showLoginErr('Tên đăng nhập hoặc mật khẩu không đúng!');
+    document.getElementById('loginPass').value = '';
+    return;
+  }
+  TOKEN       = found.user;
+  ADMIN_EMAIL = found.name + ' (' + found.user + ')';
+  showApp();
 }
 
 function showApp() {
@@ -423,8 +430,9 @@ function logout() {
   TOKEN = null; ADMIN_EMAIL = null;
   document.getElementById('app').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
   document.getElementById('loginErr').style.display = 'none';
-  google.accounts.id.disableAutoSelect();
 }
 
 // ════════════════════════════════════════════════════════
