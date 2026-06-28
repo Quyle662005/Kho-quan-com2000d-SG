@@ -3,372 +3,1317 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Kho Quán Cơm 2.000đ</title>
+<title>Quản trị kho — Cơm 2.000đ SG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --green-dark:#085041;--green-mid:#0F6E56;--green-light:#E1F5EE;--green-border:#5DCAA5;
-    --red-dark:#712B13;--red-mid:#993C1D;--red-light:#FAECE7;--red-border:#D85A30;
-    --blue:#1d4ed8;--blue-light:#eff6ff;--blue-border:#bfdbfe;
-    --yellow:#92400e;--yellow-light:#fffbea;--yellow-border:#f5c518;
-    --text:#1a1a18;--text-muted:#6b6b67;--border:#d4d2c9;--bg:#f5f4ef;
-    --card:#fff;--sidebar-w:220px;--font:'Segoe UI',system-ui,-apple-system,sans-serif;
-    --radius:8px;
+/* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS — Quán Cơm 2000đ: ấm áp, thiện nguyện, tin cậy
+   Primary: Đỏ/Cam đất  |  Neutral: Kem/Xám nhạt  |  Success/Danger: chuẩn UX
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  /* Brand */
+  --brand:        #C0392B;   /* Đỏ quán cơm */
+  --brand-dark:   #922B21;
+  --brand-light:  #FDEDEC;
+  --brand-mid:    #E74C3C;
+  --accent:       #E67E22;   /* Cam đất — điểm nhấn ấm */
+  --accent-light: #FEF9F0;
+
+  /* Neutral */
+  --bg:           #F7F5F2;   /* Kem nhạt — không lạnh */
+  --surface:      #FFFFFF;
+  --surface-2:    #FBF9F7;
+  --border:       #E8E4DF;
+  --border-soft:  #F0EDE9;
+
+  /* Text */
+  --text:         #1C1A18;
+  --text-2:       #4A4540;
+  --text-3:       #8A8278;
+
+  /* Semantic */
+  --success:      #1A7F4B;
+  --success-bg:   #E8F8EF;
+  --success-border:#A3D9BC;
+  --danger:       #C0392B;
+  --danger-bg:    #FDEDEC;
+  --danger-border:#F1948A;
+  --warn:         #B7770D;
+  --warn-bg:      #FEF9E7;
+  --warn-border:  #F7DC6F;
+  --info:         #1A5276;
+  --info-bg:      #EAF4FB;
+  --info-border:  #AED6F1;
+
+  /* Sizing */
+  --r-sm:   6px;
+  --r:      10px;
+  --r-lg:   14px;
+  --r-xl:   20px;
+  --sidebar: 230px;
+  --topbar:  56px;
+
+  /* Shadow */
+  --sh-sm:  0 1px 3px rgba(28,26,24,.06), 0 1px 2px rgba(28,26,24,.04);
+  --sh:     0 2px 8px rgba(28,26,24,.08), 0 1px 3px rgba(28,26,24,.05);
+  --sh-lg:  0 8px 30px rgba(28,26,24,.12), 0 2px 8px rgba(28,26,24,.06);
+
+  --font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --ease: cubic-bezier(.4,0,.2,1);
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; cursor: pointer; }
+input, textarea { font-family: inherit; }
+
+/* ═══════════════════════════════════════════════════════════
+   LOGIN SCREEN
+   ═══════════════════════════════════════════════════════════ */
+#loginScreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(145deg, #FBF8F5 0%, #F2EDE8 50%, #EDE6DE 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative blob behind */
+#loginScreen::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -120px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(192,57,43,.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+#loginScreen::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: -80px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(230,126,34,.07) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.login-box {
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-lg);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(232,228,223,.6);
+}
+
+.login-brand {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.login-brand-icon {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+  margin: 0 auto 14px;
+  box-shadow: 0 4px 16px rgba(192,57,43,.25);
+}
+.login-brand h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.3px;
+}
+.login-brand p {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+.login-field { margin-bottom: 16px; }
+.login-field label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 6px;
+}
+.login-field .input-wrap { position: relative; }
+.login-field input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 15px;
+  transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+  outline: none;
+  -webkit-appearance: none;
+}
+.login-field input:focus {
+  border-color: var(--brand);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(192,57,43,.1);
+}
+.login-field input::placeholder { color: #BDB8B2; }
+.btn-toggle-pw {
+  position: absolute; right: 11px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  color: var(--text-3); font-size: 16px; padding: 4px;
+  line-height: 1; transition: color .15s;
+}
+.btn-toggle-pw:hover { color: var(--text-2); }
+
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-mid) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  transition: all .2s var(--ease);
+  box-shadow: 0 3px 12px rgba(192,57,43,.3);
+  margin-top: 8px;
+}
+.btn-login:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 18px rgba(192,57,43,.35);
+}
+.btn-login:active { transform: translateY(0); }
+
+.login-err {
+  display: none;
+  margin-top: 12px;
+  padding: 10px 13px;
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  border-radius: var(--r);
+  font-size: 13px;
+  color: var(--danger);
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   APP SHELL
+   ═══════════════════════════════════════════════════════════ */
+#app { display: none; }
+
+/* ── SIDEBAR (Desktop) ── */
+.sidebar {
+  width: var(--sidebar);
+  background: var(--text);           /* Nền tối đậm — tương phản với nội dung kem */
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform .3s var(--ease);
+}
+
+.sidebar-brand {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  display: flex; align-items: center; gap: 11px;
+  flex-shrink: 0;
+}
+.sidebar-brand-icon {
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px;
+}
+.sidebar-brand-text .name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+.sidebar-brand-text .sub {
+  font-size: 11px;
+  color: rgba(255,255,255,.45);
+  margin-top: 1px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 11px;
+  border-radius: var(--r-sm);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(255,255,255,.55);
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: all .15s var(--ease);
+  position: relative;
+}
+.nav-item .n-ico { font-size: 16px; flex-shrink: 0; }
+.nav-item .n-label { flex: 1; }
+.nav-item:hover {
+  background: rgba(255,255,255,.07);
+  color: rgba(255,255,255,.85);
+}
+.nav-item.active {
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(192,57,43,.35);
+}
+
+.badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 20px;
+  min-width: 18px;
+  text-align: center;
+  line-height: 16px;
+}
+
+.sidebar-footer {
+  padding: 14px 14px 18px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  flex-shrink: 0;
+}
+.admin-info {
+  font-size: 11.5px;
+  color: rgba(255,255,255,.4);
+  margin-bottom: 10px;
+  word-break: break-all;
+  line-height: 1.4;
+}
+.admin-info strong {
+  display: block;
+  color: rgba(255,255,255,.7);
+  font-size: 12.5px;
+  margin-bottom: 1px;
+}
+.btn-logout {
+  width: 100%;
+  padding: 8px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: var(--r-sm);
+  color: rgba(255,255,255,.6);
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: all .15s;
+}
+.btn-logout:hover {
+  background: rgba(192,57,43,.3);
+  border-color: rgba(192,57,43,.4);
+  color: #fff;
+}
+
+/* ── TOPBAR (Mobile only) ── */
+.topbar {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--topbar);
+  background: var(--text);
+  z-index: 25;
+  align-items: center;
+  padding: 0 14px;
+  gap: 12px;
+  box-shadow: 0 1px 0 rgba(255,255,255,.06);
+}
+.topbar-brand {
+  display: flex; align-items: center; gap: 9px;
+  flex: 1;
+}
+.topbar-brand .ico {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--brand), var(--accent));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.topbar-brand .name { font-size: 14px; font-weight: 700; color: #fff; }
+.btn-menu {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,.1);
+  border: none;
+  border-radius: var(--r-sm);
+  color: #fff;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── MOBILE NAV DRAWER ── */
+.mobile-nav-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 28;
+}
+.mobile-nav-overlay.show { display: block; }
+
+.mobile-nav {
+  position: fixed;
+  top: 0; left: 0;
+  width: 260px; height: 100vh;
+  background: var(--text);
+  z-index: 29;
+  transform: translateX(-100%);
+  transition: transform .3s var(--ease);
+  display: flex; flex-direction: column;
+}
+.mobile-nav.show { transform: translateX(0); }
+
+/* ── MAIN CONTENT ── */
+.main {
+  margin-left: var(--sidebar);
+  min-height: 100vh;
+  padding: 28px 28px 40px;
+}
+
+.page { display: none; }
+.page.show { display: block; }
+
+/* ═══════════════════════════════════════════════════════════
+   PAGE HEADER
+   ═══════════════════════════════════════════════════════════ */
+.page-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.page-hdr-left { display: flex; align-items: center; gap: 10px; }
+.page-hdr-icon {
+  width: 38px; height: 38px;
+  background: var(--brand-light);
+  border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.page-hdr h2 {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.3px;
+}
+.page-hdr .sub {
+  font-size: 12.5px;
+  color: var(--text-3);
+  margin-top: 1px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STAT CARDS
+   ═══════════════════════════════════════════════════════════ */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  box-shadow: var(--sh-sm);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow .2s var(--ease), transform .2s var(--ease);
+}
+.stat-card:hover { box-shadow: var(--sh); transform: translateY(-1px); }
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+.stat-card.green::before { background: linear-gradient(90deg, var(--success), #27AE60); }
+.stat-card.red::before   { background: linear-gradient(90deg, var(--brand), var(--accent)); }
+.stat-card.warn::before  { background: linear-gradient(90deg, var(--warn), #F39C12); }
+.stat-card.blue::before  { background: linear-gradient(90deg, var(--info), #2980B9); }
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+.stat-val {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-card.green .stat-val { color: var(--success); }
+.stat-card.red   .stat-val { color: var(--brand); }
+.stat-card.warn  .stat-val { color: var(--warn); }
+.stat-card.blue  .stat-val { color: var(--info); }
+.stat-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TABLE WRAP
+   ═══════════════════════════════════════════════════════════ */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+.table-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.table-hdr-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex; align-items: center; gap: 7px;
+}
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 500px; }
+th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-3);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: middle;
+  color: var(--text);
+}
+tr:last-child td { border-bottom: none; }
+tbody tr { transition: background .12s; }
+tbody tr:hover td { background: #FAF8F5; }
+
+.num { font-variant-numeric: tabular-nums; }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tag-nhap { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+.tag-xuat { background: var(--brand-light); color: var(--brand); border: 1px solid var(--danger-border); }
+.tag-pending { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-border); }
+
+/* Tồn kho colors */
+.ton-pos { color: var(--success); font-weight: 700; }
+.ton-zero { color: var(--text-3); }
+.ton-neg { color: var(--danger); font-weight: 700; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 52px 20px;
+  color: var(--text-3);
+}
+.empty-state .ico { font-size: 40px; margin-bottom: 12px; display: block; }
+.empty-state p { font-size: 14px; }
+
+/* ═══════════════════════════════════════════════════════════
+   REFRESH BUTTON
+   ═══════════════════════════════════════════════════════════ */
+.refresh-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all .15s var(--ease);
+}
+.refresh-btn:hover {
+  background: var(--surface);
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PENDING PHIEU CARDS
+   ═══════════════════════════════════════════════════════════ */
+.pending-list { display: flex; flex-direction: column; gap: 16px; }
+
+.phieu-card {
+  background: var(--surface);
+  border: 1px solid var(--warn-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+  overflow: hidden;
+  transition: box-shadow .2s;
+}
+.phieu-card:hover { box-shadow: var(--sh); }
+
+.phieu-head {
+  padding: 16px 18px;
+  background: linear-gradient(135deg, var(--warn-bg) 0%, #FFFDF5 100%);
+  border-bottom: 1px solid var(--warn-border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.phieu-id {
+  font-size: 10.5px;
+  font-family: 'Courier New', monospace;
+  color: var(--text-3);
+  margin-bottom: 5px;
+  letter-spacing: .03em;
+}
+.phieu-nguon {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+.phieu-meta {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+.phieu-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.btn-approve {
+  padding: 9px 18px;
+  background: var(--success);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: all .15s var(--ease);
+  box-shadow: 0 2px 8px rgba(26,127,75,.25);
+}
+.btn-approve:hover { background: #15693E; transform: translateY(-1px); }
+.btn-approve:active { transform: translateY(0); }
+.btn-approve:disabled { opacity: .6; cursor: not-allowed; transform: none !important; }
+
+.btn-reject-btn {
+  padding: 9px 16px;
+  background: transparent;
+  color: var(--danger);
+  border: 1.5px solid var(--danger-border);
+  border-radius: var(--r);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: all .15s var(--ease);
+}
+.btn-reject-btn:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+}
+
+.phieu-items { padding: 0; }
+.phieu-items table { min-width: 320px; }
+.phieu-items th { background: #FAFAF9; }
+
+/* ═══════════════════════════════════════════════════════════
+   FILTER ROW
+   ═══════════════════════════════════════════════════════════ */
+.filter-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.filter-row input {
+  flex: 1;
+  min-width: 200px;
+  padding: 9px 13px 9px 36px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  -webkit-appearance: none;
+}
+.filter-row input:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(192,57,43,.1);
+}
+.filter-wrap { position: relative; flex: 1; }
+.filter-wrap::before {
+  content: '🔍';
+  position: absolute;
+  left: 11px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  pointer-events: none;
+}
+.filter-wrap input { width: 100%; }
+
+/* ═══════════════════════════════════════════════════════════
+   PAGINATION
+   ═══════════════════════════════════════════════════════════ */
+.paging {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-soft);
+  font-size: 13px;
+  color: var(--text-3);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.paging-btns { display: flex; gap: 6px; }
+.btn-page {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all .15s;
+}
+.btn-page:hover:not(:disabled) {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: var(--brand-light);
+}
+.btn-page:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ═══════════════════════════════════════════════════════════
+   MODAL
+   ═══════════════════════════════════════════════════════════ */
+.modal-bg {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(28,26,24,.5);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-bg.show { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  padding: 28px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--sh-lg);
+  animation: modalIn .2s var(--ease);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)  translateY(0); }
+}
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.modal textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-size: 14px;
+  resize: vertical;
+  min-height: 96px;
+  margin-bottom: 18px;
+  outline: none;
+  color: var(--text);
+  transition: border-color .15s;
+  -webkit-appearance: none;
+}
+.modal textarea:focus { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(192,57,43,.1); }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+.btn-modal-cancel {
+  padding: 9px 18px;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: var(--r);
+  color: var(--text-2);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all .15s;
+}
+.btn-modal-cancel:hover { background: var(--surface-2); }
+
+.btn-modal-ok {
+  padding: 9px 20px;
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: all .15s;
+}
+.btn-modal-ok:hover { background: var(--brand-dark); }
+
+/* ═══════════════════════════════════════════════════════════
+   LOADING OVERLAY — Đẹp, thân thiện
+   ═══════════════════════════════════════════════════════════ */
+.loading-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(247,245,242,.85);
+  backdrop-filter: blur(3px);
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+.loading-overlay.show { display: flex; }
+
+.loading-bowl {
+  width: 60px; height: 60px;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 4px 20px rgba(192,57,43,.25);
+  animation: loadPulse 1.4s var(--ease) infinite;
+}
+@keyframes loadPulse {
+  0%, 100% { transform: scale(1);    box-shadow: 0 4px 20px rgba(192,57,43,.25); }
+  50%       { transform: scale(1.06); box-shadow: 0 6px 28px rgba(192,57,43,.35); }
+}
+
+.loading-dots {
+  display: flex; gap: 6px;
+}
+.loading-dots span {
+  width: 7px; height: 7px;
+  background: var(--brand);
+  border-radius: 50%;
+  opacity: .3;
+  animation: dotBlink 1.2s var(--ease) infinite;
+}
+.loading-dots span:nth-child(2) { animation-delay: .2s; }
+.loading-dots span:nth-child(3) { animation-delay: .4s; }
+@keyframes dotBlink {
+  0%, 80%, 100% { opacity: .2; transform: scale(.8); }
+  40%           { opacity: 1;  transform: scale(1.1); }
+}
+
+.loading-text {
+  font-size: 13px;
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ERROR TOAST
+   ═══════════════════════════════════════════════════════════ */
+.err-toast {
+  display: none;
+  position: fixed;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-size: 13.5px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,.2);
+  z-index: 200;
+  white-space: nowrap;
+  max-width: 90vw;
+  text-align: center;
+  border-left: 4px solid var(--brand);
+  animation: toastIn .25s var(--ease);
+}
+.err-toast.show { display: block; }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET (≤ 960px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 960px) {
+  :root { --sidebar: 200px; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .main { padding: 20px 18px 36px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE (≤ 680px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 680px) {
+  /* Hide desktop sidebar, show topbar */
+  .sidebar { display: none; }
+  .topbar  { display: flex; }
+  .main { margin-left: 0; padding: 76px 14px 32px; }
+
+  /* Stats: 2 cột trên mobile */
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
   }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+  .stat-card { padding: 14px 15px; }
+  .stat-val { font-size: 26px; }
 
-  /* ── LOGIN SCREEN ── */
-  #loginScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:20px;padding:20px}
-  .login-logo{font-size:48px}
-  .login-title{font-size:22px;font-weight:700;color:var(--green-dark)}
-  .login-sub{font-size:14px;color:var(--text-muted);text-align:center;line-height:1.5;max-width:300px}
-  .login-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.08);width:100%;max-width:380px}
-  .login-err{background:var(--red-light);border:1px solid var(--red-border);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--red-dark);margin-top:14px;display:none}
+  /* Page header */
+  .page-hdr h2 { font-size: 16px; }
+  .page-hdr-icon { width: 32px; height: 32px; font-size: 15px; }
 
-  /* ── APP SHELL ── */
-  #app{display:none}
-  .shell{display:flex;min-height:100vh}
+  /* Table → Card mode trên mobile */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { min-width: 420px; }
 
-  /* ── SIDEBAR ── */
-  .sidebar{width:var(--sidebar-w);background:var(--green-dark);color:#fff;flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:20}
-  .sidebar-logo{padding:20px 16px 14px;border-bottom:1px solid rgba(255,255,255,.12)}
-  .sidebar-logo .ico{font-size:24px;margin-bottom:4px}
-  .sidebar-logo .name{font-size:14px;font-weight:700;line-height:1.3}
-  .sidebar-logo .sub{font-size:11px;opacity:.65;margin-top:2px}
-  .nav{flex:1;padding:12px 8px;display:flex;flex-direction:column;gap:2px}
-  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:8px;font-size:13.5px;cursor:pointer;color:rgba(255,255,255,.75);transition:all .15s;border:none;background:transparent;width:100%;text-align:left;font-family:var(--font)}
-  .nav-item:hover{background:rgba(255,255,255,.1);color:#fff}
-  .nav-item.active{background:rgba(255,255,255,.18);color:#fff;font-weight:600}
-  .nav-item .ico{font-size:17px;flex-shrink:0}
-  .badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;min-width:18px;text-align:center}
-  .sidebar-user{padding:14px 12px;border-top:1px solid rgba(255,255,255,.12);font-size:12px}
-  .sidebar-user .email{opacity:.7;word-break:break-all;margin-bottom:8px}
-  .btn-logout{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer;width:100%;font-family:var(--font)}
-  .btn-logout:hover{background:rgba(255,255,255,.2)}
+  /* Phieu card mobile */
+  .phieu-head { flex-direction: column; }
+  .phieu-actions { width: 100%; }
+  .btn-approve, .btn-reject-btn { flex: 1; text-align: center; padding: 10px; }
 
-  /* ── MAIN ── */
-  .main{margin-left:var(--sidebar-w);flex:1;padding:24px;min-width:0}
-  .page{display:none}
-  .page.show{display:block}
-  .page-title{font-size:20px;font-weight:700;color:var(--green-dark);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-  .page-title .ico{font-size:22px}
+  /* Filter */
+  .filter-row { flex-direction: column; }
+  .filter-wrap { min-width: unset; }
 
-  /* ── STAT CARDS ── */
-  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
-  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-  .stat-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-  .stat-val{font-size:28px;font-weight:800;line-height:1}
-  .stat-card.green .stat-val{color:var(--green-dark)}
-  .stat-card.red   .stat-val{color:var(--red-dark)}
-  .stat-card.blue  .stat-val{color:var(--blue)}
-  .stat-card.warn  .stat-val{color:var(--yellow)}
-  .stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+  /* Modal */
+  .modal { padding: 22px 18px; }
+  .modal-actions { flex-direction: column-reverse; }
+  .btn-modal-cancel, .btn-modal-ok { width: 100%; text-align: center; }
 
-  /* ── TON KHO TABLE ── */
-  .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);margin-bottom:24px}
-  .table-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .table-title{font-size:14px;font-weight:700}
-  table{width:100%;border-collapse:collapse;font-size:13.5px}
-  th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;background:#fafaf8;border-bottom:1px solid var(--border)}
-  td{padding:10px 14px;border-bottom:1px solid #f4f3ee;vertical-align:middle}
-  tr:last-child td{border-bottom:none}
-  tr:hover td{background:#fafaf8}
-  .tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11.5px;font-weight:600}
-  .tag-nhap{background:var(--green-light);color:var(--green-dark);border:1px solid var(--green-border)}
-  .tag-xuat{background:var(--red-light);color:var(--red-dark);border:1px solid var(--red-border)}
-  .tag-pending{background:var(--yellow-light);color:var(--yellow);border:1px solid var(--yellow-border)}
-  .tag-ok{background:var(--green-light);color:var(--green-dark);border:1px solid var(--green-border)}
-  .tag-reject{background:var(--red-light);color:var(--red-dark);border:1px solid var(--red-border)}
-  .num{font-variant-numeric:tabular-nums}
-  .ton-neg{color:var(--red-dark);font-weight:700}
-  .ton-zero{color:var(--text-muted)}
-  .ton-pos{color:var(--green-dark);font-weight:600}
+  /* Paging */
+  .paging { flex-direction: column; align-items: flex-start; }
 
-  /* ── PENDING CARDS ── */
-  .pending-list{display:flex;flex-direction:column;gap:14px}
-  .phieu-card{background:var(--card);border:1px solid var(--yellow-border);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-  .phieu-head{padding:14px 16px;background:var(--yellow-light);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
-  .phieu-id{font-size:11px;font-family:monospace;color:var(--text-muted);margin-bottom:4px}
-  .phieu-nguon{font-size:15px;font-weight:700}
-  .phieu-meta{font-size:12px;color:var(--text-muted);margin-top:3px}
-  .phieu-actions{display:flex;gap:8px;flex-shrink:0;margin-top:2px}
-  .btn-approve{padding:8px 16px;background:var(--green-mid);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:background .15s}
-  .btn-approve:hover{background:var(--green-dark)}
-  .btn-approve:disabled{opacity:.6;cursor:not-allowed}
-  .btn-reject-btn{padding:8px 14px;background:transparent;color:var(--red-dark);border:1px solid var(--red-border);border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s}
-  .btn-reject-btn:hover{background:var(--red-light)}
-  .phieu-items table{margin:0}
-  .empty-state{text-align:center;padding:48px 20px;color:var(--text-muted)}
-  .empty-state .ico{font-size:40px;margin-bottom:12px}
-  .empty-state p{font-size:14px}
+  /* Table header hidden on mobile (data via card pattern) */
+  .table-hdr { padding: 12px 14px; }
+  th { padding: 8px 12px; }
+  td { padding: 9px 12px; }
+}
 
-  /* ── REJECT MODAL ── */
-  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:20px}
-  .modal-bg.show{display:flex}
-  .modal{background:var(--card);border-radius:14px;padding:24px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.2)}
-  .modal-title{font-size:16px;font-weight:700;margin-bottom:14px}
-  .modal textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:var(--font);resize:vertical;min-height:90px;margin-bottom:14px}
-  .modal textarea:focus{outline:none;border-color:var(--red-mid);box-shadow:0 0 0 3px rgba(153,60,29,.1)}
-  .modal-actions{display:flex;gap:8px;justify-content:flex-end}
-  .btn-modal-cancel{padding:9px 16px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;cursor:pointer;font-family:var(--font)}
-  .btn-modal-ok{padding:9px 16px;background:var(--red-mid);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)}
-  .btn-modal-ok:hover{background:var(--red-dark)}
-
-  /* ── SEARCH / FILTER ── */
-  .filter-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-  .filter-row input,.filter-row select{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13.5px;font-family:var(--font);background:var(--card)}
-  .filter-row input{flex:1;min-width:160px}
-  .filter-row input:focus,.filter-row select:focus{outline:none;border-color:var(--green-mid)}
-
-  /* ── PAGINATION ── */
-  .paging{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted)}
-  .paging-btns{display:flex;gap:6px}
-  .btn-page{padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:transparent;font-size:13px;cursor:pointer;font-family:var(--font)}
-  .btn-page:hover{background:var(--bg)}
-  .btn-page:disabled{opacity:.4;cursor:not-allowed}
-
-  /* ── LOADING ── */
-  .loading-overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,.7);z-index:50;align-items:center;justify-content:center}
-  .loading-overlay.show{display:flex}
-  .spinner-big{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green-mid);border-radius:50%;animation:spin .7s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .refresh-btn{padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);font-size:13px;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px}
-  .refresh-btn:hover{background:var(--bg)}
-  /* ── ERROR TOAST ── */
-  .err-toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#712B13;color:#FAECE7;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:200;white-space:nowrap;max-width:90vw;text-align:center}
-  .err-toast.show{display:block}
-
-  /* ── MOBILE ── */
-  @media(max-width:680px){
-    .sidebar{width:100%;height:auto;position:sticky;flex-direction:row;flex-wrap:wrap}
-    .sidebar-logo{flex:1}
-    .nav{flex-direction:row;padding:8px;overflow-x:auto}
-    .sidebar-user{display:none}
-    .main{margin-left:0;padding:16px}
-    .stat-grid{grid-template-columns:1fr 1fr}
-  }
+/* ── MOBILE NAV (clone of sidebar inside drawer) ── */
+.mobile-nav .sidebar-brand { padding: 18px 16px 14px; }
+.mobile-nav .sidebar-nav { padding: 10px 8px; }
+.mobile-nav .sidebar-footer { padding: 12px 12px 16px; }
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN ══════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════
+     LOGIN
+     ══════════════════════════════════════════════════ -->
 <div id="loginScreen">
-  <div class="login-logo">🍚</div>
-  <div class="login-title">Trang quản trị kho</div>
-  <div class="login-sub">Chỉ dành cho quản lý Quán Cơm 2.000đ Sài Gòn.</div>
-  <div class="login-card">
-    <div class="field" style="margin-bottom:14px;text-align:left">
-      <label style="text-transform:uppercase;font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.05em;margin-bottom:5px;display:block">Tên đăng nhập</label>
-      <input type="text" id="loginUser" placeholder="Nhập tên đăng nhập"
-        style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font);background:var(--input-bg);color:var(--text);outline:none"
-        onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
+  <div class="login-box">
+    <div class="login-brand">
+      <div class="login-brand-icon">🍚</div>
+      <h1>Quản trị kho</h1>
+      <p>Cơm 2.000đ Sài Gòn — Dành cho quản lý</p>
     </div>
-    <div class="field" style="margin-bottom:18px;text-align:left">
-      <label style="text-transform:uppercase;font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.05em;margin-bottom:5px;display:block">Mật khẩu</label>
-      <div style="position:relative">
+
+    <div class="login-field">
+      <label for="loginUser">Tên đăng nhập</label>
+      <input type="text" id="loginUser" placeholder="Nhập tên đăng nhập"
+        onkeydown="if(event.key==='Enter') document.getElementById('loginPass').focus()"
+        autocomplete="username">
+    </div>
+
+    <div class="login-field">
+      <label for="loginPass">Mật khẩu</label>
+      <div class="input-wrap">
         <input type="password" id="loginPass" placeholder="Nhập mật khẩu"
-          style="width:100%;padding:10px 40px 10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font);background:var(--input-bg);color:var(--text);outline:none"
-          onkeydown="if(event.key==='Enter')doLogin()">
-        <button onclick="togglePw()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;padding:0;line-height:1">👁</button>
+          onkeydown="if(event.key==='Enter') doLogin()"
+          autocomplete="current-password">
+        <button class="btn-toggle-pw" onclick="togglePw()" type="button" tabindex="-1">👁</button>
       </div>
     </div>
-    <button onclick="doLogin()"
-      style="width:100%;padding:11px;background:var(--green-mid);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font)">
-      Đăng nhập
-    </button>
+
+    <button class="btn-login" onclick="doLogin()">Đăng nhập →</button>
     <div class="login-err" id="loginErr"></div>
   </div>
 </div>
 
-<!-- ══ APP ════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════
+     APP
+     ══════════════════════════════════════════════════ -->
 <div id="app">
-  <div class="shell">
 
-    <!-- SIDEBAR -->
-    <nav class="sidebar">
-      <div class="sidebar-logo">
-        <div class="ico">🍚</div>
+  <!-- DESKTOP SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">🍚</div>
+      <div class="sidebar-brand-text">
         <div class="name">Cơm 2.000đ SG</div>
         <div class="sub">Trang quản trị kho</div>
       </div>
-      <div class="nav">
-        <button class="nav-item active" onclick="goto('dashboard')">
-          <span class="ico">📊</span> Tổng quan
-        </button>
-        <button class="nav-item" onclick="goto('pending')" id="navPending">
-          <span class="ico">📋</span> Chờ duyệt
-          <span class="badge" id="pendingBadge" style="display:none"></span>
-        </button>
-        <button class="nav-item" onclick="goto('history-nhap')">
-          <span class="ico">⬇️</span> Lịch sử nhập
-        </button>
-        <button class="nav-item" onclick="goto('history-xuat')">
-          <span class="ico">⬆️</span> Lịch sử xuất
-        </button>
-        <button class="nav-item" onclick="goto('tonkho')">
-          <span class="ico">📦</span> Tồn kho
-        </button>
+    </div>
+
+    <div class="sidebar-nav">
+      <button class="nav-item active" onclick="goto('dashboard')">
+        <span class="n-ico">📊</span>
+        <span class="n-label">Tổng quan</span>
+      </button>
+      <button class="nav-item" onclick="goto('pending')" id="navPending">
+        <span class="n-ico">📋</span>
+        <span class="n-label">Chờ duyệt</span>
+        <span class="badge" id="pendingBadge" style="display:none"></span>
+      </button>
+      <button class="nav-item" onclick="goto('history-nhap')">
+        <span class="n-ico">⬇️</span>
+        <span class="n-label">Lịch sử nhập</span>
+      </button>
+      <button class="nav-item" onclick="goto('history-xuat')">
+        <span class="n-ico">⬆️</span>
+        <span class="n-label">Lịch sử xuất</span>
+      </button>
+      <button class="nav-item" onclick="goto('tonkho')">
+        <span class="n-ico">📦</span>
+        <span class="n-label">Tồn kho</span>
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="admin-info">
+        <strong id="adminEmail">—</strong>
+        Đang đăng nhập
       </div>
-      <div class="sidebar-user">
-        <div class="email" id="adminEmail">—</div>
-        <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+      <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+    </div>
+  </nav>
+
+  <!-- MOBILE TOPBAR -->
+  <div class="topbar">
+    <button class="btn-menu" onclick="openMobileNav()">☰</button>
+    <div class="topbar-brand">
+      <div class="ico">🍚</div>
+      <div class="name">Cơm 2.000đ SG</div>
+    </div>
+    <span class="badge" id="pendingBadgeMobile" style="display:none"></span>
+  </div>
+
+  <!-- MOBILE NAV DRAWER -->
+  <div class="mobile-nav-overlay" id="mobileOverlay" onclick="closeMobileNav()"></div>
+  <nav class="mobile-nav" id="mobileNav">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">🍚</div>
+      <div class="sidebar-brand-text">
+        <div class="name">Cơm 2.000đ SG</div>
+        <div class="sub">Trang quản trị kho</div>
       </div>
-    </nav>
+    </div>
+    <div class="sidebar-nav">
+      <button class="nav-item active" onclick="goto('dashboard');closeMobileNav()">
+        <span class="n-ico">📊</span><span class="n-label">Tổng quan</span>
+      </button>
+      <button class="nav-item" onclick="goto('pending');closeMobileNav()">
+        <span class="n-ico">📋</span><span class="n-label">Chờ duyệt</span>
+        <span class="badge" id="pendingBadgeMob2" style="display:none"></span>
+      </button>
+      <button class="nav-item" onclick="goto('history-nhap');closeMobileNav()">
+        <span class="n-ico">⬇️</span><span class="n-label">Lịch sử nhập</span>
+      </button>
+      <button class="nav-item" onclick="goto('history-xuat');closeMobileNav()">
+        <span class="n-ico">⬆️</span><span class="n-label">Lịch sử xuất</span>
+      </button>
+      <button class="nav-item" onclick="goto('tonkho');closeMobileNav()">
+        <span class="n-ico">📦</span><span class="n-label">Tồn kho</span>
+      </button>
+    </div>
+    <div class="sidebar-footer">
+      <div class="admin-info"><strong id="adminEmailMob">—</strong>Đang đăng nhập</div>
+      <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+    </div>
+  </nav>
 
-    <!-- MAIN -->
-    <main class="main">
+  <!-- MAIN -->
+  <main class="main">
 
-      <!-- ── DASHBOARD ── -->
-      <div class="page show" id="page-dashboard">
-        <div class="page-title"><span class="ico">📊</span> Tổng quan kho</div>
-
-        <div class="stat-grid">
-          <div class="stat-card green">
-            <div class="stat-label">Tổng dòng nhập</div>
-            <div class="stat-val" id="st-nhap">—</div>
-            <div class="stat-sub">mặt hàng đã nhập</div>
-          </div>
-          <div class="stat-card red">
-            <div class="stat-label">Tổng dòng xuất</div>
-            <div class="stat-val" id="st-xuat">—</div>
-            <div class="stat-sub">mặt hàng đã xuất</div>
-          </div>
-          <div class="stat-card warn">
-            <div class="stat-label">Chờ phê duyệt</div>
-            <div class="stat-val" id="st-pending">—</div>
-            <div class="stat-sub" id="st-pending-items">phiếu cần xử lý</div>
-          </div>
-          <div class="stat-card blue">
-            <div class="stat-label">Loại NVL</div>
-            <div class="stat-val" id="st-loai">—</div>
-            <div class="stat-sub">đang theo dõi</div>
+    <!-- ── DASHBOARD ── -->
+    <div class="page show" id="page-dashboard">
+      <div class="page-hdr">
+        <div class="page-hdr-left">
+          <div class="page-hdr-icon">📊</div>
+          <div>
+            <h2>Tổng quan kho</h2>
+            <div class="sub">Số liệu tổng hợp từ Google Sheets</div>
           </div>
         </div>
-
-        <!-- Giao dịch gần đây -->
-        <div class="table-wrap">
-          <div class="table-header">
-            <div class="table-title">⏱️ Giao dịch gần đây</div>
-            <button class="refresh-btn" onclick="loadDashboard()">🔄 Làm mới</button>
-          </div>
-          <div style="overflow-x:auto">
-            <table>
-              <thead><tr>
-                <th>Loại</th><th>Thời gian</th><th>Nguồn / Diễn giải</th>
-                <th>Tên hàng</th><th style="text-align:right">Số lượng</th><th>ĐVT</th>
-              </tr></thead>
-              <tbody id="recentBody">
-                <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted)">Đang tải…</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── PENDING ── -->
-      <div class="page" id="page-pending">
-        <div class="page-title" style="justify-content:space-between">
-          <span><span class="ico">📋</span> Phiếu chờ phê duyệt</span>
-          <button class="refresh-btn" onclick="loadPending()">🔄 Làm mới</button>
-        </div>
-        <div class="pending-list" id="pendingList">
-          <div style="text-align:center;padding:40px;color:var(--text-muted)">Đang tải…</div>
-        </div>
-      </div>
-
-      <!-- ── HISTORY NHẬP ── -->
-      <div class="page" id="page-history-nhap">
-        <div class="page-title"><span class="ico">⬇️</span> Lịch sử nhập kho</div>
-        <div class="filter-row">
-          <input type="text" id="searchNhap" placeholder="🔍 Tìm tên hàng, người ủng hộ…" oninput="filterHistory('nhap')">
-        </div>
-        <div class="table-wrap">
-          <div style="overflow-x:auto">
-            <table>
-              <thead><tr>
-                <th>Thời gian</th><th>Người ủng hộ</th><th>Địa chỉ</th>
-                <th>Mã</th><th>Tên hàng</th><th style="text-align:right">Số lượng</th><th>ĐVT</th>
-              </tr></thead>
-              <tbody id="histNhapBody"></tbody>
-            </table>
-          </div>
-          <div class="paging" id="pagingNhap">
-            <span id="pagingNhapInfo"></span>
-            <div class="paging-btns">
-              <button class="btn-page" id="btnNhapPrev" onclick="changePage('nhap',-1)">← Trước</button>
-              <button class="btn-page" id="btnNhapNext" onclick="changePage('nhap',1)">Sau →</button>
-            </div>
-          </div>
-        </div>
+        <button class="refresh-btn" onclick="loadDashboard()">🔄 Làm mới</button>
       </div>
 
-      <!-- ── HISTORY XUẤT ── -->
-      <div class="page" id="page-history-xuat">
-        <div class="page-title"><span class="ico">⬆️</span> Lịch sử xuất kho</div>
-        <div class="filter-row">
-          <input type="text" id="searchXuat" placeholder="🔍 Tìm tên hàng, diễn giải…" oninput="filterHistory('xuat')">
+      <div class="stat-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Tổng dòng nhập</div>
+          <div class="stat-val" id="st-nhap">—</div>
+          <div class="stat-sub">mặt hàng đã nhập kho</div>
         </div>
-        <div class="table-wrap">
-          <div style="overflow-x:auto">
-            <table>
-              <thead><tr>
-                <th>Thời gian</th><th>Diễn giải</th><th>Địa chỉ</th>
-                <th>Mã</th><th>Tên hàng</th><th style="text-align:right">Số lượng</th><th>ĐVT</th>
-              </tr></thead>
-              <tbody id="histXuatBody"></tbody>
-            </table>
-          </div>
-          <div class="paging" id="pagingXuat">
-            <span id="pagingXuatInfo"></span>
-            <div class="paging-btns">
-              <button class="btn-page" id="btnXuatPrev" onclick="changePage('xuat',-1)">← Trước</button>
-              <button class="btn-page" id="btnXuatNext" onclick="changePage('xuat',1)">Sau →</button>
-            </div>
-          </div>
+        <div class="stat-card red">
+          <div class="stat-label">Tổng dòng xuất</div>
+          <div class="stat-val" id="st-xuat">—</div>
+          <div class="stat-sub">mặt hàng đã xuất kho</div>
+        </div>
+        <div class="stat-card warn">
+          <div class="stat-label">Chờ phê duyệt</div>
+          <div class="stat-val" id="st-pending">—</div>
+          <div class="stat-sub" id="st-pending-items">phiếu cần xử lý</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Loại NVL</div>
+          <div class="stat-val" id="st-loai">—</div>
+          <div class="stat-sub">đang theo dõi</div>
         </div>
       </div>
 
-      <!-- ── TỒN KHO ── -->
-      <div class="page" id="page-tonkho">
-        <div class="page-title" style="justify-content:space-between">
-          <span><span class="ico">📦</span> Tồn kho hiện tại</span>
-          <button class="refresh-btn" onclick="loadDashboard()">🔄 Làm mới</button>
+      <div class="table-wrap">
+        <div class="table-hdr">
+          <div class="table-hdr-title">⏱️ Giao dịch gần đây</div>
         </div>
-        <div class="table-wrap">
-          <div style="overflow-x:auto">
-            <table>
-              <thead><tr>
-                <th>Tên NVL</th><th>ĐVT</th>
-                <th style="text-align:right">Tổng nhập</th>
-                <th style="text-align:right">Tổng xuất</th>
-                <th style="text-align:right">Tồn kho</th>
-              </tr></thead>
-              <tbody id="tonKhoBody">
-                <tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-muted)">Đang tải…</td></tr>
-              </tbody>
-            </table>
+        <div class="table-scroll">
+          <table>
+            <thead><tr>
+              <th>Loại</th>
+              <th>Thời gian</th>
+              <th>Nguồn / Diễn giải</th>
+              <th>Tên hàng</th>
+              <th style="text-align:right">Số lượng</th>
+              <th>ĐVT</th>
+            </tr></thead>
+            <tbody id="recentBody">
+              <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-3)">Đang tải…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PENDING ── -->
+    <div class="page" id="page-pending">
+      <div class="page-hdr">
+        <div class="page-hdr-left">
+          <div class="page-hdr-icon">📋</div>
+          <div>
+            <h2>Phiếu chờ phê duyệt</h2>
+            <div class="sub">Xem xét và duyệt phiếu nhập kho từ nhân viên</div>
+          </div>
+        </div>
+        <button class="refresh-btn" onclick="loadPending()">🔄 Làm mới</button>
+      </div>
+      <div class="pending-list" id="pendingList">
+        <div class="empty-state"><span class="ico">⏳</span><p>Đang tải…</p></div>
+      </div>
+    </div>
+
+    <!-- ── HISTORY NHẬP ── -->
+    <div class="page" id="page-history-nhap">
+      <div class="page-hdr">
+        <div class="page-hdr-left">
+          <div class="page-hdr-icon">⬇️</div>
+          <div>
+            <h2>Lịch sử nhập kho</h2>
+            <div class="sub">Toàn bộ hàng đã được duyệt vào kho</div>
           </div>
         </div>
       </div>
+      <div class="filter-row">
+        <div class="filter-wrap">
+          <input type="text" id="searchNhap" placeholder="Tìm tên hàng, người ủng hộ…" oninput="filterHistory('nhap')">
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead><tr>
+              <th>Thời gian</th>
+              <th>Người ủng hộ</th>
+              <th>Địa chỉ</th>
+              <th>Mã</th>
+              <th>Tên hàng</th>
+              <th style="text-align:right">Số lượng</th>
+              <th>ĐVT</th>
+            </tr></thead>
+            <tbody id="histNhapBody"></tbody>
+          </table>
+        </div>
+        <div class="paging" id="pagingNhap">
+          <span id="pagingNhapInfo"></span>
+          <div class="paging-btns">
+            <button class="btn-page" id="btnNhapPrev" onclick="changePage('nhap',-1)">← Trước</button>
+            <button class="btn-page" id="btnNhapNext" onclick="changePage('nhap',1)">Sau →</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    </main><!-- /main -->
-  </div><!-- /shell -->
-</div><!-- /app -->
+    <!-- ── HISTORY XUẤT ── -->
+    <div class="page" id="page-history-xuat">
+      <div class="page-hdr">
+        <div class="page-hdr-left">
+          <div class="page-hdr-icon">⬆️</div>
+          <div>
+            <h2>Lịch sử xuất kho</h2>
+            <div class="sub">Toàn bộ hàng đã xuất khỏi kho</div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-wrap">
+          <input type="text" id="searchXuat" placeholder="Tìm tên hàng, diễn giải…" oninput="filterHistory('xuat')">
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead><tr>
+              <th>Thời gian</th>
+              <th>Diễn giải</th>
+              <th>Địa chỉ</th>
+              <th>Mã</th>
+              <th>Tên hàng</th>
+              <th style="text-align:right">Số lượng</th>
+              <th>ĐVT</th>
+            </tr></thead>
+            <tbody id="histXuatBody"></tbody>
+          </table>
+        </div>
+        <div class="paging" id="pagingXuat">
+          <span id="pagingXuatInfo"></span>
+          <div class="paging-btns">
+            <button class="btn-page" id="btnXuatPrev" onclick="changePage('xuat',-1)">← Trước</button>
+            <button class="btn-page" id="btnXuatNext" onclick="changePage('xuat',1)">Sau →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TỒN KHO ── -->
+    <div class="page" id="page-tonkho">
+      <div class="page-hdr">
+        <div class="page-hdr-left">
+          <div class="page-hdr-icon">📦</div>
+          <div>
+            <h2>Tồn kho hiện tại</h2>
+            <div class="sub">Nhập − Xuất theo từng loại nguyên vật liệu</div>
+          </div>
+        </div>
+        <button class="refresh-btn" onclick="loadDashboard()">🔄 Làm mới</button>
+      </div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead><tr>
+              <th>Tên NVL</th>
+              <th>ĐVT</th>
+              <th style="text-align:right">Tổng nhập</th>
+              <th style="text-align:right">Tổng xuất</th>
+              <th style="text-align:right">Tồn kho</th>
+            </tr></thead>
+            <tbody id="tonKhoBody">
+              <tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-3)">Đang tải…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
 
 <!-- REJECT MODAL -->
 <div class="modal-bg" id="rejectModal">
   <div class="modal">
-    <div class="modal-title">❌ Lý do từ chối</div>
-    <textarea id="rejectReason" placeholder="Nhập lý do từ chối phiếu này…"></textarea>
+    <div class="modal-title">❌ Lý do từ chối phiếu</div>
+    <textarea id="rejectReason" placeholder="Mô tả lý do từ chối để thông báo cho nhân viên…"></textarea>
     <div class="modal-actions">
-      <button class="btn-modal-cancel" onclick="closeRejectModal()">Huỷ</button>
+      <button class="btn-modal-cancel" onclick="closeRejectModal()">Huỷ bỏ</button>
       <button class="btn-modal-ok" onclick="confirmReject()">Xác nhận từ chối</button>
     </div>
   </div>
 </div>
 
-<!-- LOADING -->
-<div class="loading-overlay" id="loadingOverlay"><div class="spinner-big"></div></div>
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-bowl">🍚</div>
+  <div class="loading-dots">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="loading-text">Đang tải dữ liệu…</div>
+</div>
+
+<!-- ERROR TOAST -->
 <div class="err-toast" id="errToast"></div>
 
 <script>
@@ -385,15 +1330,24 @@ const ACCOUNTS = [
 ];
 // ════════════════════════════════════════════════════════
 
-let TOKEN       = null;   // username sau khi đăng nhập
-let ADMIN_EMAIL = null;   // tên hiển thị
+let TOKEN       = null;
+let ADMIN_EMAIL = null;
 
-// State
 let historyData  = {nhap:[], xuat:[]};
 let historyPage  = {nhap:1, xuat:1};
 const PAGE_SIZE  = 30;
-let rejectTarget = null;   // phieuId đang từ chối
+let rejectTarget = null;
 let dashCache    = null;
+
+// ── MOBILE NAV ──────────────────────────────────────────
+function openMobileNav() {
+  document.getElementById('mobileNav').classList.add('show');
+  document.getElementById('mobileOverlay').classList.add('show');
+}
+function closeMobileNav() {
+  document.getElementById('mobileNav').classList.remove('show');
+  document.getElementById('mobileOverlay').classList.remove('show');
+}
 
 // ════════════════════════════════════════════════════════
 //  ĐĂNG NHẬP HARDCODE
@@ -421,6 +1375,7 @@ function showApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('adminEmail').textContent = ADMIN_EMAIL;
+  document.getElementById('adminEmailMob').textContent = ADMIN_EMAIL;
   goto('dashboard');
 }
 
@@ -450,9 +1405,15 @@ function goto(page) {
   });
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   const navMap = {dashboard:0, pending:1, 'history-nhap':2, 'history-xuat':3, tonkho:4};
-  document.querySelectorAll('.nav-item')[navMap[page]]?.classList.add('active');
+  // Sync cả desktop và mobile nav
+  const allNavItems = document.querySelectorAll('.nav-item');
+  // Desktop (0–4) + Mobile drawer (5–9)
+  const idx = navMap[page];
+  if (idx !== undefined) {
+    allNavItems[idx]?.classList.add('active');
+    if (allNavItems[idx + 5]) allNavItems[idx + 5].classList.add('active');
+  }
 
-  // Lazy load khi chuyển trang
   if (page==='dashboard') loadDashboard();
   else if (page==='pending') loadPending();
   else if (page==='history-nhap') loadHistory('nhap');
@@ -466,7 +1427,6 @@ function goto(page) {
 async function api(action, payload) {
   const body = JSON.stringify({action, token: TOKEN, ...payload});
 
-  // Timeout 15 giây — tránh spinner treo mãi khi mạng chậm hoặc Apps Script cold start
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 15000);
 
@@ -499,6 +1459,15 @@ function showErr(msg) {
   setTimeout(() => t.classList.remove('show'), 5000);
 }
 
+// Helper cập nhật badge ở tất cả vị trí
+function updateBadge(count) {
+  const show = count > 0;
+  ['pendingBadge','pendingBadgeMobile','pendingBadgeMob2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = count; el.style.display = show ? 'inline-flex' : 'none'; }
+  });
+}
+
 // ════════════════════════════════════════════════════════
 //  DASHBOARD
 // ════════════════════════════════════════════════════════
@@ -516,30 +1485,24 @@ async function loadDashboard() {
     document.getElementById('st-pending-items').textContent = `(${d.pendingItemCount} mặt hàng) phiếu cần xử lý`;
     document.getElementById('st-loai').textContent    = d.tonKho.length;
 
-    // Badge sidebar
-    const badge = document.getElementById('pendingBadge');
-    badge.textContent = d.pendingCount;
-    badge.style.display = d.pendingCount > 0 ? 'inline-flex' : 'none';
+    updateBadge(d.pendingCount);
 
-    // Recent
     const tbody = document.getElementById('recentBody');
     if (!d.recent.length) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted)">Chưa có giao dịch nào</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-3)">Chưa có giao dịch nào</td></tr>';
       return;
     }
     tbody.innerHTML = d.recent.map(r => `
       <tr>
         <td><span class="tag ${r.loai==='nhap'?'tag-nhap':'tag-xuat'}">${r.loai==='nhap'?'⬇️ Nhập':'⬆️ Xuất'}</span></td>
-        <td style="white-space:nowrap;font-size:12px">${r.thoiGian}</td>
-        <td style="color:var(--text-muted);font-size:12.5px">${r.nguon||r.dienGiai||'—'}</td>
+        <td style="white-space:nowrap;font-size:12px;color:var(--text-3)">${r.thoiGian}</td>
+        <td style="color:var(--text-3);font-size:12.5px">${r.nguon||r.dienGiai||'—'}</td>
         <td><strong>${r.ten}</strong></td>
         <td style="text-align:right" class="num">${(+r.qty).toLocaleString('vi',{maximumFractionDigits:2})}</td>
-        <td>${r.dvt||''}</td>
+        <td style="color:var(--text-3)">${r.dvt||''}</td>
       </tr>`).join('');
 
-    // Tồn kho (dùng lại data)
     renderTonKho(d.tonKho);
-
   } catch(e) {
     showErr(e.message);
   } finally { loading(false); }
@@ -556,7 +1519,7 @@ function loadTonKho() {
 function renderTonKho(list) {
   const tbody = document.getElementById('tonKhoBody');
   if (!list.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-muted)">Chưa có dữ liệu</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-3)">Chưa có dữ liệu</td></tr>';
     return;
   }
   tbody.innerHTML = list.map(i => {
@@ -564,7 +1527,7 @@ function renderTonKho(list) {
     const fmt = v => (+v).toLocaleString('vi',{maximumFractionDigits:2});
     return `<tr>
       <td><strong>${i.ten}</strong></td>
-      <td>${i.dvt}</td>
+      <td style="color:var(--text-3)">${i.dvt}</td>
       <td style="text-align:right" class="num">${fmt(i.tongNhap)}</td>
       <td style="text-align:right" class="num">${fmt(i.tongXuat)}</td>
       <td style="text-align:right" class="num ${tonCls}">${fmt(i.ton)}</td>
@@ -581,14 +1544,11 @@ async function loadPending() {
     const r = await api('get_pending', {});
     if (r.status !== 'ok') { showErr(r.message); return; }
 
-    // Update badge
-    const badge = document.getElementById('pendingBadge');
-    badge.textContent = r.total;
-    badge.style.display = r.total > 0 ? 'inline-flex' : 'none';
+    updateBadge(r.total);
 
     const list = document.getElementById('pendingList');
     if (!r.data.length) {
-      list.innerHTML = `<div class="empty-state"><div class="ico">✅</div><p>Không có phiếu nào đang chờ duyệt!</p></div>`;
+      list.innerHTML = `<div class="empty-state"><span class="ico">✅</span><p>Không có phiếu nào đang chờ duyệt!</p></div>`;
       return;
     }
 
@@ -606,12 +1566,8 @@ async function loadPending() {
             </div>
           </div>
           <div class="phieu-actions">
-            <button class="btn-approve" onclick="approvePhieu('${phieu.phieuId}', this)">
-              ✅ Duyệt
-            </button>
-            <button class="btn-reject-btn" onclick="openRejectModal('${phieu.phieuId}')">
-              ❌ Từ chối
-            </button>
+            <button class="btn-approve" onclick="approvePhieu('${phieu.phieuId}', this)">✅ Duyệt</button>
+            <button class="btn-reject-btn" onclick="openRejectModal('${phieu.phieuId}')">❌ Từ chối</button>
           </div>
         </div>
         <div class="phieu-items">
@@ -623,10 +1579,10 @@ async function loadPending() {
             <tbody>
               ${phieu.items.map(it => `
                 <tr>
-                  <td><span style="font-family:monospace;font-size:12px">${it.maNVL||'—'}</span></td>
+                  <td><span style="font-family:monospace;font-size:11.5px;color:var(--text-3)">${it.maNVL||'—'}</span></td>
                   <td><strong>${it.ten}</strong></td>
                   <td style="text-align:right" class="num">${(+it.qty).toLocaleString('vi',{maximumFractionDigits:2})}</td>
-                  <td>${it.dvt}</td>
+                  <td style="color:var(--text-3)">${it.dvt}</td>
                 </tr>`).join('')}
             </tbody>
           </table>
@@ -646,13 +1602,11 @@ async function approvePhieu(phieuId, btn) {
   try {
     const r = await api('approve', {phieuId});
     if (r.status === 'ok') {
-      // Xóa card khỏi giao diện
       document.getElementById('phieu-'+phieuId)?.remove();
-      // Kiểm tra còn phiếu không
       if (!document.querySelectorAll('.phieu-card').length) {
-        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><div class="ico">✅</div><p>Không còn phiếu nào chờ duyệt!</p></div>`;
+        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><span class="ico">✅</span><p>Không còn phiếu nào chờ duyệt!</p></div>`;
       }
-      dashCache = null; // reset cache
+      dashCache = null;
     } else {
       alert('Lỗi: ' + r.message);
       btn.disabled = false; btn.textContent = '✅ Duyệt';
@@ -675,7 +1629,6 @@ function closeRejectModal() {
 async function confirmReject() {
   const lyDo = document.getElementById('rejectReason').value.trim();
   if (!lyDo) { alert('Vui lòng nhập lý do từ chối!'); return; }
-  // Lưu phieuId TRƯỚC khi closeRejectModal() set nó về null
   const phieuId = rejectTarget;
   closeRejectModal();
   loading(true);
@@ -684,7 +1637,7 @@ async function confirmReject() {
     if (r.status === 'ok') {
       document.getElementById('phieu-'+phieuId)?.remove();
       if (!document.querySelectorAll('.phieu-card').length) {
-        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><div class="ico">✅</div><p>Không còn phiếu nào chờ duyệt!</p></div>`;
+        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><span class="ico">✅</span><p>Không còn phiếu nào chờ duyệt!</p></div>`;
       }
       dashCache = null;
     } else alert('Lỗi: ' + r.message);
@@ -719,22 +1672,21 @@ function renderHistory(loai, data) {
 
   const tbody = document.getElementById(`hist${loai==='nhap'?'Nhap':'Xuat'}Body`);
   if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-muted)">Không tìm thấy dữ liệu</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-3)">Không tìm thấy dữ liệu</td></tr>`;
   } else {
     const fmt = v => (+v).toLocaleString('vi',{maximumFractionDigits:2});
     tbody.innerHTML = filtered.map(r => `
       <tr>
-        <td style="white-space:nowrap;font-size:12px">${r.thoiGian}</td>
+        <td style="white-space:nowrap;font-size:12px;color:var(--text-3)">${r.thoiGian}</td>
         <td>${r.col3||'—'}</td>
-        <td style="font-size:12px;color:var(--text-muted)">${r.diaChi||'—'}</td>
-        <td><span style="font-family:monospace;font-size:11px">${r.maNVL||'—'}</span></td>
+        <td style="font-size:12px;color:var(--text-3)">${r.diaChi||'—'}</td>
+        <td><span style="font-family:monospace;font-size:11.5px;color:var(--text-3)">${r.maNVL||'—'}</span></td>
         <td><strong>${r.ten}</strong></td>
         <td style="text-align:right" class="num">${fmt(r.qty)}</td>
-        <td>${r.dvt}</td>
+        <td style="color:var(--text-3)">${r.dvt}</td>
       </tr>`).join('');
   }
 
-  // Paging info
   const cap = loai==='nhap'?'Nhap':'Xuat';
   if (data) {
     document.getElementById(`paging${cap}Info`).textContent =
@@ -744,16 +1696,9 @@ function renderHistory(loai, data) {
   }
 }
 
-function filterHistory(loai) {
-  renderHistory(loai, null);
-}
+function filterHistory(loai) { renderHistory(loai, null); }
+function changePage(loai, dir) { historyPage[loai] += dir; loadHistory(loai); }
 
-function changePage(loai, dir) {
-  historyPage[loai] += dir;
-  loadHistory(loai);
-}
-
-// Đóng modal khi click bên ngoài
 document.getElementById('rejectModal').addEventListener('click', function(e) {
   if (e.target === this) closeRejectModal();
 });
