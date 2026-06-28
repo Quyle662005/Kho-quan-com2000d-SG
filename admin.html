@@ -134,6 +134,9 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   .refresh-btn{padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);font-size:13px;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px}
   .refresh-btn:hover{background:var(--bg)}
+  /* ── ERROR TOAST ── */
+  .err-toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#712B13;color:#FAECE7;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:200;white-space:nowrap;max-width:90vw;text-align:center}
+  .err-toast.show{display:block}
 
   /* ── MOBILE ── */
   @media(max-width:680px){
@@ -366,6 +369,7 @@
 
 <!-- LOADING -->
 <div class="loading-overlay" id="loadingOverlay"><div class="spinner-big"></div></div>
+<div class="err-toast" id="errToast"></div>
 
 <script>
 // ════════════════════════════════════════════════════════
@@ -461,16 +465,38 @@ function goto(page) {
 // ════════════════════════════════════════════════════════
 async function api(action, payload) {
   const body = JSON.stringify({action, token: TOKEN, ...payload});
-  const r = await fetch(SHEET_URL, {
-    method: 'POST',
-    headers: {'Content-Type': 'text/plain'},
-    body,
-  });
-  return r.json();
+
+  // Timeout 15 giây — tránh spinner treo mãi khi mạng chậm hoặc Apps Script cold start
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const r = await fetch(SHEET_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain'},
+      body,
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+    return r.json();
+  } catch(e) {
+    clearTimeout(timer);
+    if (e.name === 'AbortError') {
+      throw new Error('Kết nối quá chậm (timeout 15s). Thử lại hoặc mở Google Sheets rồi nhấn Làm mới.');
+    }
+    throw new Error('Không kết nối được. Kiểm tra mạng.');
+  }
 }
 
 function loading(on) {
   document.getElementById('loadingOverlay').classList.toggle('show', on);
+}
+
+function showErr(msg) {
+  const t = document.getElementById('errToast');
+  t.textContent = '⚠️ ' + msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 5000);
 }
 
 // ════════════════════════════════════════════════════════
@@ -480,7 +506,7 @@ async function loadDashboard() {
   loading(true);
   try {
     const r = await api('get_dashboard', {});
-    if (r.status !== 'ok') { alert(r.message); return; }
+    if (r.status !== 'ok') { showErr(r.message); return; }
     const d = r.data;
     dashCache = d;
 
@@ -514,6 +540,8 @@ async function loadDashboard() {
     // Tồn kho (dùng lại data)
     renderTonKho(d.tonKho);
 
+  } catch(e) {
+    showErr(e.message);
   } finally { loading(false); }
 }
 
@@ -551,7 +579,7 @@ async function loadPending() {
   loading(true);
   try {
     const r = await api('get_pending', {});
-    if (r.status !== 'ok') { alert(r.message); return; }
+    if (r.status !== 'ok') { showErr(r.message); return; }
 
     // Update badge
     const badge = document.getElementById('pendingBadge');
@@ -605,6 +633,8 @@ async function loadPending() {
         </div>
       </div>`).join('');
 
+  } catch(e) {
+    showErr(e.message);
   } finally { loading(false); }
 }
 
@@ -672,6 +702,8 @@ async function loadHistory(loai) {
     if (r.status !== 'ok') { alert(r.message); return; }
     historyData[loai] = r.data.rows;
     renderHistory(loai, r.data);
+  } catch(e) {
+    showErr(e.message);
   } finally { loading(false); }
 }
 
