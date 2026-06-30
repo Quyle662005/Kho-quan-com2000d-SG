@@ -4,107 +4,588 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kho hàng — Quán cơm 2.000đ</title>
+<meta name="description" content="Ghi nhận nhập xuất hàng hóa &amp; nguyên vật liệu cho Quán Cơm 2.000đ Sài Gòn">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --green-dark:   #085041;
-    --green-mid:    #0F6E56;
-    --green-light:  #E1F5EE;
-    --green-border: #5DCAA5;
-    --red-dark:     #712B13;
-    --red-mid:      #993C1D;
-    --red-light:    #FAECE7;
-    --red-border:   #D85A30;
-    --text:         #1a1a18;
-    --text-muted:   #6b6b67;
-    --border:       #d4d2c9;
-    --bg:           #f5f4ef;
-    --card:         #ffffff;
-    --input-bg:     #fafaf8;
-    --radius:       8px;
-    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+/* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS — Nhập / Xuất kho form
+   Warm charity branding — Terracotta + Olive
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --green-dark:   #085041;
+  --green-mid:    #0F6E56;
+  --green-light:  #E1F5EE;
+  --green-border: #5DCAA5;
+  --red-dark:     #712B13;
+  --red-mid:      #993C1D;
+  --red-light:    #FAECE7;
+  --red-border:   #D85A30;
+  --terracotta:   #C4694A;
+  --text:         #1C1A18;
+  --text-muted:   #6b6b67;
+  --text-light:   #9A958D;
+  --border:       #E2DED8;
+  --bg:           #F7F5F2;
+  --card:         #ffffff;
+  --input-bg:     #FAFAF8;
+  --radius:       10px;
+  --radius-lg:    14px;
+  --radius-xl:    20px;
+  --font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --ease: cubic-bezier(.4,0,.2,1);
+  --sh-sm: 0 1px 3px rgba(28,26,24,.06), 0 1px 2px rgba(28,26,24,.04);
+  --sh:    0 4px 16px rgba(28,26,24,.08), 0 1px 3px rgba(28,26,24,.05);
+  --sh-lg: 0 10px 40px rgba(28,26,24,.12), 0 2px 8px rgba(28,26,24,.06);
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; }
+
+/* ═══════════════════════════════════════════════════════════
+   PAGE HEADER — Hero-style branding
+   ═══════════════════════════════════════════════════════════ */
+.page-header {
+  text-align: center;
+  padding: 36px 20px 28px;
+  background: linear-gradient(145deg, #FBF8F5 0%, #F2EDE8 50%, #EDE6DE 100%);
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 250px; height: 250px;
+  background: radial-gradient(circle, rgba(196,105,74,.1) 0%, transparent 65%);
+  border-radius: 50%;
+}
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(15,110,86,.06) 0%, transparent 65%);
+  border-radius: 50%;
+}
+
+.page-header .logo {
+  width: 68px; height: 68px;
+  background: linear-gradient(135deg, var(--terracotta) 0%, #E67E22 100%);
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  margin: 0 auto 14px;
+  box-shadow: 0 6px 24px rgba(196,105,74,.3);
+  position: relative;
+  z-index: 1;
+  animation: logoPulse 3s ease-in-out infinite;
+  color: #fff;
+}
+@keyframes logoPulse {
+  0%, 100% { box-shadow: 0 6px 24px rgba(196,105,74,.3); }
+  50%      { box-shadow: 0 8px 32px rgba(196,105,74,.4); }
+}
+
+.page-header h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  position: relative;
+  z-index: 1;
+}
+.page-header p {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-top: 5px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CARD CONTAINER — Main form wrapper
+   ═══════════════════════════════════════════════════════════ */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  max-width: 600px;
+  margin: -16px auto 32px;
+  box-shadow: var(--sh);
+  position: relative;
+  z-index: 2;
+  animation: cardSlideUp .4s var(--ease);
+}
+@keyframes cardSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TABS — Nhập / Xuất switcher
+   ═══════════════════════════════════════════════════════════ */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+  background: var(--bg);
+  padding: 5px;
+  border-radius: var(--radius);
+}
+.tab {
+  flex: 1;
+  padding: 11px 12px;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all .2s var(--ease);
+  font-family: var(--font);
+  position: relative;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.tab:hover { color: var(--text); }
+.tab.active-nhap {
+  background: var(--card);
+  color: var(--green-dark);
+  font-weight: 600;
+  box-shadow: var(--sh-sm);
+}
+.tab.active-xuat {
+  background: var(--card);
+  color: var(--red-dark);
+  font-weight: 600;
+  box-shadow: var(--sh-sm);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM FIELDS
+   ═══════════════════════════════════════════════════════════ */
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+.field { margin-bottom: 16px; position: relative; }
+label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 6px;
+}
+label .req { color: #E24B4A; margin-left: 2px; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease), background .2s;
+  -webkit-appearance: none;
+  outline: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--green-mid);
+  background: var(--card);
+  box-shadow: 0 0 0 4px rgba(15,110,86,.08);
+}
+input[readonly] {
+  background: #F0EEEA;
+  color: var(--text-muted);
+  cursor: default;
+  border-style: dashed;
+}
+input.err, select.err {
+  border-color: #E24B4A !important;
+  box-shadow: 0 0 0 4px rgba(226,75,74,.08) !important;
+  animation: shakeField .35s var(--ease);
+}
+@keyframes shakeField {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-4px); }
+  50%      { transform: translateX(4px); }
+  75%      { transform: translateX(-3px); }
+}
+
+textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
+input[type=number] { -moz-appearance: textfield; }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%236b6b67' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 34px;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AUTOCOMPLETE / SUGGEST
+   ═══════════════════════════════════════════════════════════ */
+.suggest-wrap { position: relative; }
+.suggest-box {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--sh-lg);
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 100;
+  animation: dropIn .15s var(--ease);
+}
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.suggest-box::-webkit-scrollbar { width: 4px; }
+.suggest-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+.sitem {
+  padding: 11px 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #F0EEEA;
+  font-size: 13.5px;
+  transition: background .12s;
+}
+.sitem:last-child { border-bottom: none; }
+.sitem:hover { background: var(--green-light); }
+.sitem-right { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.sitem-ma {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  background: #F0EEEA;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+.sitem-dv {
+  font-size: 10.5px;
+  background: #EAF4FB;
+  color: #185FA5;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DIVIDER & SECTION TITLE
+   ═══════════════════════════════════════════════════════════ */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 22px 0;
+}
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ITEMS LIST — Material cards
+   ═══════════════════════════════════════════════════════════ */
+.items-list { margin-bottom: 12px; }
+
+.item-row {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+  transition: box-shadow .2s, transform .2s;
+  animation: itemSlide .25s var(--ease) both;
+}
+.item-row:hover { box-shadow: var(--sh-sm); }
+@keyframes itemSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.item-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.item-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.nhap-mode .item-num {
+  color: var(--green-dark);
+  background: var(--green-light);
+  border: 1px solid var(--green-border);
+}
+.xuat-mode .item-num {
+  color: var(--red-dark);
+  background: var(--red-light);
+  border: 1px solid var(--red-border);
+}
+
+.btn-del-item {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+  transition: all .15s;
+}
+.btn-del-item:hover { background: #fecaca; transform: scale(1.08); }
+
+.item-row .field { margin-bottom: 12px; }
+.item-row .field:last-child { margin-bottom: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════ */
+.btn-add-item {
+  width: 100%;
+  padding: 11px;
+  border-radius: var(--radius);
+  border: 2px dashed var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font);
+  margin-bottom: 6px;
+  transition: all .2s var(--ease);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn-add-item:hover {
+  border-color: var(--green-mid);
+  color: var(--green-mid);
+  background: var(--green-light);
+}
+
+.btn-row { display: flex; gap: 10px; }
+
+.btn-submit {
+  flex: 1;
+  padding: 13px 18px;
+  border-radius: var(--radius);
+  border: none;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all .2s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.btn-submit:disabled { opacity: .65; cursor: not-allowed; }
+.btn-submit:not(:disabled):active { transform: scale(.98); }
+.btn-submit:not(:disabled):hover { transform: translateY(-1px); }
+
+.btn-nhap {
+  background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(15,110,86,.25);
+}
+.btn-nhap:not(:disabled):hover { box-shadow: 0 6px 24px rgba(15,110,86,.3); }
+
+.btn-xuat {
+  background: linear-gradient(135deg, var(--red-mid), var(--red-dark));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(153,60,29,.25);
+}
+.btn-xuat:not(:disabled):hover { box-shadow: 0 6px 24px rgba(153,60,29,.3); }
+
+.btn-clear {
+  padding: 13px 16px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-clear:hover { background: var(--bg); border-color: #999; }
+
+/* ═══════════════════════════════════════════════════════════
+   PENDING NOTE — Info banner
+   ═══════════════════════════════════════════════════════════ */
+.pending-note {
+  background: linear-gradient(135deg, #FFFBEA, #FFF8E0);
+  border: 1px solid #F5C518;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #7A6000;
+  margin-bottom: 16px;
+  line-height: 1.55;
+  display: block;
+  box-shadow: 0 2px 8px rgba(245,197,24,.15);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOAST — Success / Error feedback
+   ═══════════════════════════════════════════════════════════ */
+.toast {
+  display: none;
+  margin-top: 16px;
+  padding: 13px 16px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+.toast.ok {
+  display: block;
+  background: var(--green-light);
+  color: var(--green-dark);
+  border: 1px solid var(--green-border);
+  animation: toastSlide .3s var(--ease);
+}
+.toast.err {
+  display: block;
+  background: var(--red-light);
+  color: var(--red-dark);
+  border: 1px solid var(--red-border);
+  animation: toastSlide .3s var(--ease);
+}
+@keyframes toastSlide {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SPINNER
+   ═══════════════════════════════════════════════════════════ */
+.spinner {
+  display: inline-block;
+  width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  vertical-align: -2px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE-FIRST
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .page-header { padding: 28px 16px 24px; }
+  .page-header .logo { width: 60px; height: 60px; font-size: 28px; border-radius: 16px; }
+  .page-header h1 { font-size: 19px; }
+
+  .card {
+    margin: -12px 10px 28px;
+    padding: 20px 16px;
+    border-radius: var(--radius-lg);
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; padding: 24px 16px 60px; }
-  .page-header { text-align: center; margin-bottom: 24px; }
-  .page-header .logo { font-size: 36px; margin-bottom: 8px; }
-  .page-header h1 { font-size: 20px; font-weight: 700; color: var(--green-dark); letter-spacing: -0.3px; }
-  .page-header p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; max-width: 560px; margin: 0 auto; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
-  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-  .tab { flex: 1; padding: 10px; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); transition: all .15s; font-family: var(--font); }
-  .tab:hover { background: var(--bg); }
-  .tab.active-nhap { background: var(--green-light); color: var(--green-dark); border-color: var(--green-border); font-weight: 600; }
-  .tab.active-xuat { background: var(--red-light); color: var(--red-dark); border-color: var(--red-border); font-weight: 600; }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .field { margin-bottom: 14px; position: relative; }
-  label { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
-  label .req { color: #E24B4A; margin-left: 2px; }
-  input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--input-bg); color: var(--text); font-size: 14px; font-family: var(--font); transition: border-color .15s, box-shadow .15s; -webkit-appearance: none; }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(15,110,86,.1); }
-  input[readonly] { background: #f0f0ec; color: var(--text-muted); cursor: default; }
-  input.err, select.err { border-color: #E24B4A !important; box-shadow: 0 0 0 3px rgba(226,75,74,.1) !important; }
-  textarea { resize: vertical; min-height: 64px; }
-  input[type=number] { -moz-appearance: textfield; }
-  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
-  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%236b6b67' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 11px center; padding-right: 32px; cursor: pointer; }
-  .suggest-wrap { position: relative; }
-  .suggest-box { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 4px 16px rgba(0,0,0,.12); max-height: 220px; overflow-y: auto; z-index: 100; }
-  .sitem { padding: 10px 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0ec; font-size: 13.5px; }
-  .sitem:last-child { border-bottom: none; }
-  .sitem:hover { background: var(--green-light); }
-  .sitem-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-  .sitem-ma { font-size: 11px; font-weight: 700; color: var(--text-muted); font-family: monospace; }
-  .sitem-dv { font-size: 11px; background: #e8f4fd; color: #185FA5; padding: 2px 7px; border-radius: 4px; }
-  .divider { height: 1px; background: var(--border); margin: 18px 0; }
-  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
-  .items-list { margin-bottom: 10px; }
-  .item-row { background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 8px; }
-  .item-row-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .item-num { font-size: 11px; font-weight: 700; letter-spacing: .05em; padding: 2px 8px; border-radius: 20px; }
-  .nhap-mode .item-num { color: var(--green-dark); background: var(--green-light); border: 1px solid var(--green-border); }
-  .xuat-mode .item-num { color: var(--red-dark); background: var(--red-light); border: 1px solid var(--red-border); }
-  .btn-del-item { width: 26px; height: 26px; border-radius: 6px; border: 1px solid #fecaca; background: #fee2e2; color: #dc2626; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
-  .btn-del-item:hover { background: #fecaca; }
-  .item-row .field { margin-bottom: 10px; }
-  .item-row .field:last-child { margin-bottom: 0; }
-  .btn-add-item { width: 100%; padding: 9px; border-radius: var(--radius); border: 1.5px dashed var(--border); background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font); margin-bottom: 4px; transition: all .15s; }
-  .btn-add-item:hover { border-color: #94a3b8; color: #475569; background: var(--bg); }
-  .btn-row { display: flex; gap: 8px; }
-  .btn-submit { flex: 1; padding: 11px 16px; border-radius: var(--radius); border: none; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font); display: flex; align-items: center; justify-content: center; gap: 7px; transition: all .15s; }
-  .btn-submit:disabled { opacity: .7; cursor: not-allowed; }
-  .btn-submit:not(:disabled):active { transform: scale(.98); }
-  .btn-nhap { background: var(--green-mid); color: var(--green-light); }
-  .btn-nhap:not(:disabled):hover { background: var(--green-dark); }
-  .btn-xuat { background: var(--red-mid); color: var(--red-light); }
-  .btn-xuat:not(:disabled):hover { background: var(--red-dark); }
-  .btn-clear { padding: 11px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 16px; cursor: pointer; font-family: var(--font); transition: background .15s; }
-  .btn-clear:hover { background: var(--bg); }
 
-  /* ── PENDING NOTE ── */
-  .pending-note { background: #fffbea; border: 1px solid #f5c518; border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: #7a6000; margin-bottom: 14px; line-height: 1.5; display: none; }
+  .row2 { grid-template-columns: 1fr; gap: 0; }
+  .row3 { grid-template-columns: 1fr 1fr; gap: 10px; }
 
-  .toast { display: none; margin-top: 14px; padding: 11px 14px; border-radius: var(--radius); font-size: 13.5px; font-weight: 500; line-height: 1.5; }
-  .toast.ok  { display: block; background: var(--green-light); color: var(--green-dark); border: 1px solid var(--green-border); }
-  .toast.err { display: block; background: var(--red-light); color: var(--red-dark); border: 1px solid var(--red-border); }
-  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -2px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @media (max-width: 420px) { .row2, .row3 { grid-template-columns: 1fr; } body { padding: 16px 12px 48px; } .item-row .row3 { grid-template-columns: 2fr 1fr; } }
+  .tabs { gap: 6px; padding: 4px; }
+  .tab { padding: 10px 8px; font-size: 13px; }
+
+  .item-row { padding: 14px; }
+  .item-row .row3 { grid-template-columns: 1fr 1fr; }
+
+  .btn-submit { padding: 13px 14px; font-size: 14px; }
+  .btn-clear { padding: 13px 14px; }
+}
+
+@media (max-width: 380px) {
+  .page-header { padding: 24px 14px 20px; }
+  .page-header .logo { width: 54px; height: 54px; font-size: 26px; border-radius: 14px; }
+  .page-header h1 { font-size: 17px; }
+  .page-header p { font-size: 12px; }
+
+  .card { margin: -10px 8px 24px; padding: 18px 14px; }
+
+  label { font-size: 10.5px; }
+  input, select, textarea { padding: 10px 12px; font-size: 13.5px; }
+
+  .item-row .row3 { grid-template-columns: 1fr; }
+  .btn-row { flex-direction: column; }
+  .btn-clear { width: 100%; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER CREDIT (optional)
+   ═══════════════════════════════════════════════════════════ */
+.footer-credit {
+  text-align: center;
+  padding: 16px 20px 28px;
+  font-size: 11.5px;
+  color: var(--text-light);
+}
 </style>
 </head>
 <body>
 
 <div class="page-header">
-  <div class="logo">🍚</div>
+  <div class="logo"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0 3.3 3.6 6 8 6s8-2.7 8-6"/><path d="M4 12c0-1 .8-2 2-2.8"/><path d="M20 12c0-1-.8-2-2-2.8"/><ellipse cx="12" cy="12" rx="8" ry="3"/><path d="M8 5c1-1.5 2.5-2 4-2s3 .5 4 2"/><path d="M9 5.5c.5-1 1.5-1.5 3-1.5s2.5.5 3 1.5"/><line x1="12" y1="3" x2="12" y2="5"/></svg></div>
   <h1>Quản lý kho — Cơm 2.000đ Sài Gòn</h1>
   <p>Ghi nhận nhập / xuất hàng hóa &amp; nguyên vật liệu</p>
 </div>
 
 <div class="card">
   <div class="tabs">
-    <button class="tab active-nhap" id="tabN" onclick="switchTab('nhap')">⬇️ Nhập kho (ủng hộ)</button>
-    <button class="tab"            id="tabX" onclick="switchTab('xuat')">⬆️ Xuất kho</button>
+    <button class="tab" id="tabN" onclick="switchTab('nhap')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg> Nhập kho (ủng hộ)</button>
+    <button class="tab active-xuat" id="tabX" onclick="switchTab('xuat')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg> Xuất kho</button>
   </div>
 
   <div class="section-title">Thông tin chung</div>
@@ -119,13 +600,13 @@
     </div>
   </div>
 
-  <div id="fieldNguon" class="field">
+  <div id="fieldNguon" class="field" style="display:none">
     <label>Người ủng hộ / Nguồn nhận <span class="req">*</span></label>
     <input type="text" id="nguon" placeholder="VD: MTQ ẩn danh, Cô Thủy Quận 10…">
   </div>
-  <div id="fieldDienGiai" class="field" style="display:none">
+  <div id="fieldDienGiai" class="field" style="display:block">
     <label>Diễn giải / Mục đích xuất <span class="req">*</span></label>
-    <input type="text" id="dienGiai" placeholder="VD: Nấu ăn ngày 26/06, Phát từ thiện…">
+    <input type="text" id="dienGiai" placeholder="VD: Xuất cho quán cơm 2000.đ Sài Gòn, Xuất cho quán cơm 2000.đ Cần Thơ">
   </div>
 
   <div class="row2">
@@ -141,30 +622,34 @@
 
   <div class="divider"></div>
 
-  <div class="section-title" id="sectionHang">Danh sách hàng nhập</div>
-  <div class="items-list nhap-mode" id="itemsList"></div>
-  <button class="btn-add-item" onclick="addItem()">＋ Thêm mặt hàng</button>
+  <div class="section-title" id="sectionHang">Danh sách hàng xuất</div>
+  <div class="items-list xuat-mode" id="itemsList"></div>
+  <button class="btn-add-item" onclick="addItem()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Thêm mặt hàng</button>
 
   <div class="divider"></div>
 
-  <!-- Thông báo chờ duyệt (chỉ hiện khi tab Nhập) -->
+  <!-- Thông báo chờ duyệt (hiện cho cả hai tab) -->
   <div class="pending-note" id="pendingNote">
-    📋 <strong>Lưu ý:</strong> Phiếu nhập kho sẽ được gửi cho admin phê duyệt trước khi cập nhật vào kho chính.
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:-2px"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> <strong>Lưu ý:</strong> Phiếu sẽ được gửi cho admin phê duyệt trước khi cập nhật vào kho chính.
   </div>
 
   <div class="btn-row">
-    <button class="btn-submit btn-nhap" id="btnSubmit" onclick="submitForm()">
-      <span id="btnIcon">✓</span>
+    <button class="btn-submit btn-xuat" id="btnSubmit" onclick="submitForm()">
+      <span id="btnIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
       <span id="btnLabel">Gửi chờ duyệt</span>
     </button>
-    <button class="btn-clear" onclick="clearForm()" title="Xoá form">↺</button>
+    <button class="btn-clear" onclick="clearForm()" title="Xoá form"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
   </div>
   <div class="toast" id="toast"></div>
 </div>
 
+<div class="footer-credit">
+  Quán Cơm 2.000đ Sài Gòn · Thiện nguyện từ cộng đồng <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="display:inline;vertical-align:-2px;color:#E67E22"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+</div>
+
 <script>
 // ════════════════════════════════════════════════════════
-//  🔧 CẤU HÌNH — dán URL Apps Script của bạn vào đây
+//  CẤU HÌNH — dán URL Apps Script của bạn vào đây
 // ════════════════════════════════════════════════════════
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxKUcQfXQFdh6pphh0K2TQlpdLFnwacEn6hP7a1wEM7_VkIhuNk9Pms_-IHn2PQpsAB/exec';
 // ════════════════════════════════════════════════════════
@@ -184,14 +669,15 @@ const HANG_HOA = [
   {ma:'TC',ten:'Trái cây',dvt:'kg'},
 ];
 
-let loai = 'nhap';
+let loai = 'xuat';
 let itemCount = 0;
 
 window.onload = () => {
   document.getElementById('ngay').value = new Date().toISOString().split('T')[0];
   addItem();
-  // Hiện pending note mặc định (tab nhập)
+  // Hiện pending note mặc định
   document.getElementById('pendingNote').style.display = 'block';
+  switchTab('xuat');
 };
 
 // ════════════════════════════════════════
@@ -207,9 +693,9 @@ function switchTab(l) {
   document.getElementById('sectionHang').textContent = isN ? 'Danh sách hàng nhập' : 'Danh sách hàng xuất';
   document.getElementById('itemsList').className = 'items-list ' + (isN ? 'nhap-mode' : 'xuat-mode');
   document.getElementById('btnSubmit').className = 'btn-submit ' + (isN ? 'btn-nhap' : 'btn-xuat');
-  // ── NÚT VÀ PENDING NOTE THAY ĐỔI THEO TAB ──
-  document.getElementById('btnLabel').textContent = isN ? 'Gửi chờ duyệt' : 'Ghi nhận xuất kho';
-  document.getElementById('pendingNote').style.display = isN ? 'block' : 'none';
+  // ── CẢ HAI TAB ĐỀU GỬI CHỜ DUYỆT ──
+  document.getElementById('btnLabel').textContent = 'Gửi chờ duyệt';
+  document.getElementById('pendingNote').style.display = 'block';
   document.getElementById('toast').className = 'toast';
 }
 
@@ -225,7 +711,7 @@ function addItem() {
   div.innerHTML = `
     <div class="item-row-head">
       <span class="item-num">Hàng #${id}</span>
-      <button class="btn-del-item" onclick="delItem(${id})">×</button>
+      <button class="btn-del-item" onclick="delItem(${id})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="field suggest-wrap">
       <label>Tên hàng hóa <span class="req">*</span></label>
@@ -334,7 +820,7 @@ function collectItems() {
 function setLoading(on) {
   const btn=document.getElementById('btnSubmit'), icon=document.getElementById('btnIcon');
   btn.disabled=on;
-  icon.innerHTML=on?'<span class="spinner"></span>':'✓';
+  icon.innerHTML=on?'<span class="spinner"></span>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 }
 
 async function submitForm() {
@@ -357,7 +843,7 @@ async function submitForm() {
         items,
       }
     : {
-        action:   'submit_xuat',   // ← ghi thẳng vào sheet "XUẤT KHO"
+        action:   'submit_xuat',   // ← ghi vào sheet "XUẤT KHO"
         ngay, nguoi,
         dienGiai: document.getElementById('dienGiai').value.trim(),
         diaChi:   document.getElementById('diaChi').value.trim(),
@@ -377,12 +863,7 @@ async function submitForm() {
     const json = await resp.json();
 
     if (json.status === 'ok') {
-      if (loai === 'nhap') {
-        showToast('📋 Đã gửi chờ duyệt! Admin sẽ phê duyệt trước khi vào kho.', 'ok');
-      } else {
-        const summary = items.map(i => `${i.qty} ${i.dvt} ${i.ten}`).join(', ');
-        showToast('✅ Xuất kho thành công: ' + summary, 'ok');
-      }
+      showToast('Đã gửi chờ duyệt! Admin sẽ phê duyệt trước khi cập nhật kho.', 'ok');
       clearForm(true);
     } else {
       showToast('Lỗi: ' + (json.message||'Không rõ nguyên nhân'), 'err');

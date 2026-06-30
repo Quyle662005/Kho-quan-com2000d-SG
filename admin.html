@@ -4,36 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quản trị kho — Quán cơm 2.000đ SG</title>
+<meta name="description" content="Hệ thống quản trị kho hàng & phê duyệt nguyên vật liệu cho Quán Cơm 2.000đ Sài Gòn">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════
-   DESIGN TOKENS — Quán Cơm 2000đ: ấm áp, thiện nguyện, tin cậy
-   Primary: Đỏ/Cam đất  |  Neutral: Kem/Xám nhạt  |  Success/Danger: chuẩn UX
+   DESIGN TOKENS
    ═══════════════════════════════════════════════════════════ */
 :root {
-  /* Brand */
-  --brand:        #C0392B;   /* Đỏ quán cơm */
+  --brand:        #C0392B;
   --brand-dark:   #922B21;
   --brand-light:  #FDEDEC;
   --brand-mid:    #E74C3C;
-  --accent:       #E67E22;   /* Cam đất — điểm nhấn ấm */
+  --accent:       #E67E22;
   --accent-light: #FEF9F0;
-
-  /* Neutral */
-  --bg:           #F7F5F2;   /* Kem nhạt — không lạnh */
+  --terracotta:   #C4694A;
+  --terracotta-dark: #A0523C;
+  --bg:           #F7F5F2;
   --surface:      #FFFFFF;
   --surface-2:    #FBF9F7;
+  --surface-3:    #F5F2EF;
   --border:       #E8E4DF;
   --border-soft:  #F0EDE9;
-
-  /* Text */
   --text:         #1C1A18;
   --text-2:       #4A4540;
   --text-3:       #8A8278;
-
-  /* Semantic */
+  --text-4:       #B5AFA6;
   --success:      #1A7F4B;
+  --success-light:#15693E;
   --success-bg:   #E8F8EF;
   --success-border:#A3D9BC;
   --danger:       #C0392B;
@@ -45,176 +43,138 @@
   --info:         #1A5276;
   --info-bg:      #EAF4FB;
   --info-border:  #AED6F1;
-
-  /* Sizing */
+  --r-xs:   4px;
   --r-sm:   6px;
   --r:      10px;
   --r-lg:   14px;
   --r-xl:   20px;
-  --sidebar: 230px;
-  --topbar:  56px;
-
-  /* Shadow */
+  --r-2xl:  24px;
+  --sidebar: 250px;
+  --topbar:  60px;
+  --sh-xs:  0 1px 2px rgba(28,26,24,.04);
   --sh-sm:  0 1px 3px rgba(28,26,24,.06), 0 1px 2px rgba(28,26,24,.04);
-  --sh:     0 2px 8px rgba(28,26,24,.08), 0 1px 3px rgba(28,26,24,.05);
-  --sh-lg:  0 8px 30px rgba(28,26,24,.12), 0 2px 8px rgba(28,26,24,.06);
-
+  --sh:     0 4px 12px rgba(28,26,24,.08), 0 1px 3px rgba(28,26,24,.05);
+  --sh-lg:  0 10px 40px rgba(28,26,24,.12), 0 2px 8px rgba(28,26,24,.06);
+  --sh-xl:  0 20px 60px rgba(28,26,24,.15), 0 4px 16px rgba(28,26,24,.08);
+  --sh-brand: 0 4px 16px rgba(192,57,43,.2);
   --font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --ease: cubic-bezier(.4,0,.2,1);
+  --ease-out: cubic-bezier(.0,0,.2,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
 }
 
-/* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
-button { font-family: inherit; cursor: pointer; }
-input, textarea { font-family: inherit; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: inherit; }
+
+/* SVG icon alignment helper */
+.ico-inline { display: inline-flex; align-items: center; vertical-align: -2px; }
+.ico-nav { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex-shrink: 0; }
 
 /* ═══════════════════════════════════════════════════════════
    LOGIN SCREEN
    ═══════════════════════════════════════════════════════════ */
 #loginScreen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
-  background: linear-gradient(145deg, #FBF8F5 0%, #F2EDE8 50%, #EDE6DE 100%);
-  position: relative;
-  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 20px;
+  background: linear-gradient(145deg, #FBF8F5 0%, #F2EDE8 40%, #EDE6DE 100%);
+  position: relative; overflow: hidden;
 }
-
-/* Decorative blob behind */
 #loginScreen::before {
-  content: '';
-  position: absolute;
-  top: -120px; right: -120px;
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(192,57,43,.08) 0%, transparent 70%);
-  border-radius: 50%;
+  content: ''; position: absolute; top: -160px; right: -160px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(196,105,74,.12) 0%, transparent 65%);
+  border-radius: 50%; animation: orbFloat 8s ease-in-out infinite alternate;
 }
 #loginScreen::after {
-  content: '';
-  position: absolute;
-  bottom: -80px; left: -80px;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(230,126,34,.07) 0%, transparent 70%);
-  border-radius: 50%;
+  content: ''; position: absolute; bottom: -120px; left: -120px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(230,126,34,.09) 0%, transparent 65%);
+  border-radius: 50%; animation: orbFloat 10s ease-in-out infinite alternate-reverse;
+}
+@keyframes orbFloat {
+  0%   { transform: translate(0,0) scale(1); }
+  100% { transform: translate(20px,-15px) scale(1.05); }
 }
 
 .login-box {
-  background: var(--surface);
-  border-radius: var(--r-xl);
-  box-shadow: var(--sh-lg);
-  padding: 40px 36px;
-  width: 100%;
-  max-width: 400px;
-  position: relative;
-  z-index: 1;
-  border: 1px solid rgba(232,228,223,.6);
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--r-2xl); box-shadow: var(--sh-xl);
+  padding: 44px 40px; width: 100%; max-width: 420px;
+  position: relative; z-index: 1;
+  border: 1px solid rgba(232,228,223,.5);
+  animation: loginSlideUp .5s var(--ease-out);
 }
+@keyframes loginSlideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
-.login-brand {
-  text-align: center;
-  margin-bottom: 32px;
-}
+.login-brand { text-align: center; margin-bottom: 36px; }
 .login-brand-icon {
-  width: 64px; height: 64px;
-  background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-  border-radius: 18px;
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, var(--terracotta) 0%, var(--accent) 100%);
+  border-radius: 20px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 30px;
-  margin: 0 auto 14px;
-  box-shadow: 0 4px 16px rgba(192,57,43,.25);
+  margin: 0 auto 16px; color: #fff;
+  box-shadow: 0 6px 24px rgba(196,105,74,.3);
+  animation: iconPulse 3s ease-in-out infinite;
 }
-.login-brand h1 {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -.3px;
-}
-.login-brand p {
-  font-size: 13px;
-  color: var(--text-3);
-  margin-top: 4px;
-}
+@keyframes iconPulse { 0%,100% { box-shadow: 0 6px 24px rgba(196,105,74,.3); } 50% { box-shadow: 0 8px 32px rgba(196,105,74,.4); } }
+.login-brand h1 { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -.4px; }
+.login-brand p { font-size: 13.5px; color: var(--text-3); margin-top: 5px; }
 
-.login-field { margin-bottom: 16px; }
-.login-field label {
-  display: block;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--text-2);
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  margin-bottom: 6px;
-}
+.login-field { margin-bottom: 18px; }
+.login-field label { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 7px; }
 .login-field .input-wrap { position: relative; }
 .login-field input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  background: var(--surface-2);
-  color: var(--text);
-  font-size: 15px;
-  transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
-  outline: none;
-  -webkit-appearance: none;
+  width: 100%; padding: 12px 16px;
+  border: 1.5px solid var(--border); border-radius: var(--r);
+  background: var(--surface-2); color: var(--text); font-size: 15px;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease), background .2s;
+  outline: none; -webkit-appearance: none;
 }
-.login-field input:focus {
-  border-color: var(--brand);
-  background: var(--surface);
-  box-shadow: 0 0 0 3px rgba(192,57,43,.1);
-}
+.login-field input:focus { border-color: var(--terracotta); background: var(--surface); box-shadow: 0 0 0 4px rgba(196,105,74,.1); }
 .login-field input::placeholder { color: #BDB8B2; }
+
 .btn-toggle-pw {
-  position: absolute; right: 11px; top: 50%;
-  transform: translateY(-50%);
-  background: none; border: none;
-  color: var(--text-3); font-size: 16px; padding: 4px;
-  line-height: 1; transition: color .15s;
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--text-3); padding: 4px; line-height: 1;
+  transition: color .15s; display: flex; align-items: center;
 }
 .btn-toggle-pw:hover { color: var(--text-2); }
 
 .btn-login {
-  width: 100%;
-  padding: 12px;
-  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-mid) 100%);
-  color: #fff;
-  border: none;
-  border-radius: var(--r);
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: .2px;
-  transition: all .2s var(--ease);
-  box-shadow: 0 3px 12px rgba(192,57,43,.3);
-  margin-top: 8px;
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, var(--terracotta) 0%, var(--terracotta-dark) 100%);
+  color: #fff; border: none; border-radius: var(--r);
+  font-size: 15px; font-weight: 600; letter-spacing: .2px;
+  transition: all .25s var(--ease);
+  box-shadow: 0 4px 16px rgba(196,105,74,.3); margin-top: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.btn-login:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 5px 18px rgba(192,57,43,.35);
-}
+.btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(196,105,74,.35); }
 .btn-login:active { transform: translateY(0); }
 
 .login-err {
-  display: none;
-  margin-top: 12px;
-  padding: 10px 13px;
-  background: var(--danger-bg);
-  border: 1px solid var(--danger-border);
-  border-radius: var(--r);
-  font-size: 13px;
-  color: var(--danger);
-  font-weight: 500;
+  display: none; margin-top: 14px; padding: 11px 14px;
+  background: var(--danger-bg); border: 1px solid var(--danger-border); border-radius: var(--r);
+  font-size: 13px; color: var(--danger); font-weight: 500;
+  animation: shakeX .4s var(--ease);
+  display-items: flex; align-items: center; gap: 6px;
+}
+@keyframes shakeX {
+  0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -222,765 +182,481 @@ input, textarea { font-family: inherit; }
    ═══════════════════════════════════════════════════════════ */
 #app { display: none; }
 
-/* ── SIDEBAR (Desktop) ── */
 .sidebar {
   width: var(--sidebar);
-  background: var(--text);           /* Nền tối đậm — tương phản với nội dung kem */
-  position: fixed;
-  top: 0; left: 0;
-  height: 100vh;
-  z-index: 30;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  background: linear-gradient(180deg, #1C1A18 0%, #252220 100%);
+  position: fixed; top: 0; left: 0; height: 100vh; z-index: 30;
+  display: flex; flex-direction: column; overflow: hidden;
   transition: transform .3s var(--ease);
 }
-
 .sidebar-brand {
-  padding: 20px 18px 16px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  display: flex; align-items: center; gap: 11px;
-  flex-shrink: 0;
+  padding: 22px 20px 18px; border-bottom: 1px solid rgba(255,255,255,.06);
+  display: flex; align-items: center; gap: 12px; flex-shrink: 0;
 }
 .sidebar-brand-icon {
-  width: 38px; height: 38px; flex-shrink: 0;
-  background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-  border-radius: 10px;
+  width: 40px; height: 40px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--terracotta) 0%, var(--accent) 100%);
+  border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 19px;
-}
-.sidebar-brand-text .name {
-  font-size: 13.5px;
-  font-weight: 700;
   color: #fff;
-  line-height: 1.2;
+  box-shadow: 0 3px 12px rgba(196,105,74,.3);
 }
-.sidebar-brand-text .sub {
-  font-size: 11px;
-  color: rgba(255,255,255,.45);
-  margin-top: 1px;
-}
+.sidebar-brand-text .name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+.sidebar-brand-text .sub { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 2px; }
 
 .sidebar-nav {
-  flex: 1;
-  padding: 12px 10px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex: 1; padding: 14px 12px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 3px;
 }
+.sidebar-nav::-webkit-scrollbar { width: 3px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 10px; }
+
 .nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 11px;
-  border-radius: var(--r-sm);
-  font-size: 13.5px;
-  font-weight: 500;
-  color: rgba(255,255,255,.55);
-  background: transparent;
-  border: none;
-  width: 100%;
-  text-align: left;
-  transition: all .15s var(--ease);
-  position: relative;
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 13px; border-radius: var(--r);
+  font-size: 13.5px; font-weight: 500;
+  color: rgba(255,255,255,.5); background: transparent;
+  border: none; width: 100%; text-align: left;
+  transition: all .2s var(--ease); position: relative;
 }
-.nav-item .n-ico { font-size: 16px; flex-shrink: 0; }
+.nav-item .n-ico { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex-shrink: 0; transition: transform .2s var(--ease); }
 .nav-item .n-label { flex: 1; }
-.nav-item:hover {
-  background: rgba(255,255,255,.07);
-  color: rgba(255,255,255,.85);
-}
+.nav-item:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.85); }
+.nav-item:hover .n-ico { transform: scale(1.1); }
 .nav-item.active {
-  background: var(--brand);
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 2px 10px rgba(192,57,43,.35);
+  background: linear-gradient(135deg, var(--terracotta) 0%, var(--terracotta-dark) 100%);
+  color: #fff; font-weight: 600;
+  box-shadow: 0 3px 14px rgba(196,105,74,.3);
+}
+.nav-item.active::before {
+  content: ''; position: absolute; left: -12px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 22px; background: var(--accent); border-radius: 0 4px 4px 0;
 }
 
 .badge {
-  background: var(--accent);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 20px;
-  min-width: 18px;
-  text-align: center;
-  line-height: 16px;
+  background: var(--accent); color: #fff; font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px; min-width: 20px; text-align: center; line-height: 16px;
+  animation: badgePop .3s var(--ease-spring);
 }
+@keyframes badgePop { from { transform: scale(0); } to { transform: scale(1); } }
 
-.sidebar-footer {
-  padding: 14px 14px 18px;
-  border-top: 1px solid rgba(255,255,255,.08);
-  flex-shrink: 0;
-}
-.admin-info {
-  font-size: 11.5px;
-  color: rgba(255,255,255,.4);
-  margin-bottom: 10px;
-  word-break: break-all;
-  line-height: 1.4;
-}
-.admin-info strong {
-  display: block;
-  color: rgba(255,255,255,.7);
-  font-size: 12.5px;
-  margin-bottom: 1px;
-}
+.sidebar-footer { padding: 16px 16px 20px; border-top: 1px solid rgba(255,255,255,.06); flex-shrink: 0; }
+.admin-info { font-size: 11.5px; color: rgba(255,255,255,.35); margin-bottom: 12px; word-break: break-all; line-height: 1.45; }
+.admin-info strong { display: block; color: rgba(255,255,255,.7); font-size: 13px; margin-bottom: 2px; }
 .btn-logout {
-  width: 100%;
-  padding: 8px;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: var(--r-sm);
-  color: rgba(255,255,255,.6);
-  font-size: 12.5px;
-  font-weight: 500;
-  transition: all .15s;
+  width: 100%; padding: 9px;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--r-sm); color: rgba(255,255,255,.55);
+  font-size: 12.5px; font-weight: 500; transition: all .2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
 }
-.btn-logout:hover {
-  background: rgba(192,57,43,.3);
-  border-color: rgba(192,57,43,.4);
-  color: #fff;
-}
+.btn-logout:hover { background: rgba(196,105,74,.25); border-color: rgba(196,105,74,.35); color: #fff; }
 
-/* ── TOPBAR (Mobile only) ── */
+/* TOPBAR (Mobile) */
 .topbar {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0;
+  display: none; position: fixed; top: 0; left: 0; right: 0;
   height: var(--topbar);
-  background: var(--text);
-  z-index: 25;
-  align-items: center;
-  padding: 0 14px;
-  gap: 12px;
-  box-shadow: 0 1px 0 rgba(255,255,255,.06);
+  background: linear-gradient(180deg, #1C1A18 0%, #252220 100%);
+  z-index: 25; align-items: center; padding: 0 16px; gap: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.15);
 }
-.topbar-brand {
-  display: flex; align-items: center; gap: 9px;
-  flex: 1;
-}
+.topbar-brand { display: flex; align-items: center; gap: 10px; flex: 1; }
 .topbar-brand .ico {
-  width: 32px; height: 32px;
-  background: linear-gradient(135deg, var(--brand), var(--accent));
-  border-radius: 8px;
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--terracotta), var(--accent));
+  border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px; flex-shrink: 0;
+  color: #fff; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(196,105,74,.25);
 }
-.topbar-brand .name { font-size: 14px; font-weight: 700; color: #fff; }
+.topbar-brand .name { font-size: 15px; font-weight: 700; color: #fff; }
 .btn-menu {
-  width: 36px; height: 36px;
-  background: rgba(255,255,255,.1);
-  border: none;
-  border-radius: var(--r-sm);
-  color: #fff;
-  font-size: 18px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,.08); border: none; border-radius: var(--r);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background .15s;
 }
+.btn-menu:hover { background: rgba(255,255,255,.14); }
 
-/* ── MOBILE NAV DRAWER ── */
+/* MOBILE NAV DRAWER */
 .mobile-nav-overlay {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.5);
-  z-index: 28;
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  z-index: 28; transition: opacity .3s;
 }
-.mobile-nav-overlay.show { display: block; }
+.mobile-nav-overlay.show { display: block; animation: fadeIn .2s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .mobile-nav {
-  position: fixed;
-  top: 0; left: 0;
-  width: 260px; height: 100vh;
-  background: var(--text);
-  z-index: 29;
-  transform: translateX(-100%);
-  transition: transform .3s var(--ease);
-  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+  background: linear-gradient(180deg, #1C1A18 0%, #252220 100%);
+  z-index: 29; transform: translateX(-100%); transition: transform .3s var(--ease);
+  display: flex; flex-direction: column; box-shadow: 4px 0 24px rgba(0,0,0,.2);
 }
 .mobile-nav.show { transform: translateX(0); }
 
-/* ── MAIN CONTENT ── */
-.main {
-  margin-left: var(--sidebar);
-  min-height: 100vh;
-  padding: 28px 28px 40px;
-}
-
+/* MAIN CONTENT */
+.main { margin-left: var(--sidebar); min-height: 100vh; padding: 32px 32px 48px; animation: contentFade .4s var(--ease); }
+@keyframes contentFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .page { display: none; }
-.page.show { display: block; }
+.page.show { display: block; animation: pageFade .3s var(--ease); }
+@keyframes pageFade { from { opacity: 0; } to { opacity: 1; } }
 
-/* ═══════════════════════════════════════════════════════════
-   PAGE HEADER
-   ═══════════════════════════════════════════════════════════ */
-.page-hdr {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 22px;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.page-hdr-left { display: flex; align-items: center; gap: 10px; }
+/* PAGE HEADER */
+.page-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 14px; flex-wrap: wrap; }
+.page-hdr-left { display: flex; align-items: center; gap: 12px; }
 .page-hdr-icon {
-  width: 38px; height: 38px;
-  background: var(--brand-light);
-  border-radius: var(--r);
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--brand-light) 0%, var(--accent-light) 100%);
+  border: 1px solid var(--border-soft); border-radius: var(--r-lg);
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
+  color: var(--terracotta); flex-shrink: 0;
 }
-.page-hdr h2 {
-  font-size: 19px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -.3px;
-}
-.page-hdr .sub {
-  font-size: 12.5px;
-  color: var(--text-3);
-  margin-top: 1px;
-}
+.page-hdr h2 { font-size: 21px; font-weight: 800; color: var(--text); letter-spacing: -.4px; }
+.page-hdr .sub { font-size: 13px; color: var(--text-3); margin-top: 2px; }
 
-/* ═══════════════════════════════════════════════════════════
-   STAT CARDS
-   ═══════════════════════════════════════════════════════════ */
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 24px;
-}
+/* STAT CARDS */
+.stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
 .stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 18px 20px;
-  box-shadow: var(--sh-sm);
-  position: relative;
-  overflow: hidden;
-  transition: box-shadow .2s var(--ease), transform .2s var(--ease);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 20px 22px; box-shadow: var(--sh-sm); position: relative; overflow: hidden;
+  transition: box-shadow .25s var(--ease), transform .25s var(--ease);
 }
-.stat-card:hover { box-shadow: var(--sh); transform: translateY(-1px); }
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: var(--r-lg) var(--r-lg) 0 0;
-}
+.stat-card:hover { box-shadow: var(--sh); transform: translateY(-3px); }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
 .stat-card.green::before { background: linear-gradient(90deg, var(--success), #27AE60); }
-.stat-card.red::before   { background: linear-gradient(90deg, var(--brand), var(--accent)); }
+.stat-card.red::before   { background: linear-gradient(90deg, var(--terracotta), var(--accent)); }
 .stat-card.warn::before  { background: linear-gradient(90deg, var(--warn), #F39C12); }
 .stat-card.blue::before  { background: linear-gradient(90deg, var(--info), #2980B9); }
-
-.stat-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .07em;
-  color: var(--text-3);
-  margin-bottom: 8px;
-}
-.stat-val {
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: -1px;
-  line-height: 1;
-  margin-bottom: 4px;
-}
+.stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); margin-bottom: 10px; }
+.stat-val { font-size: 34px; font-weight: 800; letter-spacing: -1.2px; line-height: 1; margin-bottom: 6px; }
 .stat-card.green .stat-val { color: var(--success); }
-.stat-card.red   .stat-val { color: var(--brand); }
+.stat-card.red   .stat-val { color: var(--terracotta); }
 .stat-card.warn  .stat-val { color: var(--warn); }
 .stat-card.blue  .stat-val { color: var(--info); }
-.stat-sub {
-  font-size: 12px;
-  color: var(--text-3);
-  line-height: 1.4;
-}
+.stat-sub { font-size: 12px; color: var(--text-3); line-height: 1.4; }
 
-/* ═══════════════════════════════════════════════════════════
-   TABLE WRAP
-   ═══════════════════════════════════════════════════════════ */
-.table-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  box-shadow: var(--sh-sm);
-  margin-bottom: 22px;
-  overflow: hidden;
-}
-.table-hdr {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 15px 18px;
-  border-bottom: 1px solid var(--border-soft);
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.table-hdr-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  display: flex; align-items: center; gap: 7px;
-}
+/* TABLE WRAP */
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--sh-sm); margin-bottom: 24px; overflow: hidden; transition: box-shadow .2s; }
+.table-wrap:hover { box-shadow: var(--sh); }
+.table-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border-soft); gap: 12px; flex-wrap: wrap; }
+.table-hdr-title { font-size: 15px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
 .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-scroll::-webkit-scrollbar { height: 5px; }
+.table-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
 table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 500px; }
-th {
-  padding: 10px 16px;
-  text-align: left;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--text-3);
-  background: var(--surface-2);
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-}
-td {
-  padding: 11px 16px;
-  border-bottom: 1px solid var(--border-soft);
-  vertical-align: middle;
-  color: var(--text);
-}
+th { padding: 11px 18px; text-align: left; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); background: var(--surface-3); border-bottom: 1px solid var(--border); white-space: nowrap; position: sticky; top: 0; z-index: 1; }
+td { padding: 12px 18px; border-bottom: 1px solid var(--border-soft); vertical-align: middle; color: var(--text); transition: background .1s; }
 tr:last-child td { border-bottom: none; }
-tbody tr { transition: background .12s; }
-tbody tr:hover td { background: #FAF8F5; }
-
+tbody tr { transition: background .15s; }
+tbody tr:hover td { background: rgba(196,105,74,.03); }
 .num { font-variant-numeric: tabular-nums; }
 
-/* ── TAGS ── */
-.tag {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 3px 9px;
-  border-radius: 20px;
-  font-size: 11.5px;
-  font-weight: 600;
-  white-space: nowrap;
-}
+/* TAGS */
+.tag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 600; white-space: nowrap; transition: transform .15s; }
+.tag:hover { transform: scale(1.02); }
 .tag-nhap { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
 .tag-xuat { background: var(--brand-light); color: var(--brand); border: 1px solid var(--danger-border); }
 .tag-pending { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-border); }
-
-/* Tồn kho colors */
 .ton-pos { color: var(--success); font-weight: 700; }
-.ton-zero { color: var(--text-3); }
+.ton-zero { color: var(--text-4); font-weight: 500; }
 .ton-neg { color: var(--danger); font-weight: 700; }
 
-/* ── EMPTY STATE ── */
-.empty-state {
-  text-align: center;
-  padding: 52px 20px;
-  color: var(--text-3);
-}
-.empty-state .ico { font-size: 40px; margin-bottom: 12px; display: block; }
-.empty-state p { font-size: 14px; }
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 60px 24px; color: var(--text-3); }
+.empty-state .ico { margin-bottom: 14px; display: flex; align-items: center; justify-content: center; color: var(--text-4); }
+.empty-state p { font-size: 14.5px; }
 
-/* ═══════════════════════════════════════════════════════════
-   REFRESH BUTTON
-   ═══════════════════════════════════════════════════════════ */
+/* REFRESH BUTTON */
 .refresh-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 14px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  color: var(--text-2);
-  font-size: 13px;
-  font-weight: 500;
-  transition: all .15s var(--ease);
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; background: var(--surface);
+  border: 1.5px solid var(--border); border-radius: var(--r);
+  color: var(--text-2); font-size: 13px; font-weight: 500;
+  transition: all .2s var(--ease); white-space: nowrap;
 }
-.refresh-btn:hover {
-  background: var(--surface);
-  border-color: var(--brand);
-  color: var(--brand);
-}
+.refresh-btn:hover { background: var(--accent-light); border-color: var(--terracotta); color: var(--terracotta); box-shadow: 0 2px 8px rgba(196,105,74,.12); }
+.refresh-btn:active { transform: scale(.97); }
+.refresh-btn svg { transition: transform .3s; }
+.refresh-btn:hover svg { transform: rotate(180deg); }
 
-/* ═══════════════════════════════════════════════════════════
-   PENDING PHIEU CARDS
-   ═══════════════════════════════════════════════════════════ */
-.pending-list { display: flex; flex-direction: column; gap: 16px; }
-
+/* PENDING PHIEU CARDS */
+.pending-list { display: flex; flex-direction: column; gap: 18px; }
 .phieu-card {
-  background: var(--surface);
-  border: 1px solid var(--warn-border);
-  border-radius: var(--r-lg);
-  box-shadow: var(--sh-sm);
-  overflow: hidden;
-  transition: box-shadow .2s;
+  background: var(--surface); border: 1px solid var(--warn-border);
+  border-radius: var(--r-lg); box-shadow: var(--sh-sm); overflow: hidden;
+  transition: box-shadow .25s, transform .25s;
+  animation: cardSlideIn .3s var(--ease) both;
 }
-.phieu-card:hover { box-shadow: var(--sh); }
+.phieu-card:hover { box-shadow: var(--sh); transform: translateY(-2px); }
+.phieu-card:nth-child(2) { animation-delay: .05s; }
+.phieu-card:nth-child(3) { animation-delay: .1s; }
+@keyframes cardSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
 .phieu-head {
-  padding: 16px 18px;
+  padding: 18px 20px;
   background: linear-gradient(135deg, var(--warn-bg) 0%, #FFFDF5 100%);
   border-bottom: 1px solid var(--warn-border);
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
 }
 .phieu-id {
-  font-size: 10.5px;
-  font-family: 'Courier New', monospace;
-  color: var(--text-3);
-  margin-bottom: 5px;
-  letter-spacing: .03em;
+  font-size: 10.5px; font-family: 'Courier New', monospace;
+  color: var(--text-3); margin-bottom: 6px; letter-spacing: .03em;
+  display: inline-flex; align-items: center; gap: 6px;
 }
-.phieu-nguon {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 5px;
+.phieu-id::before {
+  content: ''; width: 7px; height: 7px; background: var(--warn);
+  border-radius: 50%; display: inline-block; animation: dotPulse 2s infinite;
 }
-.phieu-meta {
-  font-size: 12px;
-  color: var(--text-3);
-  line-height: 1.6;
+@keyframes dotPulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+.phieu-nguon { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.phieu-meta { font-size: 12.5px; color: var(--text-3); line-height: 1.7; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.phieu-meta-item { display: inline-flex; align-items: center; gap: 4px; }
+.phieu-type-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .04em;
 }
-.phieu-actions {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-  flex-wrap: wrap;
-}
+.phieu-type-nhap { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+.phieu-type-xuat { background: var(--brand-light); color: var(--brand); border: 1px solid var(--danger-border); }
 
+.phieu-actions { display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap; align-items: flex-start; }
 .btn-approve {
-  padding: 9px 18px;
-  background: var(--success);
-  color: #fff;
-  border: none;
-  border-radius: var(--r);
-  font-size: 13.5px;
-  font-weight: 600;
-  transition: all .15s var(--ease);
-  box-shadow: 0 2px 8px rgba(26,127,75,.25);
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%);
+  color: #fff; border: none; border-radius: var(--r);
+  font-size: 13.5px; font-weight: 600;
+  transition: all .2s var(--ease);
+  box-shadow: 0 3px 12px rgba(26,127,75,.25);
+  display: inline-flex; align-items: center; gap: 6px;
 }
-.btn-approve:hover { background: #15693E; transform: translateY(-1px); }
+.btn-approve:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(26,127,75,.3); }
 .btn-approve:active { transform: translateY(0); }
-.btn-approve:disabled { opacity: .6; cursor: not-allowed; transform: none !important; }
+.btn-approve:disabled { opacity: .55; cursor: not-allowed; transform: none !important; box-shadow: none; }
 
 .btn-reject-btn {
-  padding: 9px 16px;
-  background: transparent;
-  color: var(--danger);
-  border: 1.5px solid var(--danger-border);
-  border-radius: var(--r);
-  font-size: 13.5px;
-  font-weight: 600;
-  transition: all .15s var(--ease);
+  padding: 10px 18px; background: transparent;
+  color: var(--danger); border: 1.5px solid var(--danger-border);
+  border-radius: var(--r); font-size: 13.5px; font-weight: 600;
+  transition: all .2s var(--ease);
+  display: inline-flex; align-items: center; gap: 6px;
 }
-.btn-reject-btn:hover {
-  background: var(--danger-bg);
-  border-color: var(--danger);
-}
+.btn-reject-btn:hover { background: var(--danger-bg); border-color: var(--danger); transform: translateY(-1px); }
 
 .phieu-items { padding: 0; }
 .phieu-items table { min-width: 320px; }
-.phieu-items th { background: #FAFAF9; }
+.phieu-items th { background: var(--surface-3); }
 
-/* ═══════════════════════════════════════════════════════════
-   FILTER ROW
-   ═══════════════════════════════════════════════════════════ */
-.filter-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
+/* FILTER ROW */
+.filter-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .filter-row input {
-  flex: 1;
-  min-width: 200px;
-  padding: 9px 13px 9px 36px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  background: var(--surface);
-  color: var(--text);
-  font-size: 13.5px;
-  outline: none;
-  transition: border-color .15s, box-shadow .15s;
-  -webkit-appearance: none;
+  flex: 1; min-width: 200px; padding: 10px 14px 10px 40px;
+  border: 1.5px solid var(--border); border-radius: var(--r);
+  background: var(--surface); color: var(--text); font-size: 14px;
+  outline: none; transition: border-color .2s, box-shadow .2s; -webkit-appearance: none;
 }
-.filter-row input:focus {
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(192,57,43,.1);
-}
+.filter-row input:focus { border-color: var(--terracotta); box-shadow: 0 0 0 4px rgba(196,105,74,.08); }
 .filter-wrap { position: relative; flex: 1; }
-.filter-wrap::before {
-  content: '🔍';
-  position: absolute;
-  left: 11px; top: 50%;
-  transform: translateY(-50%);
-  font-size: 13px;
-  pointer-events: none;
-}
+.filter-wrap .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; }
 .filter-wrap input { width: 100%; }
 
-/* ═══════════════════════════════════════════════════════════
-   PAGINATION
-   ═══════════════════════════════════════════════════════════ */
-.paging {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 18px;
-  border-top: 1px solid var(--border-soft);
-  font-size: 13px;
-  color: var(--text-3);
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.paging-btns { display: flex; gap: 6px; }
+/* PAGINATION */
+.paging { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid var(--border-soft); font-size: 13px; color: var(--text-3); flex-wrap: wrap; gap: 10px; }
+.paging-btns { display: flex; gap: 8px; }
 .btn-page {
-  padding: 6px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  background: var(--surface);
-  color: var(--text-2);
-  font-size: 13px;
-  font-weight: 500;
-  transition: all .15s;
+  padding: 7px 16px; border: 1.5px solid var(--border); border-radius: var(--r);
+  background: var(--surface); color: var(--text-2); font-size: 13px; font-weight: 500; transition: all .2s;
 }
-.btn-page:hover:not(:disabled) {
-  border-color: var(--brand);
-  color: var(--brand);
-  background: var(--brand-light);
-}
-.btn-page:disabled { opacity: .4; cursor: not-allowed; }
+.btn-page:hover:not(:disabled) { border-color: var(--terracotta); color: var(--terracotta); background: var(--accent-light); }
+.btn-page:disabled { opacity: .35; cursor: not-allowed; }
 
-/* ═══════════════════════════════════════════════════════════
-   MODAL
-   ═══════════════════════════════════════════════════════════ */
+/* MODAL */
 .modal-bg {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(28,26,24,.5);
-  backdrop-filter: blur(4px);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  display: none; position: fixed; inset: 0;
+  background: rgba(28,26,24,.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  z-index: 100; align-items: center; justify-content: center; padding: 20px;
 }
 .modal-bg.show { display: flex; }
-
 .modal {
-  background: var(--surface);
-  border-radius: var(--r-xl);
-  padding: 28px;
-  width: 100%;
-  max-width: 440px;
-  box-shadow: var(--sh-lg);
-  animation: modalIn .2s var(--ease);
+  background: var(--surface); border-radius: var(--r-xl); padding: 30px;
+  width: 100%; max-width: 460px; box-shadow: var(--sh-xl);
+  animation: modalIn .25s var(--ease-out); border: 1px solid var(--border-soft);
 }
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(.96) translateY(8px); }
-  to   { opacity: 1; transform: scale(1)  translateY(0); }
-}
-.modal-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px;
-}
+@keyframes modalIn { from { opacity: 0; transform: scale(.94) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 18px; display: flex; align-items: center; gap: 9px; }
+.modal-title svg { color: var(--danger); }
 .modal textarea {
-  width: 100%;
-  padding: 11px 13px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  font-size: 14px;
-  resize: vertical;
-  min-height: 96px;
-  margin-bottom: 18px;
-  outline: none;
-  color: var(--text);
-  transition: border-color .15s;
-  -webkit-appearance: none;
+  width: 100%; padding: 13px 15px; border: 1.5px solid var(--border); border-radius: var(--r);
+  font-size: 14px; resize: vertical; min-height: 100px; margin-bottom: 20px;
+  outline: none; color: var(--text); background: var(--surface-2);
+  transition: border-color .2s, box-shadow .2s; -webkit-appearance: none; line-height: 1.5;
 }
-.modal textarea:focus { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(192,57,43,.1); }
+.modal textarea:focus { border-color: var(--danger); box-shadow: 0 0 0 4px rgba(192,57,43,.08); background: var(--surface); }
+.modal textarea::placeholder { color: var(--text-4); }
 .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-
 .btn-modal-cancel {
-  padding: 9px 18px;
-  border: 1px solid var(--border);
-  background: transparent;
-  border-radius: var(--r);
-  color: var(--text-2);
-  font-size: 13.5px;
-  font-weight: 500;
-  transition: all .15s;
+  padding: 10px 20px; border: 1.5px solid var(--border); background: transparent;
+  border-radius: var(--r); color: var(--text-2); font-size: 14px; font-weight: 500; transition: all .15s;
 }
-.btn-modal-cancel:hover { background: var(--surface-2); }
-
+.btn-modal-cancel:hover { background: var(--surface-3); }
 .btn-modal-ok {
-  padding: 9px 20px;
-  background: var(--danger);
-  color: #fff;
-  border: none;
-  border-radius: var(--r);
-  font-size: 13.5px;
-  font-weight: 600;
-  transition: all .15s;
+  padding: 10px 22px;
+  background: linear-gradient(135deg, var(--danger) 0%, var(--brand-dark) 100%);
+  color: #fff; border: none; border-radius: var(--r);
+  font-size: 14px; font-weight: 600; transition: all .2s;
+  box-shadow: 0 3px 12px rgba(192,57,43,.25);
 }
-.btn-modal-ok:hover { background: var(--brand-dark); }
+.btn-modal-ok:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(192,57,43,.3); }
 
-/* ═══════════════════════════════════════════════════════════
-   LOADING OVERLAY — Đẹp, thân thiện
-   ═══════════════════════════════════════════════════════════ */
+/* LOADING OVERLAY */
 .loading-overlay {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(247,245,242,.85);
-  backdrop-filter: blur(3px);
-  z-index: 50;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 16px;
+  display: none; position: fixed; inset: 0;
+  background: rgba(247,245,242,.88); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  z-index: 50; align-items: center; justify-content: center; flex-direction: column; gap: 18px;
 }
 .loading-overlay.show { display: flex; }
-
 .loading-bowl {
-  width: 60px; height: 60px;
-  background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-  border-radius: 18px;
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--terracotta) 0%, var(--accent) 100%);
+  border-radius: 20px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 28px;
-  box-shadow: 0 4px 20px rgba(192,57,43,.25);
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(196,105,74,.3);
   animation: loadPulse 1.4s var(--ease) infinite;
 }
 @keyframes loadPulse {
-  0%, 100% { transform: scale(1);    box-shadow: 0 4px 20px rgba(192,57,43,.25); }
-  50%       { transform: scale(1.06); box-shadow: 0 6px 28px rgba(192,57,43,.35); }
+  0%,100% { transform: scale(1) rotate(0deg); box-shadow: 0 6px 24px rgba(196,105,74,.3); }
+  50%     { transform: scale(1.08) rotate(3deg); box-shadow: 0 8px 32px rgba(196,105,74,.4); }
 }
-
-.loading-dots {
-  display: flex; gap: 6px;
-}
-.loading-dots span {
-  width: 7px; height: 7px;
-  background: var(--brand);
-  border-radius: 50%;
-  opacity: .3;
-  animation: dotBlink 1.2s var(--ease) infinite;
-}
+.loading-dots { display: flex; gap: 7px; }
+.loading-dots span { width: 8px; height: 8px; background: var(--terracotta); border-radius: 50%; opacity: .3; animation: dotBlink 1.2s var(--ease) infinite; }
 .loading-dots span:nth-child(2) { animation-delay: .2s; }
 .loading-dots span:nth-child(3) { animation-delay: .4s; }
-@keyframes dotBlink {
-  0%, 80%, 100% { opacity: .2; transform: scale(.8); }
-  40%           { opacity: 1;  transform: scale(1.1); }
-}
+@keyframes dotBlink { 0%,80%,100% { opacity: .2; transform: scale(.8); } 40% { opacity: 1; transform: scale(1.15); } }
+.loading-text { font-size: 13.5px; color: var(--text-3); font-weight: 500; }
 
-.loading-text {
-  font-size: 13px;
-  color: var(--text-3);
-  font-weight: 500;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   ERROR TOAST
-   ═══════════════════════════════════════════════════════════ */
+/* ERROR TOAST */
 .err-toast {
-  display: none;
-  position: fixed;
-  bottom: 24px; left: 50%;
-  transform: translateX(-50%);
-  background: var(--text);
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 30px;
-  font-size: 13.5px;
-  font-weight: 500;
-  box-shadow: 0 4px 20px rgba(0,0,0,.2);
-  z-index: 200;
-  white-space: nowrap;
-  max-width: 90vw;
-  text-align: center;
-  border-left: 4px solid var(--brand);
-  animation: toastIn .25s var(--ease);
+  display: none; position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: #fff; padding: 13px 22px; border-radius: 14px;
+  font-size: 13.5px; font-weight: 500; box-shadow: 0 6px 28px rgba(0,0,0,.22);
+  z-index: 200; white-space: nowrap; max-width: 92vw; text-align: center;
+  border-left: 4px solid var(--terracotta);
+  animation: toastIn .3s var(--ease-out);
+  display-items: flex; align-items: center; gap: 8px;
 }
-.err-toast.show { display: block; }
-@keyframes toastIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
+.err-toast.show { display: flex; }
+@keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(14px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
 /* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — TABLET (≤ 960px)
+   RESPONSIVE
    ═══════════════════════════════════════════════════════════ */
 @media (max-width: 960px) {
-  :root { --sidebar: 200px; }
-  .stat-grid { grid-template-columns: repeat(2, 1fr); }
-  .main { padding: 20px 18px 36px; }
+  :root { --sidebar: 210px; }
+  .stat-grid { grid-template-columns: repeat(2,1fr); }
+  .main { padding: 24px 20px 40px; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — MOBILE (≤ 680px)
-   ═══════════════════════════════════════════════════════════ */
-@media (max-width: 680px) {
-  /* Hide desktop sidebar, show topbar */
+@media (max-width: 768px) {
   .sidebar { display: none; }
   .topbar  { display: flex; }
-  .main { margin-left: 0; padding: 76px 14px 32px; }
+  .main { margin-left: 0; padding: 80px 16px 36px; }
+  .stat-grid { grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-card { padding: 16px; }
+  .stat-val { font-size: 28px; }
+  .page-hdr { margin-bottom: 18px; }
+  .page-hdr h2 { font-size: 17px; }
+  .page-hdr .sub { font-size: 12px; }
+  .page-hdr-icon { width: 36px; height: 36px; }
+  .table-scroll { overflow-x: visible; }
+  table { min-width: unset !important; }
 
-  /* Stats: 2 cột trên mobile */
-  .stat-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 18px;
+  #page-dashboard table, #page-history-nhap table, #page-history-xuat table, #page-tonkho table { min-width: unset !important; }
+  #page-dashboard table thead, #page-history-nhap table thead, #page-history-xuat table thead, #page-tonkho table thead { display: none; }
+  #page-dashboard table tbody tr, #page-history-nhap table tbody tr, #page-history-xuat table tbody tr, #page-tonkho table tbody tr {
+    display: block; background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: var(--r); margin-bottom: 10px; padding: 14px 16px; box-shadow: var(--sh-xs); transition: box-shadow .15s;
   }
-  .stat-card { padding: 14px 15px; }
-  .stat-val { font-size: 26px; }
+  #page-dashboard table tbody td, #page-history-nhap table tbody td, #page-history-xuat table tbody td, #page-tonkho table tbody td {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 0; border-bottom: 1px solid var(--border-soft); font-size: 13px;
+  }
+  #page-dashboard table tbody td:last-child, #page-history-nhap table tbody td:last-child, #page-history-xuat table tbody td:last-child, #page-tonkho table tbody td:last-child { border-bottom: none; }
+  #page-dashboard table tbody td::before, #page-history-nhap table tbody td::before, #page-history-xuat table tbody td::before, #page-tonkho table tbody td::before {
+    font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0; margin-right: 12px;
+  }
+  #recentBody td:nth-child(1)::before { content: 'Loại'; }
+  #recentBody td:nth-child(2)::before { content: 'Thời gian'; }
+  #recentBody td:nth-child(3)::before { content: 'Nguồn'; }
+  #recentBody td:nth-child(4)::before { content: 'Tên hàng'; }
+  #recentBody td:nth-child(5)::before { content: 'Số lượng'; }
+  #recentBody td:nth-child(6)::before { content: 'ĐVT'; }
+  #histNhapBody td:nth-child(1)::before { content: 'Thời gian'; }
+  #histNhapBody td:nth-child(2)::before { content: 'Người ủng hộ'; }
+  #histNhapBody td:nth-child(3)::before { content: 'Địa chỉ'; }
+  #histNhapBody td:nth-child(4)::before { content: 'Mã'; }
+  #histNhapBody td:nth-child(5)::before { content: 'Tên hàng'; }
+  #histNhapBody td:nth-child(6)::before { content: 'Số lượng'; }
+  #histNhapBody td:nth-child(7)::before { content: 'ĐVT'; }
+  #histXuatBody td:nth-child(1)::before { content: 'Thời gian'; }
+  #histXuatBody td:nth-child(2)::before { content: 'Diễn giải'; }
+  #histXuatBody td:nth-child(3)::before { content: 'Địa chỉ'; }
+  #histXuatBody td:nth-child(4)::before { content: 'Mã'; }
+  #histXuatBody td:nth-child(5)::before { content: 'Tên hàng'; }
+  #histXuatBody td:nth-child(6)::before { content: 'Số lượng'; }
+  #histXuatBody td:nth-child(7)::before { content: 'ĐVT'; }
+  #tonKhoBody td:nth-child(1)::before { content: 'Tên NVL'; }
+  #tonKhoBody td:nth-child(2)::before { content: 'ĐVT'; }
+  #tonKhoBody td:nth-child(3)::before { content: 'Tổng nhập'; }
+  #tonKhoBody td:nth-child(4)::before { content: 'Tổng xuất'; }
+  #tonKhoBody td:nth-child(5)::before { content: 'Tồn kho'; }
 
-  /* Page header */
-  .page-hdr h2 { font-size: 16px; }
-  .page-hdr-icon { width: 32px; height: 32px; font-size: 15px; }
-
-  /* Table → Card mode trên mobile */
-  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { min-width: 420px; }
-
-  /* Phieu card mobile */
-  .phieu-head { flex-direction: column; }
+  .phieu-head { flex-direction: column; padding: 16px; }
   .phieu-actions { width: 100%; }
-  .btn-approve, .btn-reject-btn { flex: 1; text-align: center; padding: 10px; }
-
-  /* Filter */
+  .btn-approve, .btn-reject-btn { flex: 1; text-align: center; padding: 12px; justify-content: center; font-size: 14px; }
+  .phieu-items table { min-width: 300px !important; }
+  .phieu-items table thead { display: table-header-group !important; }
+  .phieu-items table tbody tr { display: table-row !important; padding: 0 !important; margin: 0 !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
+  .phieu-items table tbody td { display: table-cell !important; padding: 10px 14px !important; border-bottom: 1px solid var(--border-soft) !important; }
+  .phieu-items table tbody td::before { display: none !important; }
   .filter-row { flex-direction: column; }
   .filter-wrap { min-width: unset; }
-
-  /* Modal */
-  .modal { padding: 22px 18px; }
+  .modal { padding: 24px 20px; max-width: 100%; }
   .modal-actions { flex-direction: column-reverse; }
-  .btn-modal-cancel, .btn-modal-ok { width: 100%; text-align: center; }
-
-  /* Paging */
+  .btn-modal-cancel, .btn-modal-ok { width: 100%; text-align: center; justify-content: center; }
   .paging { flex-direction: column; align-items: flex-start; }
-
-  /* Table header hidden on mobile (data via card pattern) */
-  .table-hdr { padding: 12px 14px; }
-  th { padding: 8px 12px; }
-  td { padding: 9px 12px; }
+  .table-hdr { padding: 13px 16px; }
 }
 
-/* ── MOBILE NAV (clone of sidebar inside drawer) ── */
-.mobile-nav .sidebar-brand { padding: 18px 16px 14px; }
-.mobile-nav .sidebar-nav { padding: 10px 8px; }
-.mobile-nav .sidebar-footer { padding: 12px 12px 16px; }
+@media (max-width: 400px) {
+  .main { padding: 76px 12px 32px; }
+  .stat-grid { gap: 8px; }
+  .stat-card { padding: 14px; }
+  .stat-val { font-size: 24px; }
+  .stat-label { font-size: 10px; }
+  .page-hdr h2 { font-size: 15px; }
+  .page-hdr-icon { width: 32px; height: 32px; }
+  .login-box { padding: 32px 24px; }
+  .login-brand h1 { font-size: 18px; }
+}
+
+.mobile-nav .sidebar-brand { padding: 20px 18px 16px; }
+.mobile-nav .sidebar-nav { padding: 12px 10px; }
+.mobile-nav .sidebar-footer { padding: 14px 14px 18px; }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════
-     LOGIN
-     ══════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════ LOGIN ══════════════════════════════════════════════════ -->
 <div id="loginScreen">
   <div class="login-box">
     <div class="login-brand">
-      <div class="login-brand-icon">🍚</div>
+      <div class="login-brand-icon">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0 3.3 3.6 6 8 6s8-2.7 8-6"/><ellipse cx="12" cy="12" rx="8" ry="3"/><path d="M9 5.5c.5-1 1.5-2 3-2s2.5 1 3 2"/><line x1="10" y1="4" x2="10" y2="6"/><line x1="14" y1="4" x2="14" y2="6"/><line x1="12" y1="3" x2="12" y2="5.5"/></svg>
+      </div>
       <h1>Quản trị kho</h1>
       <p>Cơm 2.000đ Sài Gòn — Dành cho quản lý</p>
     </div>
@@ -998,68 +674,63 @@ tbody tr:hover td { background: #FAF8F5; }
         <input type="password" id="loginPass" placeholder="Nhập mật khẩu"
           onkeydown="if(event.key==='Enter') doLogin()"
           autocomplete="current-password">
-        <button class="btn-toggle-pw" onclick="togglePw()" type="button" tabindex="-1">👁</button>
+        <button class="btn-toggle-pw" onclick="togglePw()" type="button" tabindex="-1">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
       </div>
     </div>
 
-    <button class="btn-login" onclick="doLogin()">Đăng nhập →</button>
+    <button class="btn-login" onclick="doLogin()">Đăng nhập <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></button>
     <div class="login-err" id="loginErr"></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     APP
-     ══════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════ APP ══════════════════════════════════════════════════ -->
 <div id="app">
 
   <!-- DESKTOP SIDEBAR -->
   <nav class="sidebar">
     <div class="sidebar-brand">
-      <div class="sidebar-brand-icon">🍚</div>
+      <div class="sidebar-brand-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0 3.3 3.6 6 8 6s8-2.7 8-6"/><ellipse cx="12" cy="12" rx="8" ry="3"/><path d="M9 5.5c.5-1 1.5-2 3-2s2.5 1 3 2"/><line x1="12" y1="3" x2="12" y2="5.5"/></svg></div>
       <div class="sidebar-brand-text">
         <div class="name">Cơm 2.000đ SG</div>
         <div class="sub">Trang quản trị kho</div>
       </div>
     </div>
-
     <div class="sidebar-nav">
       <button class="nav-item active" onclick="goto('dashboard')">
-        <span class="n-ico">📊</span>
+        <span class="n-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
         <span class="n-label">Tổng quan</span>
       </button>
       <button class="nav-item" onclick="goto('pending')" id="navPending">
-        <span class="n-ico">📋</span>
+        <span class="n-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></span>
         <span class="n-label">Chờ duyệt</span>
         <span class="badge" id="pendingBadge" style="display:none"></span>
       </button>
       <button class="nav-item" onclick="goto('history-nhap')">
-        <span class="n-ico">⬇️</span>
+        <span class="n-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>
         <span class="n-label">Lịch sử nhập</span>
       </button>
       <button class="nav-item" onclick="goto('history-xuat')">
-        <span class="n-ico">⬆️</span>
+        <span class="n-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>
         <span class="n-label">Lịch sử xuất</span>
       </button>
       <button class="nav-item" onclick="goto('tonkho')">
-        <span class="n-ico">📦</span>
+        <span class="n-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
         <span class="n-label">Tồn kho</span>
       </button>
     </div>
-
     <div class="sidebar-footer">
-      <div class="admin-info">
-        <strong id="adminEmail">—</strong>
-        Đang đăng nhập
-      </div>
-      <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+      <div class="admin-info"><strong id="adminEmail">—</strong>Đang đăng nhập</div>
+      <button class="btn-logout" onclick="logout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Đăng xuất</button>
     </div>
   </nav>
 
   <!-- MOBILE TOPBAR -->
   <div class="topbar">
-    <button class="btn-menu" onclick="openMobileNav()">☰</button>
+    <button class="btn-menu" onclick="openMobileNav()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <div class="topbar-brand">
-      <div class="ico">🍚</div>
+      <div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0 3.3 3.6 6 8 6s8-2.7 8-6"/><ellipse cx="12" cy="12" rx="8" ry="3"/><path d="M9 5.5c.5-1 1.5-2 3-2s2.5 1 3 2"/><line x1="12" y1="3" x2="12" y2="5.5"/></svg></div>
       <div class="name">Cơm 2.000đ SG</div>
     </div>
     <span class="badge" id="pendingBadgeMobile" style="display:none"></span>
@@ -1069,233 +740,123 @@ tbody tr:hover td { background: #FAF8F5; }
   <div class="mobile-nav-overlay" id="mobileOverlay" onclick="closeMobileNav()"></div>
   <nav class="mobile-nav" id="mobileNav">
     <div class="sidebar-brand">
-      <div class="sidebar-brand-icon">🍚</div>
-      <div class="sidebar-brand-text">
-        <div class="name">Cơm 2.000đ SG</div>
-        <div class="sub">Trang quản trị kho</div>
-      </div>
+      <div class="sidebar-brand-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0 3.3 3.6 6 8 6s8-2.7 8-6"/><ellipse cx="12" cy="12" rx="8" ry="3"/><path d="M9 5.5c.5-1 1.5-2 3-2s2.5 1 3 2"/><line x1="12" y1="3" x2="12" y2="5.5"/></svg></div>
+      <div class="sidebar-brand-text"><div class="name">Cơm 2.000đ SG</div><div class="sub">Trang quản trị kho</div></div>
     </div>
     <div class="sidebar-nav">
       <button class="nav-item active" onclick="goto('dashboard');closeMobileNav()">
-        <span class="n-ico">📊</span><span class="n-label">Tổng quan</span>
+        <span class="n-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+        <span class="n-label">Tổng quan</span>
       </button>
       <button class="nav-item" onclick="goto('pending');closeMobileNav()">
-        <span class="n-ico">📋</span><span class="n-label">Chờ duyệt</span>
+        <span class="n-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></span>
+        <span class="n-label">Chờ duyệt</span>
         <span class="badge" id="pendingBadgeMob2" style="display:none"></span>
       </button>
       <button class="nav-item" onclick="goto('history-nhap');closeMobileNav()">
-        <span class="n-ico">⬇️</span><span class="n-label">Lịch sử nhập</span>
+        <span class="n-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span>
+        <span class="n-label">Lịch sử nhập</span>
       </button>
       <button class="nav-item" onclick="goto('history-xuat');closeMobileNav()">
-        <span class="n-ico">⬆️</span><span class="n-label">Lịch sử xuất</span>
+        <span class="n-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>
+        <span class="n-label">Lịch sử xuất</span>
       </button>
       <button class="nav-item" onclick="goto('tonkho');closeMobileNav()">
-        <span class="n-ico">📦</span><span class="n-label">Tồn kho</span>
+        <span class="n-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
+        <span class="n-label">Tồn kho</span>
       </button>
     </div>
     <div class="sidebar-footer">
       <div class="admin-info"><strong id="adminEmailMob">—</strong>Đang đăng nhập</div>
-      <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+      <button class="btn-logout" onclick="logout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Đăng xuất</button>
     </div>
   </nav>
 
   <!-- MAIN -->
   <main class="main">
-
-    <!-- ── DASHBOARD ── -->
+    <!-- DASHBOARD -->
     <div class="page show" id="page-dashboard">
       <div class="page-hdr">
         <div class="page-hdr-left">
-          <div class="page-hdr-icon">📊</div>
-          <div>
-            <h2>Tổng quan kho</h2>
-            <div class="sub">Số liệu tổng hợp từ Google Sheets</div>
-          </div>
+          <div class="page-hdr-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <div><h2>Tổng quan kho</h2><div class="sub">Số liệu tổng hợp từ Google Sheets</div></div>
         </div>
-        <button class="refresh-btn" onclick="loadDashboard()">🔄 Làm mới</button>
+        <button class="refresh-btn" onclick="loadDashboard()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Làm mới</button>
       </div>
-
       <div class="stat-grid">
-        <div class="stat-card green">
-          <div class="stat-label">Tổng dòng nhập</div>
-          <div class="stat-val" id="st-nhap">—</div>
-          <div class="stat-sub">mặt hàng đã nhập kho</div>
-        </div>
-        <div class="stat-card red">
-          <div class="stat-label">Tổng dòng xuất</div>
-          <div class="stat-val" id="st-xuat">—</div>
-          <div class="stat-sub">mặt hàng đã xuất kho</div>
-        </div>
-        <div class="stat-card warn">
-          <div class="stat-label">Chờ phê duyệt</div>
-          <div class="stat-val" id="st-pending">—</div>
-          <div class="stat-sub" id="st-pending-items">phiếu cần xử lý</div>
-        </div>
-        <div class="stat-card blue">
-          <div class="stat-label">Loại NVL</div>
-          <div class="stat-val" id="st-loai">—</div>
-          <div class="stat-sub">đang theo dõi</div>
-        </div>
+        <div class="stat-card green"><div class="stat-label">Tổng dòng nhập</div><div class="stat-val" id="st-nhap">—</div><div class="stat-sub">mặt hàng đã nhập kho</div></div>
+        <div class="stat-card red"><div class="stat-label">Tổng dòng xuất</div><div class="stat-val" id="st-xuat">—</div><div class="stat-sub">mặt hàng đã xuất kho</div></div>
+        <div class="stat-card warn"><div class="stat-label">Chờ phê duyệt</div><div class="stat-val" id="st-pending">—</div><div class="stat-sub" id="st-pending-items">phiếu cần xử lý</div></div>
+        <div class="stat-card blue"><div class="stat-label">Loại NVL</div><div class="stat-val" id="st-loai">—</div><div class="stat-sub">đang theo dõi</div></div>
       </div>
-
       <div class="table-wrap">
-        <div class="table-hdr">
-          <div class="table-hdr-title">⏱️ Giao dịch gần đây</div>
-        </div>
+        <div class="table-hdr"><div class="table-hdr-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Giao dịch gần đây</div></div>
         <div class="table-scroll">
-          <table>
-            <thead><tr>
-              <th>Loại</th>
-              <th>Thời gian</th>
-              <th>Nguồn / Diễn giải</th>
-              <th>Tên hàng</th>
-              <th style="text-align:right">Số lượng</th>
-              <th>ĐVT</th>
-            </tr></thead>
-            <tbody id="recentBody">
-              <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-3)">Đang tải…</td></tr>
-            </tbody>
-          </table>
+          <table><thead><tr><th>Loại</th><th>Thời gian</th><th>Nguồn / Diễn giải</th><th>Tên hàng</th><th style="text-align:right">Số lượng</th><th>ĐVT</th></tr></thead>
+          <tbody id="recentBody"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-3)">Đang tải…</td></tr></tbody></table>
         </div>
       </div>
     </div>
 
-    <!-- ── PENDING ── -->
+    <!-- PENDING -->
     <div class="page" id="page-pending">
       <div class="page-hdr">
         <div class="page-hdr-left">
-          <div class="page-hdr-icon">📋</div>
-          <div>
-            <h2>Phiếu chờ phê duyệt</h2>
-            <div class="sub">Xem xét và duyệt phiếu nhập kho từ nhân viên</div>
-          </div>
+          <div class="page-hdr-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div>
+          <div><h2>Phiếu chờ phê duyệt</h2><div class="sub">Xem xét và duyệt phiếu nhập/xuất kho từ nhân viên</div></div>
         </div>
-        <button class="refresh-btn" onclick="loadPending()">🔄 Làm mới</button>
+        <button class="refresh-btn" onclick="loadPending()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Làm mới</button>
       </div>
       <div class="pending-list" id="pendingList">
-        <div class="empty-state"><span class="ico">⏳</span><p>Đang tải…</p></div>
+        <div class="empty-state"><span class="ico"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><p>Đang tải…</p></div>
       </div>
     </div>
 
-    <!-- ── HISTORY NHẬP ── -->
+    <!-- HISTORY NHẬP -->
     <div class="page" id="page-history-nhap">
       <div class="page-hdr">
         <div class="page-hdr-left">
-          <div class="page-hdr-icon">⬇️</div>
-          <div>
-            <h2>Lịch sử nhập kho</h2>
-            <div class="sub">Toàn bộ hàng đã được duyệt vào kho</div>
-          </div>
+          <div class="page-hdr-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></div>
+          <div><h2>Lịch sử nhập kho</h2><div class="sub">Toàn bộ hàng đã được duyệt vào kho</div></div>
         </div>
       </div>
-      <div class="filter-row">
-        <div class="filter-wrap">
-          <input type="text" id="searchNhap" placeholder="Tìm tên hàng, người ủng hộ…" oninput="filterHistory('nhap')">
-        </div>
-      </div>
-      <div class="table-wrap">
-        <div class="table-scroll">
-          <table>
-            <thead><tr>
-              <th>Thời gian</th>
-              <th>Người ủng hộ</th>
-              <th>Địa chỉ</th>
-              <th>Mã</th>
-              <th>Tên hàng</th>
-              <th style="text-align:right">Số lượng</th>
-              <th>ĐVT</th>
-            </tr></thead>
-            <tbody id="histNhapBody"></tbody>
-          </table>
-        </div>
-        <div class="paging" id="pagingNhap">
-          <span id="pagingNhapInfo"></span>
-          <div class="paging-btns">
-            <button class="btn-page" id="btnNhapPrev" onclick="changePage('nhap',-1)">← Trước</button>
-            <button class="btn-page" id="btnNhapNext" onclick="changePage('nhap',1)">Sau →</button>
-          </div>
-        </div>
-      </div>
+      <div class="filter-row"><div class="filter-wrap"><span class="search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input type="text" id="searchNhap" placeholder="Tìm tên hàng, người ủng hộ…" oninput="filterHistory('nhap')"></div></div>
+      <div class="table-wrap"><div class="table-scroll"><table><thead><tr><th>Thời gian</th><th>Người ủng hộ</th><th>Địa chỉ</th><th>Mã</th><th>Tên hàng</th><th style="text-align:right">Số lượng</th><th>ĐVT</th></tr></thead><tbody id="histNhapBody"></tbody></table></div>
+      <div class="paging" id="pagingNhap"><span id="pagingNhapInfo"></span><div class="paging-btns"><button class="btn-page" id="btnNhapPrev" onclick="changePage('nhap',-1)">Trước</button><button class="btn-page" id="btnNhapNext" onclick="changePage('nhap',1)">Sau</button></div></div></div>
     </div>
 
-    <!-- ── HISTORY XUẤT ── -->
+    <!-- HISTORY XUẤT -->
     <div class="page" id="page-history-xuat">
       <div class="page-hdr">
         <div class="page-hdr-left">
-          <div class="page-hdr-icon">⬆️</div>
-          <div>
-            <h2>Lịch sử xuất kho</h2>
-            <div class="sub">Toàn bộ hàng đã xuất khỏi kho</div>
-          </div>
+          <div class="page-hdr-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></div>
+          <div><h2>Lịch sử xuất kho</h2><div class="sub">Toàn bộ hàng đã xuất khỏi kho</div></div>
         </div>
       </div>
-      <div class="filter-row">
-        <div class="filter-wrap">
-          <input type="text" id="searchXuat" placeholder="Tìm tên hàng, diễn giải…" oninput="filterHistory('xuat')">
-        </div>
-      </div>
-      <div class="table-wrap">
-        <div class="table-scroll">
-          <table>
-            <thead><tr>
-              <th>Thời gian</th>
-              <th>Diễn giải</th>
-              <th>Địa chỉ</th>
-              <th>Mã</th>
-              <th>Tên hàng</th>
-              <th style="text-align:right">Số lượng</th>
-              <th>ĐVT</th>
-            </tr></thead>
-            <tbody id="histXuatBody"></tbody>
-          </table>
-        </div>
-        <div class="paging" id="pagingXuat">
-          <span id="pagingXuatInfo"></span>
-          <div class="paging-btns">
-            <button class="btn-page" id="btnXuatPrev" onclick="changePage('xuat',-1)">← Trước</button>
-            <button class="btn-page" id="btnXuatNext" onclick="changePage('xuat',1)">Sau →</button>
-          </div>
-        </div>
-      </div>
+      <div class="filter-row"><div class="filter-wrap"><span class="search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input type="text" id="searchXuat" placeholder="Tìm tên hàng, diễn giải…" oninput="filterHistory('xuat')"></div></div>
+      <div class="table-wrap"><div class="table-scroll"><table><thead><tr><th>Thời gian</th><th>Diễn giải</th><th>Địa chỉ</th><th>Mã</th><th>Tên hàng</th><th style="text-align:right">Số lượng</th><th>ĐVT</th></tr></thead><tbody id="histXuatBody"></tbody></table></div>
+      <div class="paging" id="pagingXuat"><span id="pagingXuatInfo"></span><div class="paging-btns"><button class="btn-page" id="btnXuatPrev" onclick="changePage('xuat',-1)">Trước</button><button class="btn-page" id="btnXuatNext" onclick="changePage('xuat',1)">Sau</button></div></div></div>
     </div>
 
-    <!-- ── TỒN KHO ── -->
+    <!-- TỒN KHO -->
     <div class="page" id="page-tonkho">
       <div class="page-hdr">
         <div class="page-hdr-left">
-          <div class="page-hdr-icon">📦</div>
-          <div>
-            <h2>Tồn kho hiện tại</h2>
-            <div class="sub">Nhập − Xuất theo từng loại nguyên vật liệu</div>
-          </div>
+          <div class="page-hdr-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+          <div><h2>Tồn kho hiện tại</h2><div class="sub">Nhập - Xuất theo từng loại nguyên vật liệu</div></div>
         </div>
-        <button class="refresh-btn" onclick="loadDashboard()">🔄 Làm mới</button>
+        <button class="refresh-btn" onclick="loadDashboard()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Làm mới</button>
       </div>
-      <div class="table-wrap">
-        <div class="table-scroll">
-          <table>
-            <thead><tr>
-              <th>Tên NVL</th>
-              <th>ĐVT</th>
-              <th style="text-align:right">Tổng nhập</th>
-              <th style="text-align:right">Tổng xuất</th>
-              <th style="text-align:right">Tồn kho</th>
-            </tr></thead>
-            <tbody id="tonKhoBody">
-              <tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-3)">Đang tải…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div class="table-wrap"><div class="table-scroll"><table><thead><tr><th>Tên NVL</th><th>ĐVT</th><th style="text-align:right">Tổng nhập</th><th style="text-align:right">Tổng xuất</th><th style="text-align:right">Tồn kho</th></tr></thead>
+      <tbody id="tonKhoBody"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-3)">Đang tải…</td></tr></tbody></table></div></div>
     </div>
-
   </main>
 </div>
 
 <!-- REJECT MODAL -->
 <div class="modal-bg" id="rejectModal">
   <div class="modal">
-    <div class="modal-title">❌ Lý do từ chối phiếu</div>
+    <div class="modal-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Lý do từ chối phiếu</div>
     <textarea id="rejectReason" placeholder="Mô tả lý do từ chối để thông báo cho nhân viên…"></textarea>
     <div class="modal-actions">
       <button class="btn-modal-cancel" onclick="closeRejectModal()">Huỷ bỏ</button>
@@ -1306,10 +867,8 @@ tbody tr:hover td { background: #FAF8F5; }
 
 <!-- LOADING OVERLAY -->
 <div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-bowl">🍚</div>
-  <div class="loading-dots">
-    <span></span><span></span><span></span>
-  </div>
+  <div class="loading-bowl"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0 3.3 3.6 6 8 6s8-2.7 8-6"/><ellipse cx="12" cy="12" rx="8" ry="3"/><path d="M9 5.5c.5-1 1.5-2 3-2s2.5 1 3 2"/><line x1="12" y1="3" x2="12" y2="5.5"/></svg></div>
+  <div class="loading-dots"><span></span><span></span><span></span></div>
   <div class="loading-text">Đang tải dữ liệu…</div>
 </div>
 
@@ -1317,29 +876,36 @@ tbody tr:hover td { background: #FAF8F5; }
 <div class="err-toast" id="errToast"></div>
 
 <script>
-// ════════════════════════════════════════════════════════
-//  ⚙️  CẤU HÌNH — SỬA CÁC DÒNG NÀY
-// ════════════════════════════════════════════════════════
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxKUcQfXQFdh6pphh0K2TQlpdLFnwacEn6hP7a1wEM7_VkIhuNk9Pms_-IHn2PQpsAB/exec';
-
-// Danh sách tài khoản admin (thêm nhiều tài khoản tùy ý)
 const ACCOUNTS = [
   { user: 'admin',    pass: 'quancom2000', name: 'Quản lý' },
   { user: 'bep',      pass: 'bep@2025',    name: 'Trưởng bếp' },
-  // { user: 'ketoan', pass: 'kt@2025',    name: 'Kế toán' },
 ];
-// ════════════════════════════════════════════════════════
 
 let TOKEN       = null;
 let ADMIN_EMAIL = null;
-
 let historyData  = {nhap:[], xuat:[]};
 let historyPage  = {nhap:1, xuat:1};
 const PAGE_SIZE  = 30;
 let rejectTarget = null;
 let dashCache    = null;
 
-// ── MOBILE NAV ──────────────────────────────────────────
+// SVG icon templates used in JS-generated HTML
+const SVG = {
+  arrowDown: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>',
+  arrowUp: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>',
+  check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  x: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  user: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  calendar: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  pen: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
+  pin: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  clock: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  checkCircle: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+  hourglass: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v6l4 4-4 4v6"/><path d="M18 2v6l-4 4 4 4v6"/><path d="M6 2h12"/><path d="M6 22h12"/></svg>',
+  warn: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+};
+
 function openMobileNav() {
   document.getElementById('mobileNav').classList.add('show');
   document.getElementById('mobileOverlay').classList.add('show');
@@ -1349,9 +915,6 @@ function closeMobileNav() {
   document.getElementById('mobileOverlay').classList.remove('show');
 }
 
-// ════════════════════════════════════════════════════════
-//  ĐĂNG NHẬP HARDCODE
-// ════════════════════════════════════════════════════════
 function togglePw() {
   const inp = document.getElementById('loginPass');
   inp.type = inp.type === 'password' ? 'text' : 'password';
@@ -1394,26 +957,17 @@ function logout() {
   document.getElementById('loginErr').style.display = 'none';
 }
 
-// ════════════════════════════════════════════════════════
-//  NAVIGATION
-// ════════════════════════════════════════════════════════
 const PAGES = ['dashboard','pending','history-nhap','history-xuat','tonkho'];
-
 function goto(page) {
-  PAGES.forEach(p => {
-    document.getElementById('page-'+p).classList.toggle('show', p===page);
-  });
+  PAGES.forEach(p => { document.getElementById('page-'+p).classList.toggle('show', p===page); });
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   const navMap = {dashboard:0, pending:1, 'history-nhap':2, 'history-xuat':3, tonkho:4};
-  // Sync cả desktop và mobile nav
   const allNavItems = document.querySelectorAll('.nav-item');
-  // Desktop (0–4) + Mobile drawer (5–9)
   const idx = navMap[page];
   if (idx !== undefined) {
     allNavItems[idx]?.classList.add('active');
     if (allNavItems[idx + 5]) allNavItems[idx + 5].classList.add('active');
   }
-
   if (page==='dashboard') loadDashboard();
   else if (page==='pending') loadPending();
   else if (page==='history-nhap') loadHistory('nhap');
@@ -1421,45 +975,30 @@ function goto(page) {
   else if (page==='tonkho') loadTonKho();
 }
 
-// ════════════════════════════════════════════════════════
-//  API HELPER
-// ════════════════════════════════════════════════════════
 async function api(action, payload) {
   const body = JSON.stringify({action, token: TOKEN, ...payload});
-
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 15000);
-
   try {
-    const r = await fetch(SHEET_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain'},
-      body,
-      signal: controller.signal,
-    });
+    const r = await fetch(SHEET_URL, { method: 'POST', headers: {'Content-Type': 'text/plain'}, body, signal: controller.signal });
     clearTimeout(timer);
     return r.json();
   } catch(e) {
     clearTimeout(timer);
-    if (e.name === 'AbortError') {
-      throw new Error('Kết nối quá chậm (timeout 15s). Thử lại hoặc mở Google Sheets rồi nhấn Làm mới.');
-    }
+    if (e.name === 'AbortError') throw new Error('Kết nối quá chậm (timeout 15s). Thử lại hoặc mở Google Sheets rồi nhấn Làm mới.');
     throw new Error('Không kết nối được. Kiểm tra mạng.');
   }
 }
 
-function loading(on) {
-  document.getElementById('loadingOverlay').classList.toggle('show', on);
-}
+function loading(on) { document.getElementById('loadingOverlay').classList.toggle('show', on); }
 
 function showErr(msg) {
   const t = document.getElementById('errToast');
-  t.textContent = '⚠️ ' + msg;
+  t.innerHTML = SVG.warn + ' ' + msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 5000);
 }
 
-// Helper cập nhật badge ở tất cả vị trí
 function updateBadge(count) {
   const show = count > 0;
   ['pendingBadge','pendingBadgeMobile','pendingBadgeMob2'].forEach(id => {
@@ -1468,9 +1007,6 @@ function updateBadge(count) {
   });
 }
 
-// ════════════════════════════════════════════════════════
-//  DASHBOARD
-// ════════════════════════════════════════════════════════
 async function loadDashboard() {
   loading(true);
   try {
@@ -1478,15 +1014,12 @@ async function loadDashboard() {
     if (r.status !== 'ok') { showErr(r.message); return; }
     const d = r.data;
     dashCache = d;
-
     document.getElementById('st-nhap').textContent    = d.tongNhapPhieu.toLocaleString('vi');
     document.getElementById('st-xuat').textContent    = d.tongXuatPhieu.toLocaleString('vi');
     document.getElementById('st-pending').textContent = d.pendingCount;
     document.getElementById('st-pending-items').textContent = `(${d.pendingItemCount} mặt hàng) phiếu cần xử lý`;
     document.getElementById('st-loai').textContent    = d.tonKho.length;
-
     updateBadge(d.pendingCount);
-
     const tbody = document.getElementById('recentBody');
     if (!d.recent.length) {
       tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-3)">Chưa có giao dịch nào</td></tr>';
@@ -1494,129 +1027,88 @@ async function loadDashboard() {
     }
     tbody.innerHTML = d.recent.map(r => `
       <tr>
-        <td><span class="tag ${r.loai==='nhap'?'tag-nhap':'tag-xuat'}">${r.loai==='nhap'?'⬇️ Nhập':'⬆️ Xuất'}</span></td>
+        <td><span class="tag ${r.loai==='nhap'?'tag-nhap':'tag-xuat'}">${r.loai==='nhap'? SVG.arrowDown+' Nhập' : SVG.arrowUp+' Xuất'}</span></td>
         <td style="white-space:nowrap;font-size:12px;color:var(--text-3)">${r.thoiGian}</td>
         <td style="color:var(--text-3);font-size:12.5px">${r.nguon||r.dienGiai||'—'}</td>
         <td><strong>${r.ten}</strong></td>
         <td style="text-align:right" class="num">${(+r.qty).toLocaleString('vi',{maximumFractionDigits:2})}</td>
         <td style="color:var(--text-3)">${r.dvt||''}</td>
       </tr>`).join('');
-
     renderTonKho(d.tonKho);
-  } catch(e) {
-    showErr(e.message);
-  } finally { loading(false); }
+  } catch(e) { showErr(e.message); } finally { loading(false); }
 }
 
-// ════════════════════════════════════════════════════════
-//  TỒN KHO
-// ════════════════════════════════════════════════════════
-function loadTonKho() {
-  if (dashCache) { renderTonKho(dashCache.tonKho); return; }
-  loadDashboard();
-}
+function loadTonKho() { if (dashCache) { renderTonKho(dashCache.tonKho); return; } loadDashboard(); }
 
 function renderTonKho(list) {
   const tbody = document.getElementById('tonKhoBody');
-  if (!list.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-3)">Chưa có dữ liệu</td></tr>';
-    return;
-  }
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-3)">Chưa có dữ liệu</td></tr>'; return; }
   tbody.innerHTML = list.map(i => {
     const tonCls = i.ton < 0 ? 'ton-neg' : i.ton === 0 ? 'ton-zero' : 'ton-pos';
     const fmt = v => (+v).toLocaleString('vi',{maximumFractionDigits:2});
-    return `<tr>
-      <td><strong>${i.ten}</strong></td>
-      <td style="color:var(--text-3)">${i.dvt}</td>
-      <td style="text-align:right" class="num">${fmt(i.tongNhap)}</td>
-      <td style="text-align:right" class="num">${fmt(i.tongXuat)}</td>
-      <td style="text-align:right" class="num ${tonCls}">${fmt(i.ton)}</td>
-    </tr>`;
+    return `<tr><td><strong>${i.ten}</strong></td><td style="color:var(--text-3)">${i.dvt}</td><td style="text-align:right" class="num">${fmt(i.tongNhap)}</td><td style="text-align:right" class="num">${fmt(i.tongXuat)}</td><td style="text-align:right" class="num ${tonCls}">${fmt(i.ton)}</td></tr>`;
   }).join('');
 }
 
-// ════════════════════════════════════════════════════════
-//  PENDING
-// ════════════════════════════════════════════════════════
 async function loadPending() {
   loading(true);
   try {
     const r = await api('get_pending', {});
     if (r.status !== 'ok') { showErr(r.message); return; }
-
     updateBadge(r.total);
-
     const list = document.getElementById('pendingList');
     if (!r.data.length) {
-      list.innerHTML = `<div class="empty-state"><span class="ico">✅</span><p>Không có phiếu nào đang chờ duyệt!</p></div>`;
+      list.innerHTML = `<div class="empty-state"><span class="ico">${SVG.checkCircle}</span><p>Không có phiếu nào đang chờ duyệt!</p></div>`;
       return;
     }
-
-    list.innerHTML = r.data.map(phieu => `
+    list.innerHTML = r.data.map(phieu => {
+      const isXuat = phieu.phieuId.startsWith('XUT');
+      const typeTag = isXuat
+        ? `<span class="phieu-type-tag phieu-type-xuat">${SVG.arrowUp} Xuất kho</span>`
+        : `<span class="phieu-type-tag phieu-type-nhap">${SVG.arrowDown} Nhập kho</span>`;
+      return `
       <div class="phieu-card" id="phieu-${phieu.phieuId}">
         <div class="phieu-head">
           <div>
-            <div class="phieu-id">${phieu.phieuId}</div>
-            <div class="phieu-nguon">👤 ${phieu.nguon || 'MTQ ẩn danh'}</div>
+            <div class="phieu-id">${phieu.phieuId} ${typeTag}</div>
+            <div class="phieu-nguon">${SVG.user} ${phieu.nguon || 'MTQ ẩn danh'}</div>
             <div class="phieu-meta">
-              📅 ${phieu.ngay} &nbsp;·&nbsp;
-              ✍️ ${phieu.nguoi} &nbsp;·&nbsp;
-              ${phieu.diaChi ? '📍 '+phieu.diaChi+' &nbsp;·&nbsp;' : ''}
-              ⏱️ Nộp lúc ${phieu.thoiGianNop}
+              <span class="phieu-meta-item">${SVG.calendar} ${phieu.ngay}</span> · 
+              <span class="phieu-meta-item">${SVG.pen} ${phieu.nguoi}</span> · 
+              ${phieu.diaChi ? '<span class="phieu-meta-item">' + SVG.pin + ' ' + phieu.diaChi + '</span> · ' : ''}
+              <span class="phieu-meta-item">${SVG.clock} Nộp lúc ${phieu.thoiGianNop}</span>
             </div>
           </div>
           <div class="phieu-actions">
-            <button class="btn-approve" onclick="approvePhieu('${phieu.phieuId}', this)">✅ Duyệt</button>
-            <button class="btn-reject-btn" onclick="openRejectModal('${phieu.phieuId}')">❌ Từ chối</button>
+            <button class="btn-approve" onclick="approvePhieu('${phieu.phieuId}', this)">${SVG.check} Duyệt</button>
+            <button class="btn-reject-btn" onclick="openRejectModal('${phieu.phieuId}')">${SVG.x} Từ chối</button>
           </div>
         </div>
-        <div class="phieu-items">
-          <table>
-            <thead><tr>
-              <th>Mã</th><th>Tên hàng</th>
-              <th style="text-align:right">Số lượng</th><th>ĐVT</th>
-            </tr></thead>
-            <tbody>
-              ${phieu.items.map(it => `
-                <tr>
-                  <td><span style="font-family:monospace;font-size:11.5px;color:var(--text-3)">${it.maNVL||'—'}</span></td>
-                  <td><strong>${it.ten}</strong></td>
-                  <td style="text-align:right" class="num">${(+it.qty).toLocaleString('vi',{maximumFractionDigits:2})}</td>
-                  <td style="color:var(--text-3)">${it.dvt}</td>
-                </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>`).join('');
-
-  } catch(e) {
-    showErr(e.message);
-  } finally { loading(false); }
+        <div class="phieu-items"><table><thead><tr><th>Mã</th><th>Tên hàng</th><th style="text-align:right">Số lượng</th><th>ĐVT</th></tr></thead><tbody>
+          ${phieu.items.map(it => `<tr><td><span style="font-family:monospace;font-size:11.5px;color:var(--text-3)">${it.maNVL||'—'}</span></td><td><strong>${it.ten}</strong></td><td style="text-align:right" class="num">${(+it.qty).toLocaleString('vi',{maximumFractionDigits:2})}</td><td style="color:var(--text-3)">${it.dvt}</td></tr>`).join('')}
+        </tbody></table></div>
+      </div>`;
+    }).join('');
+  } catch(e) { showErr(e.message); } finally { loading(false); }
 }
 
 async function approvePhieu(phieuId, btn) {
   if (!confirm(`Xác nhận DUYỆT phiếu ${phieuId}?`)) return;
-  btn.disabled = true;
-  btn.textContent = '⏳…';
+  btn.disabled = true; btn.textContent = '…';
   loading(true);
   try {
     const r = await api('approve', {phieuId});
     if (r.status === 'ok') {
       document.getElementById('phieu-'+phieuId)?.remove();
       if (!document.querySelectorAll('.phieu-card').length) {
-        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><span class="ico">✅</span><p>Không còn phiếu nào chờ duyệt!</p></div>`;
+        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><span class="ico">${SVG.checkCircle}</span><p>Không còn phiếu nào chờ duyệt!</p></div>`;
       }
       dashCache = null;
-    } else {
-      alert('Lỗi: ' + r.message);
-      btn.disabled = false; btn.textContent = '✅ Duyệt';
-    }
-  } catch(e) {
-    alert('Lỗi kết nối'); btn.disabled=false; btn.textContent='✅ Duyệt';
-  } finally { loading(false); }
+    } else { alert('Lỗi: ' + r.message); btn.disabled = false; btn.innerHTML = SVG.check + ' Duyệt'; }
+  } catch(e) { alert('Lỗi kết nối'); btn.disabled=false; btn.innerHTML = SVG.check + ' Duyệt'; }
+  finally { loading(false); }
 }
 
-// ── REJECT MODAL ──
 function openRejectModal(phieuId) {
   rejectTarget = phieuId;
   document.getElementById('rejectReason').value = '';
@@ -1637,7 +1129,7 @@ async function confirmReject() {
     if (r.status === 'ok') {
       document.getElementById('phieu-'+phieuId)?.remove();
       if (!document.querySelectorAll('.phieu-card').length) {
-        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><span class="ico">✅</span><p>Không còn phiếu nào chờ duyệt!</p></div>`;
+        document.getElementById('pendingList').innerHTML = `<div class="empty-state"><span class="ico">${SVG.checkCircle}</span><p>Không còn phiếu nào chờ duyệt!</p></div>`;
       }
       dashCache = null;
     } else alert('Lỗi: ' + r.message);
@@ -1645,9 +1137,6 @@ async function confirmReject() {
   finally { loading(false); }
 }
 
-// ════════════════════════════════════════════════════════
-//  HISTORY
-// ════════════════════════════════════════════════════════
 async function loadHistory(loai) {
   loading(true);
   try {
@@ -1655,21 +1144,13 @@ async function loadHistory(loai) {
     if (r.status !== 'ok') { alert(r.message); return; }
     historyData[loai] = r.data.rows;
     renderHistory(loai, r.data);
-  } catch(e) {
-    showErr(e.message);
-  } finally { loading(false); }
+  } catch(e) { showErr(e.message); } finally { loading(false); }
 }
 
 function renderHistory(loai, data) {
   const rows   = data?.rows || historyData[loai];
   const q      = (document.getElementById(loai==='nhap'?'searchNhap':'searchXuat').value||'').toLowerCase();
-  const filtered = rows.filter(r =>
-    !q ||
-    (r.ten||'').toLowerCase().includes(q) ||
-    (r.col3||'').toLowerCase().includes(q) ||
-    (r.maNVL||'').toLowerCase().includes(q)
-  );
-
+  const filtered = rows.filter(r => !q || (r.ten||'').toLowerCase().includes(q) || (r.col3||'').toLowerCase().includes(q) || (r.maNVL||'').toLowerCase().includes(q));
   const tbody = document.getElementById(`hist${loai==='nhap'?'Nhap':'Xuat'}Body`);
   if (!filtered.length) {
     tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-3)">Không tìm thấy dữ liệu</td></tr>`;
@@ -1686,11 +1167,9 @@ function renderHistory(loai, data) {
         <td style="color:var(--text-3)">${r.dvt}</td>
       </tr>`).join('');
   }
-
   const cap = loai==='nhap'?'Nhap':'Xuat';
   if (data) {
-    document.getElementById(`paging${cap}Info`).textContent =
-      `Hiển thị ${Math.min((data.page-1)*PAGE_SIZE+1, data.total)}–${Math.min(data.page*PAGE_SIZE, data.total)} / ${data.total} dòng`;
+    document.getElementById(`paging${cap}Info`).textContent = `Hiển thị ${Math.min((data.page-1)*PAGE_SIZE+1, data.total)}–${Math.min(data.page*PAGE_SIZE, data.total)} / ${data.total} dòng`;
     document.getElementById(`btn${cap}Prev`).disabled = data.page <= 1;
     document.getElementById(`btn${cap}Next`).disabled = data.page >= data.totalPages;
   }

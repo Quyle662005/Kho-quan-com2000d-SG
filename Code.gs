@@ -5,7 +5,7 @@
  *
  * Sheets cần có trong Google Spreadsheet:
  *   "ỦNG HỘ HIỆN VẬT"  — nhập kho đã duyệt
- *   "XUẤT KHO"          — xuất kho (ghi thẳng)
+ *   "XUẤT KHO"          — xuất kho đã duyệt
  *   "CHỜ DUYỆT"         — nhập kho chờ admin phê duyệt (tự tạo)
  *
  * DEPLOY (làm 1 lần):
@@ -20,12 +20,12 @@
 const SH_NHAP    = "ỦNG HỘ HIỆN VẬT";
 const SH_XUAT    = "XUẤT KHO";
 const SH_PENDING = "CHỜ DUYỆT";
+// Loại phiếu
+const LOAI_NHAP = "NHAP";
+const LOAI_XUAT = "XUAT";
 
-// Email admin được phép truy cập (thêm email vào đây)
-const ADMIN_EMAILS = [
-  "leq662005gmail.com",   // ← thay bằng email của bạn
-  // "another_admin@gmail.com",
-];
+// Danh sách username được phép (phải khớp với ACCOUNTS trong admin.html)
+const ADMIN_USERS = ["admin", "bep"]; // ← thêm username vào đây
 
 // ── ROUTER ───────────────────────────────────────────────────────
 function doPost(e) {
@@ -57,26 +57,14 @@ function doGet(e) {
 
 
 // ════════════════════════════════════════════════════════════════
-//  KIỂM TRA QUYỀN ADMIN
+//  KIỂM TRA QUYỀN ADMIN (dùng username hardcode)
 // ════════════════════════════════════════════════════════════════
 function checkAdmin(token) {
-  // token là Google ID token từ frontend
-  // Verify bằng Google tokeninfo endpoint
-  try {
-    const url  = `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`;
-    const resp = UrlFetchApp.fetch(url);
-    const info = JSON.parse(resp.getContentText());
-
-    if (info.error) return {ok: false, reason: "Token không hợp lệ"};
-
-    const email = info.email;
-    if (!ADMIN_EMAILS.includes(email)) {
-      return {ok: false, reason: `Email ${email} không có quyền admin`};
-    }
-    return {ok: true, email};
-  } catch(e) {
-    return {ok: false, reason: "Không xác thực được token: " + e.toString()};
+  // token ở đây chính là username (string) gửi từ admin.html
+  if (!token || !ADMIN_USERS.includes(token)) {
+    return {ok: false, reason: "Tài khoản không có quyền admin: " + token};
   }
+  return {ok: true, email: token};
 }
 
 
@@ -85,65 +73,70 @@ function checkAdmin(token) {
 // ════════════════════════════════════════════════════════════════
 function submitNhap(body) {
   ensurePendingSheet();
-  const sheet = getSheet(SH_PENDING);
-  const items = body.items || [];
-  const ts    = new Date();
-  // Tạo ID phiếu duy nhất: PND + timestamp milliseconds
+  const sheet   = getSheet(SH_PENDING);
+  const items   = body.items || [];
+  const ts      = new Date();
   const phieuId = "PND" + ts.getTime();
 
   items.forEach(item => {
     sheet.appendRow([
-      phieuId,             // A: Mã phiếu (để nhóm các dòng cùng phiếu)
-      ts,                  // B: Thời gian nộp
-      formatDateVN(body.ngay), // C: Ngày ghi nhận
-      body.nguon,          // D: Người ủng hộ
-      body.nguoi,          // E: Người ghi nhận
-      body.diaChi,         // F: Địa chỉ
-      body.sdt,            // G: SĐT
-      (item.ma||'').toLowerCase(), // H: Mã NVL
-      item.ten,            // I: Tên hàng
-      item.qty,            // J: Số lượng
-      item.dvt,            // K: ĐVT
-      "CHỜ DUYỆT",        // L: Trạng thái
+      phieuId,                       // A: Mã phiếu
+      ts,                            // B: Thời gian nộp
+      formatDateVN(body.ngay),       // C: Ngày ghi nhận
+      body.nguon,                    // D: Người ủng hộ / diễn giải
+      body.nguoi,                    // E: Người ghi nhận
+      body.diaChi,                   // F: Địa chỉ
+      body.sdt,                      // G: SĐT
+      (item.ma||'').toLowerCase(),   // H: Mã NVL
+      item.ten,                      // I: Tên hàng
+      item.qty,                      // J: Số lượng
+      item.dvt,                      // K: ĐVT
+      "CHỜ DUYỆT",                  // L: Trạng thái
+      LOAI_NHAP,                     // M: Loại phiếu (NHAP/XUAT)
     ]);
   });
 
   return res({
     status: "ok",
     message: `Đã gửi ${items.length} mặt hàng. Chờ admin phê duyệt!`,
-    phieuId,
-    rows: items.length,
+    phieuId, rows: items.length,
   });
 }
 
 
 // ════════════════════════════════════════════════════════════════
-//  NHÂN VIÊN: XUẤT KHO → GHI THẲNG VÀO "XUẤT KHO"
+//  NHÂN VIÊN: NỘP PHIẾU XUẤT → GHI VÀO "CHỜ DUYỆT"
 // ════════════════════════════════════════════════════════════════
 function submitXuat(body) {
-  const sheet = getSheet(SH_XUAT);
-  if (!sheet) return res({status:"error", message:`Không tìm thấy sheet "${SH_XUAT}"`});
-
-  const items = body.items || [];
-  const ts    = parseDate(body.ngay);
+  ensurePendingSheet();
+  const sheet   = getSheet(SH_PENDING);
+  const items   = body.items || [];
+  const ts      = new Date();
+  const phieuId = "PXU" + ts.getTime();
 
   items.forEach(item => {
     sheet.appendRow([
-      null,                // A: trống
-      ts,                  // B: Thời gian
-      body.dienGiai,       // C: Diễn giải
-      body.diaChi,         // D: Địa chỉ
-      body.sdt,            // E: SĐT
-      null,                // F: Địa chỉ 2
-      (item.ma||'').toLowerCase(), // G: Mã
-      item.ten,            // H: Tên
-      item.qty,            // I: Số lượng
-      item.dvt,            // J: ĐVT
+      phieuId,                       // A: Mã phiếu
+      ts,                            // B: Thời gian nộp
+      formatDateVN(body.ngay),       // C: Ngày ghi nhận
+      body.dienGiai,                 // D: Diễn giải (dùng cùng cột với nguon)
+      body.nguoi,                    // E: Người ghi nhận
+      body.diaChi,                   // F: Địa chỉ
+      body.sdt,                      // G: SĐT
+      (item.ma||'').toLowerCase(),   // H: Mã NVL
+      item.ten,                      // I: Tên hàng
+      item.qty,                      // J: Số lượng
+      item.dvt,                      // K: ĐVT
+      "CHỜ DUYỆT",                  // L: Trạng thái
+      LOAI_XUAT,                     // M: Loại phiếu (NHAP/XUAT)
     ]);
   });
 
-  fmtNewRows(sheet, items.length, 9);
-  return res({status:"ok", message:`Đã xuất kho ${items.length} mặt hàng`, rows: items.length});
+  return res({
+    status: "ok",
+    message: `Đã gửi ${items.length} mặt hàng. Chờ admin phê duyệt!`,
+    phieuId, rows: items.length,
+  });
 }
 
 
@@ -162,21 +155,22 @@ function getPending(body) {
   const phieuMap = {};
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
-    const [phieuId, thoiGianNop, ngay, nguon, nguoi, diaChi, sdt, maNVL, ten, qty, dvt, ttrang] = row;
+    const [phieuId, thoiGianNop, ngay, nguon, nguoi, diaChi, sdt, maNVL, ten, qty, dvt, ttrang, loaiPhieu] = row;
     if (!phieuId) continue;
 
     if (!phieuMap[phieuId]) {
       phieuMap[phieuId] = {
         phieuId,
+        loai: loaiPhieu || LOAI_NHAP,   // NHAP hoặc XUAT
         thoiGianNop: thoiGianNop ? new Date(thoiGianNop).toLocaleString("vi-VN") : "",
         ngay: ngay || "",
-        nguon: nguon || "",
+        nguon: nguon || "",   // nguon (nhập) hoặc dienGiai (xuất) — dùng chung cột
         nguoi: nguoi || "",
         diaChi: diaChi || "",
         sdt: sdt || "",
         trangThai: ttrang || "CHỜ DUYỆT",
         items: [],
-        rowStart: i + 1, // 1-indexed
+        rowStart: i + 1,
         rowCount: 0,
       };
     }
@@ -214,18 +208,22 @@ function approve(body) {
     if (row[0] !== phieuId) continue;
     if (row[11] !== "CHỜ DUYỆT") continue;
 
-    // Ghi vào sheet chính
-    nhapSheet.appendRow([
-      null,           // A: trống
+    // Xác định ghi vào sheet nào dựa vào cột M (loại phiếu)
+    const loaiPhieu = row[12] || LOAI_NHAP;
+    const targetSheet = loaiPhieu === LOAI_XUAT ? getSheet(SH_XUAT) : nhapSheet;
+    if (!targetSheet) continue;
+
+    targetSheet.appendRow([
+      null,              // A: trống
       parseDate(row[2]), // B: Ngày ghi nhận gốc
-      row[3],         // C: Người ủng hộ
-      row[5],         // D: Địa chỉ
-      row[6],         // E: SĐT
-      null,           // F: Địa chỉ 2
-      row[7],         // G: Mã NVL
-      row[8],         // H: Tên
-      row[9],         // I: Số lượng
-      row[10],        // J: ĐVT
+      row[3],            // C: Người ủng hộ / Diễn giải
+      row[5],            // D: Địa chỉ
+      row[6],            // E: SĐT
+      null,              // F: Địa chỉ 2
+      row[7],            // G: Mã NVL
+      row[8],            // H: Tên
+      row[9],            // I: Số lượng
+      row[10],           // J: ĐVT
     ]);
 
     // Cập nhật trạng thái trong CHỜ DUYỆT
@@ -409,12 +407,12 @@ function ensurePendingSheet() {
   if (!ss.getSheetByName(SH_PENDING)) {
     const sh = ss.insertSheet(SH_PENDING);
     sh.appendRow([
-      "Mã phiếu","Thời gian nộp","Ngày","Người ủng hộ","Người ghi nhận",
+      "Mã phiếu","Thời gian nộp","Ngày","Người ủng hộ / Diễn giải","Người ghi nhận",
       "Địa chỉ","SĐT","Mã NVL","Tên hàng","Số lượng","ĐVT",
-      "Trạng thái","Admin xử lý","Thời gian xử lý","Lý do từ chối"
+      "Trạng thái","Admin xử lý","Thời gian xử lý","Lý do từ chối","Loại phiếu"
     ]);
     // Style header
-    sh.getRange(1,1,1,15).setBackground("#1a3050").setFontColor("#fff").setFontWeight("bold");
+    sh.getRange(1,1,1,16).setBackground("#1a3050").setFontColor("#fff").setFontWeight("bold");
     sh.setFrozenRows(1);
   }
 }
