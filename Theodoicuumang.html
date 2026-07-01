@@ -307,10 +307,7 @@ function setMonth(m, btn) {
 // ── FORMAT TIỀN ───────────────────────────────────────
 function fmtMoney(val) {
   if (!val && val !== 0) return '';
-  return val >= 1000
-    ? (val/1000).toLocaleString('vi',{maximumFractionDigits:1}) + 'k'
-    : val.toLocaleString('vi');
-}
+  return Number(val).toLocaleString('vi-VN');
 
 // ── RENDER ───────────────────────────────────────────
 function render() {
@@ -367,7 +364,7 @@ function render() {
       }).join('');
 
       const mucStr = m.muc
-        ? `<span style="color:var(--green);font-weight:700">${fmtMoney(m.muc)}k</span>` : '—';
+        ? `<span style="color:var(--green);font-weight:700">${fmtMoney(m.muc)}</span>` : '—';
 
       return `<tr>
         <td><span class="mtq-name">${ICO.user} ${m.ten}</span></td>
