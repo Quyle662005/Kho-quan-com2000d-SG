@@ -624,7 +624,7 @@
         </svg></div>
       <div>
         <div class="header-title">Theo Dõi Cưu Mang 2026</div>
-        <div class="header-sub"> Màu xanh = tháng được hỗ trợ</div>
+        <div class="header-sub"> Màu xanh = tháng được hỗ trợ - Con số = hoàn cảnh đã nhận được hỗ trợ</div>
       </div>
       <div class="header-stats">
         <div class="h-stat">
@@ -645,8 +645,8 @@
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10" />
           <polyline points="12 6 12 12 16 14" />
-        </svg></span> Đang tải dữ liệu từ Google Sheets…</span>
-    <button class="btn-refresh" id="btnRefresh" onclick="loadData()" disabled><svg width="13" height="13"
+        </svg></span> Đang tải dữ liệu</span>
+    <button class="btn-refresh" id="btnRefresh" onclick="loadData(true)" disabled><svg width="13" height="13"
         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
         stroke-linejoin="round">
         <path d="M23 4v6h-6" />
@@ -670,14 +670,11 @@
       <div class="filter-group">
         <span class="filter-label">Vùng:</span>
         <select class="region-select" id="regionSelect" onchange="render()" disabled>
-          <option value="">Tất cả</option>
+      
         </select>
       </div>
       <div class="filter-group">
-        <span class="filter-label">Tháng:</span>
-        <div class="month-btns">
-          <button class="m-btn all-btn active" onclick="setMonth(null,this)" disabled>Tất cả</button>
-        </div>
+      
       </div>
       <div class="result-count" id="resultCount"></div>
     </div>
@@ -688,7 +685,7 @@
     <div class="hc-list" id="hcList">
       <div class="loading-wrap">
         <div class="loading-spinner"></div>
-        <div class="loading-text">Đang kết nối Google Sheets…</div>
+        <div class="loading-text">Đang kết nối </div>
       </div>
     </div>
   </div>
@@ -719,7 +716,7 @@
     let activeMonth = null;
 
     // ── TẢI DỮ LIỆU ──────────────────────────────────────
-    async function loadData() {
+    async function loadData(forceRefresh) {
       const bar = document.getElementById('refreshBar');
       const msg = document.getElementById('refreshMsg');
       const btnRef = document.getElementById('btnRefresh');
@@ -738,7 +735,8 @@
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
-        const resp = await fetch(DATA_URL, { signal: controller.signal });
+        const url = forceRefresh ? DATA_URL + (DATA_URL.includes('?') ? '&' : '?') + 'refresh=1' : DATA_URL;
+        const resp = await fetch(url, { signal: controller.signal });
         clearTimeout(timer);
 
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
