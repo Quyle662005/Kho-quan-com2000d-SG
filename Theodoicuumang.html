@@ -1,421 +1,940 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Theo Dõi Cưu Mang 2026</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root {
-  --brand:#D84315;--brand-light:#FBE9E7;--brand-mid:#E64A19;
-  --green:#2E7D32;--green-light:#E8F5E9;--green-mid:#43A047;--green-bright:#00C853;
-  --bg:#FAFAF8;--surface:#FFF;--border:#E8E4DF;--border-soft:#F0EDE9;
-  --text:#1A1A18;--text-2:#4A4540;--text-3:#8A8278;
-  --r:8px;--r-lg:14px;
-  --sh:0 1px 4px rgba(0,0,0,.06),0 2px 12px rgba(0,0,0,.04);
-  --sh-lg:0 4px 20px rgba(0,0,0,.10);
-  --font:'Inter',system-ui,sans-serif;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theo Dõi Cưu Mang 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #D84315;
+      --brand-light: #FBE9E7;
+      --brand-mid: #E64A19;
+      --green: #2E7D32;
+      --green-light: #E8F5E9;
+      --green-mid: #43A047;
+      --green-bright: #00C853;
+      --bg: #FAFAF8;
+      --surface: #FFF;
+      --border: #E8E4DF;
+      --border-soft: #F0EDE9;
+      --text: #1A1A18;
+      --text-2: #4A4540;
+      --text-3: #8A8278;
+      --r: 8px;
+      --r-lg: 14px;
+      --sh: 0 1px 4px rgba(0, 0, 0, .06), 0 2px 12px rgba(0, 0, 0, .04);
+      --sh-lg: 0 4px 20px rgba(0, 0, 0, .10);
+      --font: 'Inter', system-ui, sans-serif;
+    }
 
-/* HEADER */
-.site-header{background:linear-gradient(135deg,#BF360C 0%,#D84315 50%,#E64A19 100%);color:#fff}
-.header-inner{max-width:1100px;margin:0 auto;padding:22px 20px 18px;display:flex;align-items:center;gap:14px}
-.header-icon{width:50px;height:50px;flex-shrink:0;background:rgba(255,255,255,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff}
-.header-title{font-size:20px;font-weight:800;letter-spacing:-.4px;line-height:1.2}
-.header-sub{font-size:12.5px;opacity:.72;margin-top:3px}
-.header-stats{margin-left:auto;display:flex;gap:18px;flex-shrink:0}
-.h-stat{text-align:center}
-.h-stat-val{font-size:22px;font-weight:800}
-.h-stat-lbl{font-size:10.5px;opacity:.65;letter-spacing:.03em;margin-top:1px}
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-/* TOOLBAR */
-.toolbar{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;box-shadow:0 1px 8px rgba(0,0,0,.06)}
-.toolbar-inner{max-width:1100px;margin:0 auto;padding:11px 20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.search-wrap{position:relative;flex:1;min-width:180px}
-.search-wrap .search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none;display:flex;align-items:center}
-.search-wrap input{width:100%;padding:9px 12px 9px 34px;border:1.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:14px;font-family:var(--font);outline:none;transition:border-color .15s,box-shadow .15s}
-.search-wrap input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(216,67,21,.1)}
-.filter-group{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-.filter-label{font-size:12px;font-weight:600;color:var(--text-3);white-space:nowrap}
-.month-btns{display:flex;gap:3px;flex-wrap:wrap}
-.m-btn{padding:6px 9px;border:1.5px solid var(--border);border-radius:6px;background:transparent;font-size:12px;font-weight:600;color:var(--text-3);cursor:pointer;transition:all .15s;font-family:var(--font);white-space:nowrap}
-.m-btn:hover{border-color:var(--green-mid);color:var(--green)}
-.m-btn.active{background:var(--green-mid);border-color:var(--green-mid);color:#fff}
-.m-btn.all-btn.active{background:var(--brand);border-color:var(--brand)}
-.region-select{padding:8px 28px 8px 10px;border:1.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:13px;font-family:var(--font);outline:none;cursor:pointer;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238A8278' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
-.result-count{font-size:12.5px;color:var(--text-3);white-space:nowrap;margin-left:auto;font-weight:500}
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased
+    }
 
-/* REFRESH BAR */
-.refresh-bar{background:var(--green-light);border-bottom:1px solid #C8E6C9;padding:7px 20px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--green)}
-.refresh-bar.warn{background:#FFF8E1;border-color:#FFE082;color:#F57F17}
-.refresh-bar.err{background:var(--brand-light);border-color:#FFCDD2;color:var(--brand)}
-.refresh-bar .bar-ico{display:inline-flex;align-items:center;vertical-align:-2px;margin-right:4px}
-.btn-refresh{padding:4px 12px;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:background .15s;display:inline-flex;align-items:center;gap:5px}
-.btn-refresh:hover{background:#1B5E20}
-.btn-refresh:disabled{opacity:.6;cursor:not-allowed}
+    /* HEADER */
+    .site-header {
+      background: linear-gradient(135deg, #BF360C 0%, #D84315 50%, #E64A19 100%);
+      color: #fff
+    }
 
-/* MAIN */
-.main{max-width:1100px;margin:0 auto;padding:18px 20px 48px}
-.hc-list{display:flex;flex-direction:column;gap:14px}
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 22px 20px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
 
-/* HC CARD */
-.hc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh);overflow:hidden;transition:box-shadow .2s,transform .2s}
-.hc-card:hover{box-shadow:var(--sh-lg);transform:translateY(-1px)}
-.hc-head{padding:13px 18px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#FFF9F7 0%,var(--surface) 100%)}
-.hc-ma{background:var(--brand-light);color:var(--brand);font-size:10.5px;font-weight:700;font-family:monospace;padding:3px 8px;border-radius:20px;border:1px solid rgba(216,67,21,.2);white-space:nowrap;flex-shrink:0;margin-top:2px}
-.hc-info{flex:1;min-width:0}
-.hc-ten{font-size:14px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:5px}
-.hc-meta{display:flex;gap:10px;flex-wrap:wrap}
-.hc-tag{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:var(--text-3);font-weight:500}
-.hc-tag svg{flex-shrink:0}
-.hc-tong{margin-left:auto;text-align:right;flex-shrink:0}
-.hc-tong-val{font-size:18px;font-weight:800;color:var(--green);letter-spacing:-.5px}
-.hc-tong-lbl{font-size:10.5px;color:var(--text-3);margin-top:1px}
+    .header-icon {
+      width: 50px;
+      height: 50px;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, .15);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff
+    }
 
-/* MTQ TABLE */
-.mtq-section{padding:13px 18px}
-.mtq-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.mtq-title::after{content:'';flex:1;height:1px;background:var(--border)}
-.scroll-hint{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.mtq-table{width:100%;border-collapse:collapse;font-size:13px;min-width:520px}
-.mtq-table th{padding:7px 10px;text-align:center;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);background:#FAFAF8;border-bottom:1px solid var(--border);white-space:nowrap}
-.mtq-table th:first-child{text-align:left;min-width:120px}
-.mtq-table th:nth-child(2){text-align:left}
-.mtq-table td{padding:8px 10px;border-bottom:1px solid var(--border-soft);vertical-align:middle;text-align:center}
-.mtq-table td:first-child{text-align:left;font-weight:600}
-.mtq-table td:nth-child(2){text-align:left;color:var(--text-3);font-size:12px}
-.mtq-table tr:last-child td{border-bottom:none}
-.mtq-table tbody tr:hover td{background:#FAF8F5}
-.cell-supported{background:var(--green-bright);border-radius:6px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:40px;padding:3px 4px;line-height:1.2}
-.cell-supported .amt{font-size:11px;font-weight:700;color:#1B5E20;white-space:nowrap}
-.cell-empty{color:#D4D0CA;font-size:16px}
-.mtq-name{display:inline-flex;align-items:center;gap:5px;background:#F0F0F0;color:var(--text-2);padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600}
-.mtq-name svg{flex-shrink:0}
-.hc-ghichu{padding:7px 18px 11px;font-size:12px;color:var(--text-3);border-top:1px solid var(--border-soft);font-style:italic;display:flex;align-items:flex-start;gap:5px}
-.hc-ghichu svg{flex-shrink:0;margin-top:1px}
+    .header-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.4px;
+      line-height: 1.2
+    }
 
-/* LOADING / EMPTY */
-.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:16px}
-.loading-spinner{width:44px;height:44px;border:3px solid #F0EDE9;border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-size:14px;color:var(--text-3)}
-.empty{text-align:center;padding:60px 20px;color:var(--text-3)}
-.empty .ico{display:flex;align-items:center;justify-content:center;margin-bottom:12px;color:var(--text-3)}
-.empty p{font-size:15px}
+    .header-sub {
+      font-size: 12.5px;
+      opacity: .72;
+      margin-top: 3px
+    }
 
-/* RESPONSIVE */
-@media(max-width:680px){
-  .header-stats{display:none}
-  .header-title{font-size:17px}
-  .toolbar-inner{padding:9px 13px}
-  .month-btns{gap:2px}
-  .m-btn{padding:5px 7px;font-size:11px}
-  .main{padding:12px 12px 40px}
-  .hc-head{flex-wrap:wrap;gap:8px}
-  .hc-tong{margin-left:0}
-  .mtq-section{padding:10px 12px}
-}
-</style>
+    .header-stats {
+      margin-left: auto;
+      display: flex;
+      gap: 18px;
+      flex-shrink: 0
+    }
+
+    .h-stat {
+      text-align: center
+    }
+
+    .h-stat-val {
+      font-size: 22px;
+      font-weight: 800
+    }
+
+    .h-stat-lbl {
+      font-size: 10.5px;
+      opacity: .65;
+      letter-spacing: .03em;
+      margin-top: 1px
+    }
+
+    /* TOOLBAR */
+    .toolbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, .06)
+    }
+
+    .toolbar-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 11px 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px
+    }
+
+    .search-wrap .search-ico {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-3);
+      pointer-events: none;
+      display: flex;
+      align-items: center
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 9px 12px 9px 34px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      font-family: var(--font);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(216, 67, 21, .1)
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-3);
+      white-space: nowrap
+    }
+
+    .month-btns {
+      display: flex;
+      gap: 3px;
+      flex-wrap: wrap
+    }
+
+    .m-btn {
+      padding: 6px 9px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-3);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: var(--font);
+      white-space: nowrap
+    }
+
+    .m-btn:hover {
+      border-color: var(--green-mid);
+      color: var(--green)
+    }
+
+    .m-btn.active {
+      background: var(--green-mid);
+      border-color: var(--green-mid);
+      color: #fff
+    }
+
+    .m-btn.all-btn.active {
+      background: var(--brand);
+      border-color: var(--brand)
+    }
+
+    .region-select {
+      padding: 8px 28px 8px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      font-family: var(--font);
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238A8278' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 9px center
+    }
+
+    .result-count {
+      font-size: 12.5px;
+      color: var(--text-3);
+      white-space: nowrap;
+      margin-left: auto;
+      font-weight: 500
+    }
+
+    /* REFRESH BAR */
+    .refresh-bar {
+      background: var(--green-light);
+      border-bottom: 1px solid #C8E6C9;
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--green)
+    }
+
+    .refresh-bar.warn {
+      background: #FFF8E1;
+      border-color: #FFE082;
+      color: #F57F17
+    }
+
+    .refresh-bar.err {
+      background: var(--brand-light);
+      border-color: #FFCDD2;
+      color: var(--brand)
+    }
+
+    .refresh-bar .bar-ico {
+      display: inline-flex;
+      align-items: center;
+      vertical-align: -2px;
+      margin-right: 4px
+    }
+
+    .btn-refresh {
+      padding: 4px 12px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .btn-refresh:hover {
+      background: #1B5E20
+    }
+
+    .btn-refresh:disabled {
+      opacity: .6;
+      cursor: not-allowed
+    }
+
+    /* MAIN */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 20px 48px
+    }
+
+    .hc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    /* HC CARD */
+    .hc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--sh);
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s
+    }
+
+    .hc-card:hover {
+      box-shadow: var(--sh-lg);
+      transform: translateY(-1px)
+    }
+
+    .hc-head {
+      padding: 13px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #FFF9F7 0%, var(--surface) 100%)
+    }
+
+    .hc-ma {
+      background: var(--brand-light);
+      color: var(--brand);
+      font-size: 10.5px;
+      font-weight: 700;
+      font-family: monospace;
+      padding: 3px 8px;
+      border-radius: 20px;
+      border: 1px solid rgba(216, 67, 21, .2);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px
+    }
+
+    .hc-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .hc-ten {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 5px
+    }
+
+    .hc-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .hc-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11.5px;
+      color: var(--text-3);
+      font-weight: 500
+    }
+
+    .hc-tag svg {
+      flex-shrink: 0
+    }
+
+    .hc-tong {
+      margin-left: auto;
+      text-align: right;
+      flex-shrink: 0
+    }
+
+    .hc-tong-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: -.5px
+    }
+
+    .hc-tong-lbl {
+      font-size: 10.5px;
+      color: var(--text-3);
+      margin-top: 1px
+    }
+
+    /* MTQ TABLE */
+    .mtq-section {
+      padding: 13px 18px
+    }
+
+    .mtq-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-3);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .mtq-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border)
+    }
+
+    .scroll-hint {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch
+    }
+
+    .mtq-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 520px
+    }
+
+    .mtq-table th {
+      padding: 7px 10px;
+      text-align: center;
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-3);
+      background: #FAFAF8;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap
+    }
+
+    .mtq-table th:first-child {
+      text-align: left;
+      min-width: 120px
+    }
+
+    .mtq-table th:nth-child(2),
+    .mtq-table th:nth-child(3) {
+      text-align: left
+    }
+
+    .mtq-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-soft);
+      vertical-align: middle;
+      text-align: center
+    }
+
+    .mtq-table td:first-child {
+      text-align: left;
+      font-weight: 600
+    }
+
+    .mtq-table td:nth-child(2),
+    .mtq-table td:nth-child(3) {
+      text-align: left;
+      font-size: 12px
+    }
+
+    .mtq-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .mtq-table tbody tr:hover td {
+      background: #FAF8F5
+    }
+
+    .cell-supported {
+      background: var(--green-bright);
+      border-radius: 6px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      padding: 3px 4px;
+      line-height: 1.2
+    }
+
+    .cell-supported .amt {
+      font-size: 11px;
+      font-weight: 700;
+      color: #1B5E20;
+      white-space: nowrap
+    }
+
+    .cell-empty {
+      color: #D4D0CA;
+      font-size: 16px
+    }
+
+    .mtq-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #F0F0F0;
+      color: var(--text-2);
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600
+    }
+
+    .mtq-name svg {
+      flex-shrink: 0
+    }
+
+    /* LOADING / EMPTY */
+    .loading-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      gap: 16px
+    }
+
+    .loading-spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid #F0EDE9;
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin .8s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .loading-text {
+      font-size: 14px;
+      color: var(--text-3)
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-3)
+    }
+
+    .empty .ico {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      color: var(--text-3)
+    }
+
+    .empty p {
+      font-size: 15px
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:680px) {
+      .header-stats {
+        display: none
+      }
+
+      .header-title {
+        font-size: 17px
+      }
+
+      .toolbar-inner {
+        padding: 9px 13px
+      }
+
+      .month-btns {
+        gap: 2px
+      }
+
+      .m-btn {
+        padding: 5px 7px;
+        font-size: 11px
+      }
+
+      .main {
+        padding: 12px 12px 40px
+      }
+
+      .hc-head {
+        flex-wrap: wrap;
+        gap: 8px
+      }
+
+      .hc-tong {
+        margin-left: 0
+      }
+
+      .mtq-section {
+        padding: 10px 12px
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- HEADER -->
-<div class="site-header">
-  <div class="header-inner">
-    <div class="header-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
-    <div>
-      <div class="header-title">Theo Dõi Cưu Mang 2026</div>
-      <div class="header-sub">Dữ liệu cập nhật trực tiếp từ Google Sheets · Màu xanh = tháng được hỗ trợ</div>
-    </div>
-    <div class="header-stats">
-      <div class="h-stat"><div class="h-stat-val" id="statHC">—</div><div class="h-stat-lbl">Hoàn cảnh</div></div>
-      <div class="h-stat"><div class="h-stat-val" id="statMTQ">—</div><div class="h-stat-lbl">Lượt MTQ</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- REFRESH BAR -->
-<div class="refresh-bar" id="refreshBar">
-  <span id="refreshMsg"><span class="bar-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> Đang tải dữ liệu từ Google Sheets…</span>
-  <button class="btn-refresh" id="btnRefresh" onclick="loadData()" disabled><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Làm mới</button>
-</div>
-
-<!-- TOOLBAR -->
-<div class="toolbar">
-  <div class="toolbar-inner">
-    <div class="search-wrap">
-      <span class="search-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-      <input type="text" id="searchInput" placeholder="Tìm hoàn cảnh, mã số, MTQ, khu vực…" oninput="render()" disabled>
-    </div>
-    <div class="filter-group">
-      <span class="filter-label">Vùng:</span>
-      <select class="region-select" id="regionSelect" onchange="render()" disabled>
-        <option value="">Tất cả</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <span class="filter-label">Tháng:</span>
-      <div class="month-btns">
-        <button class="m-btn all-btn active" onclick="setMonth(null,this)" disabled>Tất cả</button>
-        <button class="m-btn" onclick="setMonth('T1',this)" disabled>T1</button>
-        <button class="m-btn" onclick="setMonth('T2',this)" disabled>T2</button>
-        <button class="m-btn" onclick="setMonth('T3',this)" disabled>T3</button>
-        <button class="m-btn" onclick="setMonth('T4',this)" disabled>T4</button>
-        <button class="m-btn" onclick="setMonth('T5',this)" disabled>T5</button>
-        <button class="m-btn" onclick="setMonth('T6',this)" disabled>T6</button>
-        <button class="m-btn" onclick="setMonth('T7',this)" disabled>T7</button>
-        <button class="m-btn" onclick="setMonth('T8',this)" disabled>T8</button>
-        <button class="m-btn" onclick="setMonth('T9',this)" disabled>T9</button>
-        <button class="m-btn" onclick="setMonth('T10',this)" disabled>T10</button>
-        <button class="m-btn" onclick="setMonth('T11',this)" disabled>T11</button>
-        <button class="m-btn" onclick="setMonth('T12',this)" disabled>T12</button>
+  <!-- HEADER -->
+  <div class="site-header">
+    <div class="header-inner">
+      <div class="header-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+          <path
+            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg></div>
+      <div>
+        <div class="header-title">Theo Dõi Cưu Mang 2026</div>
+        <div class="header-sub"> Màu xanh = tháng được hỗ trợ</div>
+      </div>
+      <div class="header-stats">
+        <div class="h-stat">
+          <div class="h-stat-val" id="statHC">—</div>
+          <div class="h-stat-lbl">Hoàn cảnh</div>
+        </div>
+        <div class="h-stat">
+          <div class="h-stat-val" id="statMTQ">—</div>
+          <div class="h-stat-lbl">Lượt MTQ</div>
+        </div>
       </div>
     </div>
-    <div class="result-count" id="resultCount"></div>
   </div>
-</div>
 
-<!-- MAIN -->
-<div class="main">
-  <div class="hc-list" id="hcList">
-    <div class="loading-wrap">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">Đang kết nối Google Sheets…</div>
+  <!-- REFRESH BAR -->
+  <div class="refresh-bar" id="refreshBar">
+    <span id="refreshMsg"><span class="bar-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg></span> Đang tải dữ liệu từ Google Sheets…</span>
+    <button class="btn-refresh" id="btnRefresh" onclick="loadData()" disabled><svg width="13" height="13"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M23 4v6h-6" />
+        <path d="M1 20v-6h6" />
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+      </svg> Làm mới</button>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="toolbar-inner">
+      <div class="search-wrap">
+        <span class="search-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg></span>
+        <input type="text" id="searchInput" placeholder="Tìm hoàn cảnh, mã số, MTQ, khu vực…" oninput="render()"
+          disabled>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Vùng:</span>
+        <select class="region-select" id="regionSelect" onchange="render()" disabled>
+          <option value="">Tất cả</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Tháng:</span>
+        <div class="month-btns">
+          <button class="m-btn all-btn active" onclick="setMonth(null,this)" disabled>Tất cả</button>
+        </div>
+      </div>
+      <div class="result-count" id="resultCount"></div>
     </div>
   </div>
-</div>
 
-<script>
-// ════════════════════════════════════════════════════════
-//  CẤU HÌNH — dán URL Apps Script vào đây
-// ════════════════════════════════════════════════════════
-const DATA_URL = 'https://script.google.com/macros/s/AKfycbwGuPbuzj_GzPg0oi6sPgZmQ61cfckerTu7WiP3Crh3yMCgt_DWMmBhGvk7hyqWbkvMRw/exec';
-// ════════════════════════════════════════════════════════
+  <!-- MAIN -->
+  <div class="main">
+    <div class="hc-list" id="hcList">
+      <div class="loading-wrap">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Đang kết nối Google Sheets…</div>
+      </div>
+    </div>
+  </div>
 
-// SVG icon templates — tránh dùng emoji, dùng inline SVG thuần
-const ICO = {
-  clock: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-  refresh: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
-  check: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-  checkCircle: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-  xCircle: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
-  pin: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-  map: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>',
-  users: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-  user: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-  note: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="2" x2="22" y2="6"/><path d="M7.5 20.5L19 9l-4-4L3.5 16.5 2 22z"/></svg>',
-  search: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
-  plug: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M6 6v6a6 6 0 0 0 12 0V6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/></svg>',
-  gear: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
-  timeout: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><line x1="4" y1="4" x2="20" y2="20"/></svg>',
-};
+  <script>
+    // ════════════════════════════════════════════════════════
+    //  CẤU HÌNH — dán URL Apps Script vào đây
+    // ════════════════════════════════════════════════════════
+    const DATA_URL = 'https://script.google.com/macros/s/AKfycbwGuPbuzj_GzPg0oi6sPgZmQ61cfckerTu7WiP3Crh3yMCgt_DWMmBhGvk7hyqWbkvMRw/exec';
+    // ════════════════════════════════════════════════════════
 
-let ALL_HC      = [];
-let activeMonth = null;
+    // SVG icon templates — tránh dùng emoji, dùng inline SVG thuần
+    const ICO = {
+      clock: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+      refresh: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
+      pin: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+      map: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>',
+      users: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      user: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+      note: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="2" x2="22" y2="6"/><path d="M7.5 20.5L19 9l-4-4L3.5 16.5 2 22z"/></svg>',
+      search: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+      plug: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M6 6v6a6 6 0 0 0 12 0V6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/></svg>',
+      gear: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+      timeout: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><line x1="4" y1="4" x2="20" y2="20"/></svg>',
+    };
 
-// ── TẢI DỮ LIỆU ──────────────────────────────────────
-async function loadData() {
-  const bar    = document.getElementById('refreshBar');
-  const msg    = document.getElementById('refreshMsg');
-  const btnRef = document.getElementById('btnRefresh');
+    let ALL_HC = [];
+    let activeMonth = null;
 
-  bar.className = 'refresh-bar warn';
-  msg.innerHTML = '<span class="bar-ico">' + ICO.clock + '</span> Đang tải dữ liệu từ Google Sheets…';
-  btnRef.disabled = true;
+    // ── TẢI DỮ LIỆU ──────────────────────────────────────
+    async function loadData() {
+      const bar = document.getElementById('refreshBar');
+      const msg = document.getElementById('refreshMsg');
+      const btnRef = document.getElementById('btnRefresh');
 
-  document.getElementById('hcList').innerHTML = `
+      bar.className = 'refresh-bar warn';
+      msg.innerHTML = '<span class="bar-ico">' + ICO.clock + '</span> Đang tải dữ liệu từ Google Sheets…';
+      btnRef.disabled = true;
+
+      document.getElementById('hcList').innerHTML = `
     <div class="loading-wrap">
       <div class="loading-spinner"></div>
       <div class="loading-text">Đang đọc dữ liệu…</div>
     </div>`;
 
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 30000); // 30s timeout
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
-    const resp = await fetch(DATA_URL, {signal: controller.signal});
-    clearTimeout(timer);
+        const resp = await fetch(DATA_URL, { signal: controller.signal });
+        clearTimeout(timer);
 
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const json = await resp.json();
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const json = await resp.json();
 
-    if (json.error) throw new Error(json.error);
+        if (json.error) throw new Error(json.error);
 
-    // Parse dữ liệu
-    ALL_HC = [];
-    const meta = json._meta || {};
+        // Parse dữ liệu
+        ALL_HC = [];
+        const meta = json._meta || {};
 
-    Object.entries(json).forEach(([region, hcs]) => {
-      if (region === '_meta' || !Array.isArray(hcs)) return;
-      hcs.forEach(hc => ALL_HC.push({...hc, vung: region}));
-    });
+        Object.entries(json).forEach(([region, hcs]) => {
+          if (region === '_meta' || !Array.isArray(hcs)) return;
+          hcs.forEach(hc => ALL_HC.push({ ...hc, vung: region }));
+        });
 
-    // Build region dropdown
-    const regionSel = document.getElementById('regionSelect');
-    regionSel.innerHTML = '<option value="">Tất cả vùng</option>';
-    Object.keys(json).filter(k => k !== '_meta' && Array.isArray(json[k])).forEach(r => {
-      const o = document.createElement('option');
-      o.value = r; o.textContent = r + ` (${json[r].length})`;
-      regionSel.appendChild(o);
-    });
+        // Build region dropdown
+        const regionSel = document.getElementById('regionSelect');
+        regionSel.innerHTML = '<option value="">Tất cả vùng</option>';
+        Object.keys(json).filter(k => k !== '_meta' && Array.isArray(json[k])).forEach(r => {
+          const o = document.createElement('option');
+          o.value = r; o.textContent = r + ` (${json[r].length})`;
+          regionSel.appendChild(o);
+        });
 
-    // Stats
-    const totalMTQ = ALL_HC.reduce((s,hc) => s + hc.mtq_list.length, 0);
-    document.getElementById('statHC').textContent  = ALL_HC.length;
-    document.getElementById('statMTQ').textContent = totalMTQ;
+        // Stats
+        const totalMTQ = ALL_HC.reduce((s, hc) => s + hc.mtq_list.length, 0);
+        document.getElementById('statHC').textContent = ALL_HC.length;
+        document.getElementById('statMTQ').textContent = totalMTQ;
 
-    // Enable controls
-    document.querySelectorAll('.m-btn, .region-select, #searchInput').forEach(el => el.disabled = false);
-    document.querySelectorAll('.m-btn').forEach(el => el.disabled = false);
+        // Enable controls
+        document.querySelectorAll('.m-btn, .region-select, #searchInput').forEach(el => el.disabled = false);
+        document.querySelectorAll('.m-btn').forEach(el => el.disabled = false);
 
-    bar.className = 'refresh-bar';
-    msg.innerHTML = '<span class="bar-ico">' + ICO.checkCircle + '</span> Cập nhật lúc ' + (meta.updated || new Date().toLocaleString('vi-VN')) + ' · ' + ALL_HC.length + ' hoàn cảnh';
-    btnRef.disabled = false;
-    btnRef.innerHTML = ICO.refresh + ' Làm mới';
+        bar.className = 'refresh-bar';
+        msg.innerHTML = '<span class="bar-ico">' + ICO.checkCircle + '</span> Cập nhật lúc ' + (meta.updated || new Date().toLocaleString('vi-VN')) + ' · ' + ALL_HC.length + ' hoàn cảnh';
+        btnRef.disabled = false;
+        btnRef.innerHTML = ICO.refresh + ' Làm mới';
 
-    render();
+        render();
 
-  } catch(err) {
-    bar.className = 'refresh-bar err';
-    if (err.name === 'AbortError') {
-      msg.innerHTML = '<span class="bar-ico">' + ICO.timeout + '</span> Timeout — Google Sheets phản hồi chậm. Thử lại.';
-    } else {
-      msg.innerHTML = '<span class="bar-ico">' + ICO.xCircle + '</span> Lỗi: ' + err.message;
-    }
-    btnRef.disabled = false;
-    btnRef.innerHTML = ICO.refresh + ' Thử lại';
+      } catch (err) {
+        bar.className = 'refresh-bar err';
+        if (err.name === 'AbortError') {
+          msg.innerHTML = '<span class="bar-ico">' + ICO.timeout + '</span> Timeout — Google Sheets phản hồi chậm. Thử lại.';
+        } else {
+          msg.innerHTML = '<span class="bar-ico">' + ICO.xCircle + '</span> Lỗi: ' + err.message;
+        }
+        btnRef.disabled = false;
+        btnRef.innerHTML = ICO.refresh + ' Thử lại';
 
-    document.getElementById('hcList').innerHTML = `
+        document.getElementById('hcList').innerHTML = `
       <div class="empty">
         <span class="ico">${ICO.plug}</span>
         <p>Không tải được dữ liệu.<br>Kiểm tra URL Apps Script hoặc kết nối mạng.</p>
       </div>`;
-  }
-}
-
-// ── LỌC THÁNG ────────────────────────────────────────
-function setMonth(m, btn) {
-  activeMonth = m;
-  document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
-
-// ── FORMAT TIỀN ───────────────────────────────────────
-function fmtMoney(val) {
-  if (!val && val !== 0) return '';
-  return Number(val).toLocaleString('vi-VN');
-}
-
-// ── RENDER ───────────────────────────────────────────
-function render() {
-  const q      = document.getElementById('searchInput').value.toLowerCase().trim();
-  const region = document.getElementById('regionSelect').value;
-  const MONTHS = ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
-
-  let filtered = ALL_HC.filter(hc => {
-    if (region && hc.vung !== region) return false;
-    if (activeMonth) {
-      if (!hc.mtq_list.some(m => activeMonth in m.thang)) return false;
+      }
     }
-    if (q) {
-      const hay = [hc.ma, hc.ten, hc.khu_vuc, hc.vung,
-        ...hc.mtq_list.map(m => m.ten)].join(' ').toLowerCase();
-      if (!hay.includes(q)) return false;
+    // ── FORMAT TIỀN ───────────────────────────────────────
+    function fmtMoney(val) {
+      if (!val && val !== 0) return '';
+      return Number(val).toLocaleString('vi-VN');
     }
-    return true;
+    function escAttr(s) {
+      return String(s).replace(/"/g, '&quot;');
+    }
+    // ── TÍNH TIỀN TRUNG BÌNH ĐƯỢC HỖ TRỢ MỖI THÁNG ─────────
+   function tinhTrungBinh(hc) {
+  let tongTien = 0;
+
+  // lưu các tháng có hỗ trợ
+  const thangCoHoTro = new Set();
+
+  hc.mtq_list.forEach(m => {
+    Object.entries(m.thang).forEach(([thang, tien]) => {
+      if (tien && Number(tien) > 0) {
+        tongTien += Number(tien);
+        thangCoHoTro.add(thang);
+      }
+    });
   });
 
-  document.getElementById('resultCount').textContent =
-    filtered.length + ' hoàn cảnh';
+  const soThang = thangCoHoTro.size;
+  const trungBinh = soThang > 0
+    ? Math.round(tongTien / soThang)
+    : 0;
 
-  if (!filtered.length) {
-    document.getElementById('hcList').innerHTML =
-      '<div class="empty"><span class="ico">' + ICO.search + '</span><p>Không tìm thấy hoàn cảnh phù hợp</p></div>';
-    return;
-  }
+  return {
+    tongTien,
+    soThang,
+    trungBinh
+  };
+}
 
-  const visibleMonths = activeMonth ? [activeMonth] : MONTHS;
-
-  const html = filtered.map(hc => {
-    let tongTien = 0;
-    hc.mtq_list.forEach(m => {
-      Object.values(m.thang).forEach(v => { if (v) tongTien += v; });
-    });
-
-    const mtqFiltered = activeMonth
-      ? hc.mtq_list.filter(m => activeMonth in m.thang)
-      : hc.mtq_list;
-    if (!mtqFiltered.length) return '';
-
-    const thHeader = visibleMonths.map(t => `<th>${t}</th>`).join('');
-
-    const mtqRows = mtqFiltered.map(m => {
-      const cells = visibleMonths.map(t => {
-        if (t in m.thang) {
-          const amt = m.thang[t];
-          return `<td><span class="cell-supported">
-            <span class="amt">${amt ? fmtMoney(amt) : ICO.check}</span>
-          </span></td>`;
+    // ── RENDER ───────────────────────────────────────────
+    function render() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const region = document.getElementById('regionSelect').value;
+      const MONTHS = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
+      let filtered = ALL_HC.filter(hc => {
+        if (region && hc.vung !== region) return false;
+        if (activeMonth) {
+          if (!hc.mtq_list.some(m => activeMonth in m.thang)) return false;
         }
-        return `<td><span class="cell-empty">·</span></td>`;
-      }).join('');
+        if (q) {
+          const hay = [hc.ma, hc.ten, hc.khu_vuc, hc.vung,
+          ...hc.mtq_list.map(m => m.ten)].join(' ').toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
 
-      const mucStr = m.muc
-        ? `<span style="color:var(--green);font-weight:700">${fmtMoney(m.muc)}</span>` : '—';
+      document.getElementById('resultCount').textContent =
+        filtered.length + ' hoàn cảnh';
 
-      return `<tr>
-        <td><span class="mtq-name">${ICO.user} ${m.ten}</span></td>
-        <td>${mucStr}</td>
-        ${cells}
-      </tr>`;
-    }).join('');
+      if (!filtered.length) {
+        document.getElementById('hcList').innerHTML =
+          '<div class="empty"><span class="ico">' + ICO.search + '</span><p>Không tìm thấy hoàn cảnh phù hợp</p></div>';
+        return;
+      }
 
-    return `<div class="hc-card">
+      const visibleMonths = activeMonth ? [activeMonth] : MONTHS;
+
+      const html = filtered.map(hc => {
+        const { tongTien, soThang, trungBinh } = tinhTrungBinh(hc);
+
+        const mtqFiltered = activeMonth
+          ? hc.mtq_list.filter(m => activeMonth in m.thang)
+          : hc.mtq_list;
+        if (!mtqFiltered.length) return '';
+
+        const thHeader = visibleMonths.map(t => `<th>${t}</th>`).join('');
+
+        const mtqRows = mtqFiltered.map((m, index) => {
+          const cells = visibleMonths.map(t => {
+            if (t in m.thang) {
+              const amt = m.thang[t];
+              return `<td><span class="cell-supported">
+            <span class="amt">${amt ? fmtMoney(amt) : '&nbsp;'}</span>
+          </span></td>`;
+            }
+            return `<td><span class="cell-empty">·</span></td>`;
+          }).join('');
+
+          const mucStr = m.muc
+  ? `<span style="color:var(--green);font-weight:700">${fmtMoney(m.muc)}</span>` : '—';
+
+
+const tbStr = trungBinh > 0
+  ? `<span style="color:var(--brand-mid);font-weight:700">${fmtMoney(trungBinh)}</span>` : '—';
+
+return `<tr>
+  <td><span class="mtq-name">${ICO.user} ${m.ten}</span></td>
+  <td>${index === 0 ? tbStr : ''}</td>
+  <td>${mucStr}</td>
+  ${cells}
+</tr>`;
+        }).join('');
+
+        return `<div class="hc-card">
       <div class="hc-head">
         <span class="hc-ma">#${hc.ma}</span>
         <div class="hc-info">
-          <div class="hc-ten">${hc.ten}</div>
+          <div class="hc-ten">${hc.link ? `<a href="${escAttr(hc.link)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dashed var(--brand-mid)">${hc.ten}</a>` : hc.ten}</div>
           <div class="hc-meta">
-            <span class="hc-tag">${ICO.pin} ${hc.khu_vuc||hc.vung}</span>
+            <span class="hc-tag">${ICO.pin} ${hc.khu_vuc || hc.vung}</span>
             <span class="hc-tag">${ICO.map} ${hc.vung}</span>
-            <span class="hc-tag">${ICO.users} ${mtqFiltered.length} MTQ</span>
           </div>
         </div>
-        ${tongTien>0?`<div class="hc-tong">
-          <div class="hc-tong-val">${fmtMoney(tongTien)}</div>
-          <div class="hc-tong-lbl">Tổng hỗ trợ</div>
-        </div>`:''}
       </div>
       <div class="mtq-section">
         <div class="mtq-title">Mạnh thường quân & các tháng hỗ trợ</div>
         <div class="scroll-hint">
           <table class="mtq-table">
-            <thead><tr><th>MTQ</th><th>Mức/tháng</th>${thHeader}</tr></thead>
+            <thead><tr><th>MTQ</th><th>TB/tháng</th><th>Mức/tháng</th>${thHeader}</tr></thead>
             <tbody>${mtqRows}</tbody>
           </table>
         </div>
       </div>
-      ${hc.ghi_chu?`<div class="hc-ghichu">${ICO.note} ${hc.ghi_chu}</div>`:''}
     </div>`;
-  }).filter(Boolean).join('');
+      }).filter(Boolean).join('');
 
-  document.getElementById('hcList').innerHTML = html ||
-    '<div class="empty"><span class="ico">' + ICO.search + '</span><p>Không có kết quả</p></div>';
-}
+      document.getElementById('hcList').innerHTML = html ||
+        '<div class="empty"><span class="ico">' + ICO.search + '</span><p>Không có kết quả</p></div>';
+    }
 
-// Khởi động
-if (DATA_URL.includes('YOUR_APPS_SCRIPT')) {
-  document.getElementById('refreshBar').className = 'refresh-bar err';
-  document.getElementById('refreshMsg').innerHTML = '<span class="bar-ico">' + ICO.gear + '</span> Chưa cấu hình: Dán URL Apps Script vào dòng DATA_URL trong file HTML';
-  document.getElementById('hcList').innerHTML =
-    '<div class="empty"><span class="ico">' + ICO.gear + '</span><p>Cần cấu hình URL Apps Script trước khi sử dụng.<br>Xem hướng dẫn trong file README.</p></div>';
-} else {
-  loadData();
-}
-</script>
+    // Khởi động
+    if (DATA_URL.includes('YOUR_APPS_SCRIPT')) {
+      document.getElementById('refreshBar').className = 'refresh-bar err';
+      document.getElementById('refreshMsg').innerHTML = '<span class="bar-ico">' + ICO.gear + '</span> Chưa cấu hình: Dán URL Apps Script vào dòng DATA_URL trong file HTML';
+      document.getElementById('hcList').innerHTML =
+        '<div class="empty"><span class="ico">' + ICO.gear + '</span><p>Cần cấu hình URL Apps Script trước khi sử dụng.<br>Xem hướng dẫn trong file README.</p></div>';
+    } else {
+      loadData();
+    }
+  </script>
 </body>
+
 </html>
