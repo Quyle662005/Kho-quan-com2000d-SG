@@ -179,17 +179,32 @@
       white-space: nowrap
     }
 
-    .muc-de-xuat {
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--brand);
-      background: var(--brand-light);
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
+    .muc-info-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
 
+.muc-de-xuat {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--brand);
+  background: var(--brand-light);
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.muc-tb {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--green);
+  background: var(--green-light);
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
     .month-btns {
       display: flex;
       gap: 3px;
@@ -653,7 +668,9 @@
         <div class="header-title">Theo Dõi Cưu Mang 2026</div>
         <div class="header-sub"> Số tiền = tiền mặt đã trao &nbsp;·&nbsp; <span
             style="color:#81C784;font-weight:700">✓</span> = nhu yếu phẩm đã trao<br>
-          Màu xanh = tháng được hỗ trợ</div>
+          Màu xanh = tháng được hỗ trợ <br>
+          Số tiền (dvt) :Nghìn đồng
+        </div>
       </div>
       <div class="header-stats">
         <div class="h-stat">
@@ -836,32 +853,26 @@
     }
     // ── TÍNH TIỀN TRUNG BÌNH ĐƯỢC HỖ TRỢ MỖI THÁNG ─────────
     function tinhTrungBinh(hc) {
-      let tongTien = 0;
+  let tongTien = 0;
+  let soLuot = 0; // đếm từng lượt hỗ trợ có số tiền, không gộp trùng tháng
 
-      // lưu các tháng có hỗ trợ
-      const thangCoHoTro = new Set();
+  hc.mtq_list.forEach(m => {
+    Object.values(m.thang).forEach(tien => {
+      if (tien && Number(tien) > 0) {
+        tongTien += Number(tien);
+        soLuot++;
+      }
+    });
+  });
 
-      hc.mtq_list.forEach(m => {
-        Object.entries(m.thang).forEach(([thang, tien]) => {
-          if (tien && Number(tien) > 0) {
-            tongTien += Number(tien);
-            thangCoHoTro.add(thang);
-          }
-        });
-      });
+  const trungBinh = soLuot > 0 ? Math.round(tongTien / soLuot) : 0;
 
-      const soThang = thangCoHoTro.size;
-      const trungBinh = soThang > 0
-        ? Math.round(tongTien / soThang)
-        : 0;
-
-      return {
-        tongTien,
-        soThang,
-        trungBinh
-      };
-    }
-
+  return {
+    tongTien,
+    soThang: soLuot,
+    trungBinh
+  };
+}
     // ── RENDER ───────────────────────────────────────────
     function render() {
       const q = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -961,7 +972,10 @@
         </div>
       </div>
       <div class="mtq-section">
-         ${hc.muc_de_xuat ? `<div class="muc-de-xuat">Mức đề xuất: <b>${fmtMoney(hc.muc_de_xuat)}</b></div>` : ''}
+        <div class="muc-info-row">
+          ${hc.muc_de_xuat ? `<div class="muc-de-xuat">Mức đề xuất: <b>${fmtMoney(hc.muc_de_xuat)}</b></div>` : ''}
+          ${soThang > 0 ? `<div class="muc-tb">Mức hỗ trợ trung bình: <b>${fmtMoney(trungBinh)}</b> / lượt (${soThang} lượt)</div>` : ''}
+        </div>
         <div class="mtq-title">Mạnh thường quân & các tháng hỗ trợ</div>
         <div class="scroll-hint">
           <table class="mtq-table">
