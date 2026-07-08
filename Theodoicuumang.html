@@ -513,6 +513,7 @@
       min-height: 28px;
       padding: 2px 6px;
     }
+
     .cell-check svg {
       color: var(--green);
     }
@@ -640,8 +641,9 @@
         </svg></div>
       <div>
         <div class="header-title">Theo Dõi Cưu Mang 2026</div>
-        <div class="header-sub"> Số tiền = tiền mặt đã trao &nbsp;·&nbsp; <span style="color:#81C784;font-weight:700">✓</span> = nhu yếu phẩm đã trao<br>
-           Màu xanh = tháng được hỗ trợ</div>
+        <div class="header-sub"> Số tiền = tiền mặt đã trao &nbsp;·&nbsp; <span
+            style="color:#81C784;font-weight:700">✓</span> = nhu yếu phẩm đã trao<br>
+          Màu xanh = tháng được hỗ trợ</div>
       </div>
       <div class="header-stats">
         <div class="h-stat">
@@ -687,11 +689,11 @@
       <div class="filter-group">
         <span class="filter-label">Vùng:</span>
         <select class="region-select" id="regionSelect" onchange="render()" disabled>
-      
+
         </select>
       </div>
       <div class="filter-group">
-      
+
       </div>
       <div class="result-count" id="resultCount"></div>
     </div>
@@ -711,7 +713,7 @@
     // ════════════════════════════════════════════════════════
     //  CẤU HÌNH — dán URL Apps Script vào đây
     // ════════════════════════════════════════════════════════
-    const DATA_URL = 'https://script.google.com/macros/s/AKfycbwGuPbuzj_GzPg0oi6sPgZmQ61cfckerTu7WiP3Crh3yMCgt_DWMmBhGvk7hyqWbkvMRw/exec';
+    const DATA_URL = 'https://script.google.com/macros/s/AKfycbynqWIGdBPpFzEXykR-i4KlbTumjz89k8t6Eyzwzo2NY8nlBKptGS3kipKCRGFluuTIxw/exec';
     // ════════════════════════════════════════════════════════
 
     // SVG icon templates — tránh dùng emoji, dùng inline SVG thuần
@@ -727,6 +729,8 @@
       plug: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M6 6v6a6 6 0 0 0 12 0V6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/></svg>',
       gear: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
       timeout: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><line x1="4" y1="4" x2="20" y2="20"/></svg>',
+      checkCircle: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+      xCircle: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
     };
 
     let ALL_HC = [];
@@ -821,32 +825,32 @@
       return String(s).replace(/"/g, '&quot;');
     }
     // ── TÍNH TIỀN TRUNG BÌNH ĐƯỢC HỖ TRỢ MỖI THÁNG ─────────
-   function tinhTrungBinh(hc) {
-  let tongTien = 0;
+    function tinhTrungBinh(hc) {
+      let tongTien = 0;
 
-  // lưu các tháng có hỗ trợ
-  const thangCoHoTro = new Set();
+      // lưu các tháng có hỗ trợ
+      const thangCoHoTro = new Set();
 
-  hc.mtq_list.forEach(m => {
-    Object.entries(m.thang).forEach(([thang, tien]) => {
-      if (tien && Number(tien) > 0) {
-        tongTien += Number(tien);
-        thangCoHoTro.add(thang);
-      }
-    });
-  });
+      hc.mtq_list.forEach(m => {
+        Object.entries(m.thang).forEach(([thang, tien]) => {
+          if (tien && Number(tien) > 0) {
+            tongTien += Number(tien);
+            thangCoHoTro.add(thang);
+          }
+        });
+      });
 
-  const soThang = thangCoHoTro.size;
-  const trungBinh = soThang > 0
-    ? Math.round(tongTien / soThang)
-    : 0;
+      const soThang = thangCoHoTro.size;
+      const trungBinh = soThang > 0
+        ? Math.round(tongTien / soThang)
+        : 0;
 
-  return {
-    tongTien,
-    soThang,
-    trungBinh
-  };
-}
+      return {
+        tongTien,
+        soThang,
+        trungBinh
+      };
+    }
 
     // ── RENDER ───────────────────────────────────────────
     function render() {
@@ -891,40 +895,51 @@
           const cells = visibleMonths.map(t => {
             if (t in m.thang) {
               const amt = m.thang[t];
-              const numVal = Number(amt);
-              if (amt && !isNaN(numVal) && numVal > 0) {
-                // Tiền mặt đã trao → hiện con số
+              const value = String(amt ?? "").trim().toLowerCase();
+
+              // Tiền mặt
+              if (!isNaN(Number(value)) && Number(value) > 0) {
                 return `<td><span class="cell-supported">
-                  <span class="amt">${fmtMoney(amt)}</span>
-                </span></td>`;
-              } else if (amt && isNaN(numVal)) {
-                // Nhu yếu phẩm đã trao (giá trị là text) → hiện dấu ✓
-                return `<td><span class="cell-check">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                </span></td>`;
-              } else {
-                // Chưa trao (giá trị rỗng/0) → ô xanh trống
-                return `<td><span class="cell-supported">
-                  <span class="amt">&nbsp;</span>
-                </span></td>`;
+                  <span class="amt">${fmtMoney(value)}</span>
+                  </span></td>`;
               }
+
+              // Nhu yếu phẩm (Excel ghi "ok")
+              if (value === "ok") {
+                return `<td><span class="cell-check">
+                  <svg width="16" height="16" viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                      </span></td>`;
+                        }
+
+              // Có tháng nhưng chưa hỗ trợ
+              return `<td><span class="cell-supported">
+              <span class="amt">&nbsp;</span>
+                </span></td>`;
             }
+
+            // Không có tháng này
             return `<td><span class="cell-empty">·</span></td>`;
           }).join('');
-
           const mucStr = m.muc
-  ? `<span style="color:var(--green);font-weight:700">${fmtMoney(m.muc)}</span>` : '—';
+            ? `<span style="color:var(--green);font-weight:700">${fmtMoney(m.muc)}</span>` : '—';
 
 
-const tbStr = trungBinh > 0
-  ? `<span style="color:var(--brand-mid);font-weight:700">${fmtMoney(trungBinh)}</span>` : '—';
+          const tbStr = trungBinh > 0
+            ? `<span style="color:var(--brand-mid);font-weight:700">${fmtMoney(trungBinh)}</span>` : '—';
 
-return `<tr>
-  <td><span class="mtq-name">${ICO.user} ${m.ten}</span></td>
-  <td>${index === 0 ? tbStr : ''}</td>
-  <td>${mucStr}</td>
-  ${cells}
-</tr>`;
+          return `<tr>
+          <td><span class="mtq-name">${ICO.user} ${m.ten}</span></td>
+            <td>${index === 0 ? tbStr : ''}</td>
+          <td>${mucStr}</td>
+          ${cells}
+          </tr>`;
         }).join('');
 
         return `<div class="hc-card">
