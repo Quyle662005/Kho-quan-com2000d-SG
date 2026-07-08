@@ -43,7 +43,8 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      -webkit-font-smoothing: antialiased
+      -webkit-font-smoothing: antialiased;
+      text-transform: uppercase
     }
 
     /* HEADER */
@@ -176,6 +177,17 @@
       font-weight: 600;
       color: var(--text-3);
       white-space: nowrap
+    }
+
+    .muc-de-xuat {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--brand);
+      background: var(--brand-light);
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
     }
 
     .month-btns {
@@ -451,8 +463,7 @@
       min-width: 120px
     }
 
-    .mtq-table th:nth-child(2),
-    .mtq-table th:nth-child(3) {
+    .mtq-table th:nth-child(2) {
       text-align: left
     }
 
@@ -468,8 +479,7 @@
       font-weight: 600
     }
 
-    .mtq-table td:nth-child(2),
-    .mtq-table td:nth-child(3) {
+    .mtq-table td:nth-child(2) {
       text-align: left;
       font-size: 12px
     }
@@ -916,7 +926,7 @@
                     <polyline points="20 6 9 17 4 12"/>
                       </svg>
                       </span></td>`;
-                        }
+              }
 
               // Có tháng nhưng chưa hỗ trợ
               return `<td><span class="cell-supported">
@@ -931,12 +941,9 @@
             ? `<span style="color:var(--green);font-weight:700">${fmtMoney(m.muc)}</span>` : '—';
 
 
-          const tbStr = trungBinh > 0
-            ? `<span style="color:var(--brand-mid);font-weight:700">${fmtMoney(trungBinh)}</span>` : '—';
 
           return `<tr>
           <td><span class="mtq-name">${ICO.user} ${m.ten}</span></td>
-            <td>${index === 0 ? tbStr : ''}</td>
           <td>${mucStr}</td>
           ${cells}
           </tr>`;
@@ -954,10 +961,11 @@
         </div>
       </div>
       <div class="mtq-section">
+         ${hc.muc_de_xuat ? `<div class="muc-de-xuat">Mức đề xuất: <b>${fmtMoney(hc.muc_de_xuat)}</b></div>` : ''}
         <div class="mtq-title">Mạnh thường quân & các tháng hỗ trợ</div>
         <div class="scroll-hint">
           <table class="mtq-table">
-            <thead><tr><th>MTQ</th><th>TB/tháng</th><th>Mức/tháng</th>${thHeader}</tr></thead>
+            <thead><tr><th>MTQ</th> <th>Mức/tháng</th>${thHeader}</tr></thead>
             <tbody>${mtqRows}</tbody>
           </table>
         </div>
