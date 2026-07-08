@@ -501,6 +501,22 @@
       white-space: nowrap
     }
 
+    /* Nhu yếu phẩm — dấu tick ✓ */
+    .cell-check {
+      background: #E8F5E9;
+      border: 1.5px solid #81C784;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      min-height: 28px;
+      padding: 2px 6px;
+    }
+    .cell-check svg {
+      color: var(--green);
+    }
+
     .cell-empty {
       color: #D4D0CA;
       font-size: 16px
@@ -624,7 +640,8 @@
         </svg></div>
       <div>
         <div class="header-title">Theo Dõi Cưu Mang 2026</div>
-        <div class="header-sub"> Màu xanh = tháng được hỗ trợ - Con số = hoàn cảnh đã nhận được hỗ trợ</div>
+        <div class="header-sub"> Số tiền = tiền mặt đã trao &nbsp;·&nbsp; <span style="color:#81C784;font-weight:700">✓</span> = nhu yếu phẩm đã trao<br>
+           Màu xanh = tháng được hỗ trợ</div>
       </div>
       <div class="header-stats">
         <div class="h-stat">
@@ -874,9 +891,23 @@
           const cells = visibleMonths.map(t => {
             if (t in m.thang) {
               const amt = m.thang[t];
-              return `<td><span class="cell-supported">
-            <span class="amt">${amt ? fmtMoney(amt) : '&nbsp;'}</span>
-          </span></td>`;
+              const numVal = Number(amt);
+              if (amt && !isNaN(numVal) && numVal > 0) {
+                // Tiền mặt đã trao → hiện con số
+                return `<td><span class="cell-supported">
+                  <span class="amt">${fmtMoney(amt)}</span>
+                </span></td>`;
+              } else if (amt && isNaN(numVal)) {
+                // Nhu yếu phẩm đã trao (giá trị là text) → hiện dấu ✓
+                return `<td><span class="cell-check">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span></td>`;
+              } else {
+                // Chưa trao (giá trị rỗng/0) → ô xanh trống
+                return `<td><span class="cell-supported">
+                  <span class="amt">&nbsp;</span>
+                </span></td>`;
+              }
             }
             return `<td><span class="cell-empty">·</span></td>`;
           }).join('');

@@ -17,18 +17,23 @@
   --green-mid:    #0F6E56;
   --green-light:  #E1F5EE;
   --green-border: #5DCAA5;
+  --green-glow:   rgba(15,110,86,.15);
   --red-dark:     #712B13;
   --red-mid:      #993C1D;
   --red-light:    #FAECE7;
   --red-border:   #D85A30;
+  --red-glow:     rgba(216,90,48,.15);
   --terracotta:   #C4694A;
+  --orange-mid:   #E67E22;
+  --orange-dark:  #B85C0F;
   --text:         #1C1A18;
   --text-muted:   #6b6b67;
   --text-light:   #9A958D;
   --border:       #E2DED8;
   --bg:           #F7F5F2;
   --card:         #ffffff;
-  --input-bg:     #FAFAF8;
+  --input-bg:     #FFFFFF;
+  --input-border: #CCC8C0;
   --radius:       10px;
   --radius-lg:    14px;
   --radius-xl:    20px;
@@ -124,7 +129,7 @@ input, select, textarea { font-family: inherit; }
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 24px;
-  max-width: 600px;
+  max-width: 680px;
   margin: -16px auto 32px;
   box-shadow: var(--sh);
   position: relative;
@@ -137,48 +142,110 @@ input, select, textarea { font-family: inherit; }
 }
 
 /* ═══════════════════════════════════════════════════════════
-   TABS — Nhập / Xuất switcher
+   TABS — Nhập / Xuất switcher (Redesigned — Large & Bold)
    ═══════════════════════════════════════════════════════════ */
 .tabs {
   display: flex;
   gap: 10px;
-  margin-bottom: 22px;
+  margin-bottom: 0;
   background: var(--bg);
-  padding: 5px;
-  border-radius: var(--radius);
+  padding: 6px;
+  border-radius: var(--radius-lg);
 }
 .tab {
   flex: 1;
-  padding: 11px 12px;
-  border-radius: calc(var(--radius) - 2px);
-  font-size: 14px;
-  font-weight: 500;
+  padding: 14px 14px;
+  border-radius: calc(var(--radius-lg) - 2px);
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   border: none;
   background: transparent;
   color: var(--text-muted);
-  transition: all .2s var(--ease);
+  transition: all .25s var(--ease);
   font-family: var(--font);
   position: relative;
   overflow: hidden;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  letter-spacing: -0.2px;
 }
-.tab:hover { color: var(--text); }
+.tab:hover { color: var(--text); background: rgba(255,255,255,.5); }
+
 .tab.active-nhap {
   background: var(--card);
   color: var(--green-dark);
-  font-weight: 600;
-  box-shadow: var(--sh-sm);
+  font-weight: 700;
+  box-shadow: var(--sh-sm), 0 0 0 2px var(--green-border);
 }
 .tab.active-xuat {
   background: var(--card);
   color: var(--red-dark);
-  font-weight: 600;
-  box-shadow: var(--sh-sm);
+  font-weight: 700;
+  box-shadow: var(--sh-sm), 0 0 0 2px var(--red-border);
 }
 
 /* ═══════════════════════════════════════════════════════════
-   FORM FIELDS
+   PANEL HEADING — Color-coded section identity
+   ═══════════════════════════════════════════════════════════ */
+.panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  border-radius: var(--radius-lg);
+  margin: 20px 0 22px;
+  animation: fadeSlideIn .3s var(--ease);
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.panel-heading .panel-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.panel-heading .panel-text h2 {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+.panel-heading .panel-text p {
+  font-size: 12.5px;
+  margin-top: 2px;
+  opacity: .75;
+}
+
+/* ── Nhập kho heading ── */
+.panel-heading.nhap-heading {
+  background: linear-gradient(135deg, #E1F5EE 0%, #D0F0E4 100%);
+  border: 1.5px solid var(--green-border);
+}
+.panel-heading.nhap-heading .panel-icon {
+  background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(15,110,86,.25);
+}
+.panel-heading.nhap-heading .panel-text h2 { color: var(--green-dark); }
+.panel-heading.nhap-heading .panel-text p  { color: var(--green-mid); }
+
+/* ── Xuất kho heading ── */
+.panel-heading.xuat-heading {
+  background: linear-gradient(135deg, #FFF3ED 0%, #FAECE7 100%);
+  border: 1.5px solid var(--red-border);
+}
+.panel-heading.xuat-heading .panel-icon {
+  background: linear-gradient(135deg, var(--orange-mid), var(--red-mid));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(216,90,48,.25);
+}
+.panel-heading.xuat-heading .panel-text h2 { color: var(--red-dark); }
+.panel-heading.xuat-heading .panel-text p  { color: var(--red-mid); }
+
+/* ═══════════════════════════════════════════════════════════
+   FORM FIELDS — Enhanced Input Styling
    ═══════════════════════════════════════════════════════════ */
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
@@ -186,42 +253,66 @@ input, select, textarea { font-family: inherit; }
 .field { margin-bottom: 16px; position: relative; }
 label {
   display: block;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: .06em;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 label .req { color: #E24B4A; margin-left: 2px; }
 
+/* ── INPUT / SELECT / TEXTAREA — Prominent styling ── */
 input, select, textarea {
   width: 100%;
-  padding: 11px 14px;
-  border: 1.5px solid var(--border);
+  padding: 13px 16px;
+  border: 2px solid var(--input-border);
   border-radius: var(--radius);
   background: var(--input-bg);
   color: var(--text);
-  font-size: 14px;
+  font-size: 14.5px;
   font-family: var(--font);
   transition: border-color .2s var(--ease), box-shadow .2s var(--ease), background .2s;
   -webkit-appearance: none;
   outline: none;
 }
+input::placeholder, select::placeholder, textarea::placeholder {
+  color: #B0ACA6;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* ── FOCUS EFFECT — Nhập mode (green glow) ── */
+.nhap-active input:focus, .nhap-active select:focus, .nhap-active textarea:focus {
+  border-color: var(--green-mid);
+  background: #fff;
+  box-shadow: 0 0 0 4px var(--green-glow), 0 2px 8px rgba(15,110,86,.08);
+}
+
+/* ── FOCUS EFFECT — Xuất mode (orange glow) ── */
+.xuat-active input:focus, .xuat-active select:focus, .xuat-active textarea:focus {
+  border-color: var(--orange-mid);
+  background: #fff;
+  box-shadow: 0 0 0 4px var(--red-glow), 0 2px 8px rgba(216,90,48,.08);
+}
+
+/* Fallback focus (when no mode class) */
 input:focus, select:focus, textarea:focus {
   border-color: var(--green-mid);
-  background: var(--card);
-  box-shadow: 0 0 0 4px rgba(15,110,86,.08);
+  background: #fff;
+  box-shadow: 0 0 0 4px var(--green-glow);
 }
+
 input[readonly] {
   background: #F0EEEA;
   color: var(--text-muted);
   cursor: default;
   border-style: dashed;
+  border-color: var(--border);
 }
 input.err, select.err {
   border-color: #E24B4A !important;
-  box-shadow: 0 0 0 4px rgba(226,75,74,.08) !important;
+  box-shadow: 0 0 0 4px rgba(226,75,74,.12) !important;
   animation: shakeField .35s var(--ease);
 }
 @keyframes shakeField {
@@ -238,9 +329,37 @@ input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
 select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%236b6b67' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 34px;
+  background-position: right 14px center;
+  padding-right: 36px;
   cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM GROUP — Enclosed section within panel
+   ═══════════════════════════════════════════════════════════ */
+.form-group {
+  background: #FAFAF8;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 18px;
+}
+.form-group-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.form-group-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -331,10 +450,10 @@ select {
 .items-list { margin-bottom: 12px; }
 
 .item-row {
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
   margin-bottom: 10px;
   transition: box-shadow .2s, transform .2s;
   animation: itemSlide .25s var(--ease) both;
@@ -392,7 +511,7 @@ select {
    ═══════════════════════════════════════════════════════════ */
 .btn-add-item {
   width: 100%;
-  padding: 11px;
+  padding: 12px;
   border-radius: var(--radius);
   border: 2px dashed var(--border);
   background: transparent;
@@ -405,20 +524,25 @@ select {
   transition: all .2s var(--ease);
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
-.btn-add-item:hover {
+.nhap-active .btn-add-item:hover {
   border-color: var(--green-mid);
   color: var(--green-mid);
   background: var(--green-light);
+}
+.xuat-active .btn-add-item:hover {
+  border-color: var(--orange-mid);
+  color: var(--red-mid);
+  background: var(--red-light);
 }
 
 .btn-row { display: flex; gap: 10px; }
 
 .btn-submit {
   flex: 1;
-  padding: 13px 18px;
+  padding: 14px 18px;
   border-radius: var(--radius);
   border: none;
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   font-family: var(--font);
@@ -439,14 +563,14 @@ select {
 .btn-nhap:not(:disabled):hover { box-shadow: 0 6px 24px rgba(15,110,86,.3); }
 
 .btn-xuat {
-  background: linear-gradient(135deg, var(--red-mid), var(--red-dark));
+  background: linear-gradient(135deg, var(--orange-mid), var(--red-mid));
   color: #fff;
-  box-shadow: 0 4px 16px rgba(153,60,29,.25);
+  box-shadow: 0 4px 16px rgba(230,126,34,.25);
 }
-.btn-xuat:not(:disabled):hover { box-shadow: 0 6px 24px rgba(153,60,29,.3); }
+.btn-xuat:not(:disabled):hover { box-shadow: 0 6px 24px rgba(230,126,34,.3); }
 
 .btn-clear {
-  padding: 13px 16px;
+  padding: 14px 16px;
   border-radius: var(--radius);
   border: 1.5px solid var(--border);
   background: transparent;
@@ -521,6 +645,21 @@ select {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ═══════════════════════════════════════════════════════════
+   TAB CONTENT — Show/Hide panels
+   ═══════════════════════════════════════════════════════════ */
+.tab-content {
+  display: none;
+  animation: panelFadeIn .35s var(--ease);
+}
+.tab-content.active {
+  display: block;
+}
+@keyframes panelFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════
    RESPONSIVE — MOBILE-FIRST
    ═══════════════════════════════════════════════════════════ */
 @media (max-width: 640px) {
@@ -538,13 +677,22 @@ select {
   .row3 { grid-template-columns: 1fr 1fr; gap: 10px; }
 
   .tabs { gap: 6px; padding: 4px; }
-  .tab { padding: 10px 8px; font-size: 13px; }
+  .tab { padding: 12px 8px; font-size: 13.5px; }
+
+  .panel-heading { padding: 14px 16px; margin: 16px 0 18px; }
+  .panel-heading .panel-icon { width: 38px; height: 38px; border-radius: 10px; }
+  .panel-heading .panel-text h2 { font-size: 16px; }
+  .panel-heading .panel-text p { font-size: 11.5px; }
+
+  .form-group { padding: 16px; }
 
   .item-row { padding: 14px; }
   .item-row .row3 { grid-template-columns: 1fr 1fr; }
 
   .btn-submit { padding: 13px 14px; font-size: 14px; }
   .btn-clear { padding: 13px 14px; }
+
+  input, select, textarea { padding: 12px 14px; font-size: 14px; }
 }
 
 @media (max-width: 380px) {
@@ -555,8 +703,12 @@ select {
 
   .card { margin: -10px 8px 24px; padding: 18px 14px; }
 
+  .panel-heading { padding: 12px 14px; gap: 10px; }
+  .panel-heading .panel-icon { width: 34px; height: 34px; border-radius: 8px; }
+  .panel-heading .panel-text h2 { font-size: 15px; }
+
   label { font-size: 10.5px; }
-  input, select, textarea { padding: 10px 12px; font-size: 13.5px; }
+  input, select, textarea { padding: 11px 12px; font-size: 13.5px; }
 
   .item-row .row3 { grid-template-columns: 1fr; }
   .btn-row { flex-direction: column; }
@@ -582,65 +734,150 @@ select {
   <p>Ghi nhận nhập / xuất hàng hóa &amp; nguyên vật liệu</p>
 </div>
 
-<div class="card">
+<div class="card" id="mainCard">
+
+  <!-- ═══════ TABS ═══════ -->
   <div class="tabs">
-    <button class="tab" id="tabN" onclick="switchTab('nhap')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg> Nhập kho (ủng hộ)</button>
-    <button class="tab active-xuat" id="tabX" onclick="switchTab('xuat')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg> Xuất kho</button>
-  </div>
-
-  <div class="section-title">Thông tin chung</div>
-  <div class="row2">
-    <div class="field">
-      <label>Ngày <span class="req">*</span></label>
-      <input type="date" id="ngay">
-    </div>
-    <div class="field">
-      <label>Người thực hiện <span class="req">*</span></label>
-      <input type="text" id="nguoi" placeholder="Họ tên người ghi nhận">
-    </div>
-  </div>
-
-  <div id="fieldNguon" class="field" style="display:none">
-    <label>Người ủng hộ / Nguồn nhận <span class="req">*</span></label>
-    <input type="text" id="nguon" placeholder="VD: MTQ ẩn danh, Cô Thủy Quận 10…">
-  </div>
-  <div id="fieldDienGiai" class="field" style="display:block">
-    <label>Diễn giải / Mục đích xuất <span class="req">*</span></label>
-    <input type="text" id="dienGiai" placeholder="VD: Xuất cho quán cơm 2000.đ Sài Gòn, Xuất cho quán cơm 2000.đ Cần Thơ">
-  </div>
-
-  <div class="row2">
-    <div class="field">
-      <label>Địa chỉ</label>
-      <input type="text" id="diaChi" placeholder="Quận / Phường (tuỳ chọn)">
-    </div>
-    <div class="field">
-      <label>Số điện thoại</label>
-      <input type="tel" id="sdt" placeholder="(tuỳ chọn)" inputmode="tel">
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="section-title" id="sectionHang">Danh sách hàng xuất</div>
-  <div class="items-list xuat-mode" id="itemsList"></div>
-  <button class="btn-add-item" onclick="addItem()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Thêm mặt hàng</button>
-
-  <div class="divider"></div>
-
-  <!-- Thông báo chờ duyệt (hiện cho cả hai tab) -->
-  <div class="pending-note" id="pendingNote">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:-2px"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> <strong>Lưu ý:</strong> Phiếu sẽ được gửi cho admin phê duyệt trước khi cập nhật vào kho chính.
-  </div>
-
-  <div class="btn-row">
-    <button class="btn-submit btn-xuat" id="btnSubmit" onclick="submitForm()">
-      <span id="btnIcon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-      <span id="btnLabel">Gửi chờ duyệt</span>
+    <button class="tab" id="tabN" onclick="switchTab('nhap')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
+      Nhập kho (ủng hộ)
     </button>
-    <button class="btn-clear" onclick="clearForm()" title="Xoá form"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+    <button class="tab active-xuat" id="tabX" onclick="switchTab('xuat')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+      Xuất kho
+    </button>
   </div>
-  <div class="toast" id="toast"></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PANEL NHẬP KHO
+       ═══════════════════════════════════════════════════════ -->
+  <div class="tab-content" id="panelNhap">
+    <div class="panel-heading nhap-heading">
+      <div class="panel-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
+      </div>
+      <div class="panel-text">
+        <h2>📥 Phiếu Nhập Kho</h2>
+        <p>Ghi nhận hàng được ủng hộ / nhận vào kho</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group-title">Thông tin chung</div>
+      <div class="row2">
+        <div class="field">
+          <label>Ngày <span class="req">*</span></label>
+          <input type="date" id="ngayNhap">
+        </div>
+        <div class="field">
+          <label>Người thực hiện <span class="req">*</span></label>
+          <input type="text" id="nguoiNhap" placeholder="Nhập họ tên người ghi nhận...">
+        </div>
+      </div>
+      <div class="field">
+        <label>Người ủng hộ / Nguồn nhận <span class="req">*</span></label>
+        <input type="text" id="nguonNhap" placeholder="VD: MTQ ẩn danh, Cô Thủy Quận 10…">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Địa chỉ</label>
+          <input type="text" id="diaChiNhap" placeholder="Quận / Phường (tuỳ chọn)...">
+        </div>
+        <div class="field">
+          <label>Số điện thoại</label>
+          <input type="tel" id="sdtNhap" placeholder="Nhập số điện thoại (tuỳ chọn)..." inputmode="tel">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group-title" id="sectionHangNhap">Danh sách hàng nhập</div>
+      <div class="items-list nhap-mode" id="itemsListNhap"></div>
+      <button class="btn-add-item" onclick="addItem('nhap')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Thêm mặt hàng
+      </button>
+    </div>
+
+    <div class="pending-note" id="pendingNoteNhap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:-2px"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> <strong>Lưu ý:</strong> Phiếu sẽ được gửi cho admin phê duyệt trước khi cập nhật vào kho chính.
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-submit btn-nhap" id="btnSubmitNhap" onclick="submitForm()">
+        <span id="btnIconNhap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span id="btnLabelNhap">Gửi chờ duyệt</span>
+      </button>
+      <button class="btn-clear" onclick="clearForm()" title="Xoá form"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+    </div>
+    <div class="toast" id="toastNhap"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PANEL XUẤT KHO
+       ═══════════════════════════════════════════════════════ -->
+  <div class="tab-content active" id="panelXuat">
+    <div class="panel-heading xuat-heading">
+      <div class="panel-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+      </div>
+      <div class="panel-text">
+        <h2>📤 Phiếu Xuất Kho</h2>
+        <p>Ghi nhận hàng xuất ra khỏi kho</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group-title">Thông tin chung</div>
+      <div class="row2">
+        <div class="field">
+          <label>Ngày <span class="req">*</span></label>
+          <input type="date" id="ngayXuat">
+        </div>
+        <div class="field">
+          <label>Người thực hiện <span class="req">*</span></label>
+          <input type="text" id="nguoiXuat" placeholder="Nhập họ tên người ghi nhận...">
+        </div>
+      </div>
+      <div class="field">
+        <label>Diễn giải / Mục đích xuất <span class="req">*</span></label>
+        <input type="text" id="dienGiaiXuat" placeholder="VD: Xuất cho quán cơm 2000đ Sài Gòn, Xuất cho quán cơm 2000đ Cần Thơ...">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Địa chỉ</label>
+          <input type="text" id="diaChiXuat" placeholder="Quận / Phường (tuỳ chọn)...">
+        </div>
+        <div class="field">
+          <label>Số điện thoại</label>
+          <input type="tel" id="sdtXuat" placeholder="Nhập số điện thoại (tuỳ chọn)..." inputmode="tel">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group-title" id="sectionHangXuat">Danh sách hàng xuất</div>
+      <div class="items-list xuat-mode" id="itemsListXuat"></div>
+      <button class="btn-add-item" onclick="addItem('xuat')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Thêm mặt hàng
+      </button>
+    </div>
+
+    <div class="pending-note" id="pendingNoteXuat">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:-2px"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> <strong>Lưu ý:</strong> Phiếu sẽ được gửi cho admin phê duyệt trước khi cập nhật vào kho chính.
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-submit btn-xuat" id="btnSubmitXuat" onclick="submitForm()">
+        <span id="btnIconXuat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span id="btnLabelXuat">Gửi chờ duyệt</span>
+      </button>
+      <button class="btn-clear" onclick="clearForm()" title="Xoá form"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+    </div>
+    <div class="toast" id="toastXuat"></div>
+  </div>
+
 </div>
 
 <div class="footer-credit">
@@ -670,13 +907,15 @@ const HANG_HOA = [
 ];
 
 let loai = 'xuat';
-let itemCount = 0;
+let itemCountNhap = 0;
+let itemCountXuat = 0;
 
 window.onload = () => {
-  document.getElementById('ngay').value = new Date().toISOString().split('T')[0];
-  addItem();
-  // Hiện pending note mặc định
-  document.getElementById('pendingNote').style.display = 'block';
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('ngayNhap').value = today;
+  document.getElementById('ngayXuat').value = today;
+  addItem('nhap');
+  addItem('xuat');
   switchTab('xuat');
 };
 
@@ -686,54 +925,62 @@ window.onload = () => {
 function switchTab(l) {
   loai = l;
   const isN = l === 'nhap';
+  const card = document.getElementById('mainCard');
+
+  // Tab buttons
   document.getElementById('tabN').className = 'tab' + (isN ? ' active-nhap' : '');
   document.getElementById('tabX').className = 'tab' + (isN ? '' : ' active-xuat');
-  document.getElementById('fieldNguon').style.display    = isN ? 'block' : 'none';
-  document.getElementById('fieldDienGiai').style.display = isN ? 'none'  : 'block';
-  document.getElementById('sectionHang').textContent = isN ? 'Danh sách hàng nhập' : 'Danh sách hàng xuất';
-  document.getElementById('itemsList').className = 'items-list ' + (isN ? 'nhap-mode' : 'xuat-mode');
-  document.getElementById('btnSubmit').className = 'btn-submit ' + (isN ? 'btn-nhap' : 'btn-xuat');
-  // ── CẢ HAI TAB ĐỀU GỬI CHỜ DUYỆT ──
-  document.getElementById('btnLabel').textContent = 'Gửi chờ duyệt';
-  document.getElementById('pendingNote').style.display = 'block';
-  document.getElementById('toast').className = 'toast';
+
+  // Panel visibility
+  document.getElementById('panelNhap').className = 'tab-content' + (isN ? ' active' : '');
+  document.getElementById('panelXuat').className = 'tab-content' + (isN ? '' : ' active');
+
+  // Card mode class (for focus color switching)
+  card.className = 'card ' + (isN ? 'nhap-active' : 'xuat-active');
+
+  // Clear toast on tab switch
+  document.getElementById('toastNhap').className = 'toast';
+  document.getElementById('toastXuat').className = 'toast';
 }
 
 // ════════════════════════════════════════
 //  THÊM / XÓA HÀNG
 // ════════════════════════════════════════
-function addItem() {
-  itemCount++;
-  const id = itemCount;
-  const lst = document.getElementById('itemsList');
+function addItem(tab) {
+  const isNhap = (tab || loai) === 'nhap';
+  if (isNhap) { itemCountNhap++; } else { itemCountXuat++; }
+  const id = isNhap ? 'n' + itemCountNhap : 'x' + itemCountXuat;
+  const lst = document.getElementById(isNhap ? 'itemsListNhap' : 'itemsListXuat');
   const div = document.createElement('div');
   div.className = 'item-row'; div.id = 'item-' + id;
   div.innerHTML = `
     <div class="item-row-head">
-      <span class="item-num">Hàng #${id}</span>
-      <button class="btn-del-item" onclick="delItem(${id})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <span class="item-num">Hàng #${isNhap ? itemCountNhap : itemCountXuat}</span>
+      <button class="btn-del-item" onclick="delItem('${id}','${isNhap ? 'nhap' : 'xuat'}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="field suggest-wrap">
       <label>Tên hàng hóa <span class="req">*</span></label>
-      <input type="text" id="ten-${id}" placeholder="Gõ tên hoặc mã (ga, nm, tr, rau…)"
-        oninput="onSearch(this.value,${id})" autocomplete="off">
+      <input type="text" id="ten-${id}" placeholder="Gõ tên hoặc mã hàng (gạo, dầu ăn, nm, tr…)"
+        oninput="onSearch(this.value,'${id}')" autocomplete="off">
       <div class="suggest-box" id="sbox-${id}"></div>
     </div>
     <div class="row3">
       <div class="field"><label>Mã NVL</label><input type="text" id="ma-${id}" readonly placeholder="Tự điền"></div>
       <div class="field"><label>Đơn vị</label><input type="text" id="dvt-${id}" readonly placeholder="Tự điền"></div>
       <div class="field"><label>Số lượng <span class="req">*</span></label>
-        <input type="number" id="qty-${id}" placeholder="0" min="0" step="0.01" inputmode="decimal">
+        <input type="number" id="qty-${id}" placeholder="Nhập số lượng..." min="0" step="0.01" inputmode="decimal">
       </div>
     </div>`;
   lst.appendChild(div);
   setTimeout(() => div.scrollIntoView({behavior:'smooth',block:'nearest'}), 80);
 }
 
-function delItem(id) {
+function delItem(id, tab) {
   const el = document.getElementById('item-' + id);
   if (!el) return;
-  if (document.querySelectorAll('.item-row').length <= 1) {
+  const listId = tab === 'nhap' ? 'itemsListNhap' : 'itemsListXuat';
+  const list = document.getElementById(listId);
+  if (list.querySelectorAll('.item-row').length <= 1) {
     ['ten','ma','dvt','qty'].forEach(f => {
       const inp = document.getElementById(f+'-'+id);
       if (inp) { inp.value=''; inp.classList.remove('err'); }
@@ -762,7 +1009,7 @@ function onSearch(val, id) {
   const hits = HANG_HOA.filter(h => norm(h.ten).includes(q) || h.ma.toLowerCase().includes(q));
   if (!hits.length) { box.style.display='none'; return; }
   box.innerHTML = hits.map(h =>
-    `<div class="sitem" onclick="chon(${id},'${h.ma}','${h.ten}','${h.dvt}')">
+    `<div class="sitem" onclick="chon('${id}','${h.ma}','${h.ten}','${h.dvt}')">
       <span>${h.ten}</span>
       <span class="sitem-right"><span class="sitem-ma">${h.ma}</span><span class="sitem-dv">${h.dvt}</span></span>
     </div>`).join('');
@@ -790,18 +1037,27 @@ function validate() {
   let err = null;
   const mark = (id, lbl) => {
     const el = document.getElementById(id);
+    if (!el) return;
     if (!el.value.trim()) { el.classList.add('err'); if (!err) err='Vui lòng điền: '+lbl; }
     else el.classList.remove('err');
   };
-  mark('ngay','Ngày'); mark('nguoi','Người thực hiện');
-  if (loai==='nhap') mark('nguon','Người ủng hộ / Nguồn nhận');
-  else               mark('dienGiai','Diễn giải / Mục đích xuất');
+
+  if (loai === 'nhap') {
+    mark('ngayNhap','Ngày');
+    mark('nguoiNhap','Người thực hiện');
+    mark('nguonNhap','Người ủng hộ / Nguồn nhận');
+  } else {
+    mark('ngayXuat','Ngày');
+    mark('nguoiXuat','Người thực hiện');
+    mark('dienGiaiXuat','Diễn giải / Mục đích xuất');
+  }
   return err;
 }
 
 function collectItems() {
+  const listId = loai === 'nhap' ? 'itemsListNhap' : 'itemsListXuat';
   const items = []; let hasErr = false;
-  document.querySelectorAll('.item-row').forEach(row => {
+  document.getElementById(listId).querySelectorAll('.item-row').forEach(row => {
     const id  = row.id.replace('item-','');
     const ten = (document.getElementById('ten-'+id)?.value||'').trim();
     const ma  = (document.getElementById('ma-'+id)?.value||'').trim();
@@ -818,9 +1074,13 @@ function collectItems() {
 //  GỬI DỮ LIỆU
 // ════════════════════════════════════════
 function setLoading(on) {
-  const btn=document.getElementById('btnSubmit'), icon=document.getElementById('btnIcon');
-  btn.disabled=on;
-  icon.innerHTML=on?'<span class="spinner"></span>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  const isN = loai === 'nhap';
+  const btn  = document.getElementById(isN ? 'btnSubmitNhap' : 'btnSubmitXuat');
+  const icon = document.getElementById(isN ? 'btnIconNhap' : 'btnIconXuat');
+  btn.disabled = on;
+  icon.innerHTML = on
+    ? '<span class="spinner"></span>'
+    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 }
 
 async function submitForm() {
@@ -829,25 +1089,23 @@ async function submitForm() {
   const {items, hasErr} = collectItems();
   if (hasErr || !items.length) { showToast('Điền đầy đủ tên hàng và số lượng!','err'); return; }
 
-  const ngay  = document.getElementById('ngay').value;
-  const nguoi = document.getElementById('nguoi').value.trim();
-
-  // ── ACTION ĐÚNG để Code.gs nhận ra ──
   const payload = loai === 'nhap'
     ? {
-        action:   'submit_nhap',   // ← ghi vào sheet "CHỜ DUYỆT"
-        ngay, nguoi,
-        nguon:    document.getElementById('nguon').value.trim(),
-        diaChi:   document.getElementById('diaChi').value.trim(),
-        sdt:      document.getElementById('sdt').value.trim(),
+        action:   'submit_nhap',
+        ngay:     document.getElementById('ngayNhap').value,
+        nguoi:    document.getElementById('nguoiNhap').value.trim(),
+        nguon:    document.getElementById('nguonNhap').value.trim(),
+        diaChi:   document.getElementById('diaChiNhap').value.trim(),
+        sdt:      document.getElementById('sdtNhap').value.trim(),
         items,
       }
     : {
-        action:   'submit_xuat',   // ← ghi vào sheet "XUẤT KHO"
-        ngay, nguoi,
-        dienGiai: document.getElementById('dienGiai').value.trim(),
-        diaChi:   document.getElementById('diaChi').value.trim(),
-        sdt:      document.getElementById('sdt').value.trim(),
+        action:   'submit_xuat',
+        ngay:     document.getElementById('ngayXuat').value,
+        nguoi:    document.getElementById('nguoiXuat').value.trim(),
+        dienGiai: document.getElementById('dienGiaiXuat').value.trim(),
+        diaChi:   document.getElementById('diaChiXuat').value.trim(),
+        sdt:      document.getElementById('sdtXuat').value.trim(),
         items,
       };
 
@@ -879,21 +1137,36 @@ async function submitForm() {
 //  CLEAR & TOAST
 // ════════════════════════════════════════
 function clearForm(keepBasic=false) {
-  if (!keepBasic) {
-    document.getElementById('nguoi').value='';
-    document.getElementById('nguoi').classList.remove('err');
-    document.getElementById('toast').className='toast';
+  if (loai === 'nhap') {
+    if (!keepBasic) {
+      document.getElementById('nguoiNhap').value='';
+      document.getElementById('nguoiNhap').classList.remove('err');
+      document.getElementById('toastNhap').className='toast';
+    }
+    ['nguonNhap','diaChiNhap','sdtNhap'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.value='';el.classList.remove('err');}
+    });
+    document.getElementById('itemsListNhap').innerHTML='';
+    itemCountNhap=0; addItem('nhap');
+  } else {
+    if (!keepBasic) {
+      document.getElementById('nguoiXuat').value='';
+      document.getElementById('nguoiXuat').classList.remove('err');
+      document.getElementById('toastXuat').className='toast';
+    }
+    ['dienGiaiXuat','diaChiXuat','sdtXuat'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.value='';el.classList.remove('err');}
+    });
+    document.getElementById('itemsListXuat').innerHTML='';
+    itemCountXuat=0; addItem('xuat');
   }
-  ['nguon','dienGiai','diaChi','sdt'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){el.value='';el.classList.remove('err');}
-  });
-  document.getElementById('itemsList').innerHTML='';
-  itemCount=0; addItem();
 }
 
 function showToast(msg,type) {
-  const t=document.getElementById('toast');
+  const toastId = loai === 'nhap' ? 'toastNhap' : 'toastXuat';
+  const t=document.getElementById(toastId);
   t.innerHTML=msg; t.className='toast '+type;
 }
 </script>
