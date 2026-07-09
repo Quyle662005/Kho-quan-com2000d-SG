@@ -9,9 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --brand: #D84315;
-      --brand-light: #FBE9E7;
-      --brand-mid: #E64A19;
+      --brand: #00695C;
+      --brand-light: #E0F2F1;
+      --brand-mid: #00796B;
       --green: #2E7D32;
       --green-light: #E8F5E9;
       --green-mid: #43A047;
@@ -49,7 +49,7 @@
 
     /* HEADER */
     .site-header {
-      background: linear-gradient(135deg, #BF360C 0%, #D84315 50%, #E64A19 100%);
+      background: linear-gradient(135deg, #004D40 0%, #00695C 50%, #00796B 100%);
       color: #fff
     }
 
@@ -62,17 +62,12 @@
       gap: 14px
     }
 
-    .header-icon {
-      width: 50px;
-      height: 50px;
-      flex-shrink: 0;
-      background: rgba(255, 255, 255, .15);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff
-    }
+    
+    .header-icon img{
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
 
     .header-title {
       font-size: 20px;
@@ -356,7 +351,7 @@
       align-items: flex-start;
       gap: 12px;
       border-bottom: 1px solid var(--border);
-      background: linear-gradient(135deg, #FFF9F7 0%, var(--surface) 100%)
+      background: linear-gradient(135deg, #F0FAF7 0%, var(--surface) 100%)
     }
 
     .hc-ma {
@@ -660,16 +655,13 @@
   <!-- HEADER -->
   <div class="site-header">
     <div class="header-inner">
-      <div class="header-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-          <path
-            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-        </svg></div>
+      <div class="header-icon"><img src="logo_NTCM.png" alt="Logo NTCM" /></div>
       <div>
         <div class="header-title">Theo Dõi Cưu Mang 2026</div>
-        <div class="header-sub"> Số tiền = tiền mặt đã trao &nbsp;·&nbsp; <span
-            style="color:#81C784;font-weight:700">✓</span> = nhu yếu phẩm đã trao<br>
-          Màu xanh = tháng được hỗ trợ <br>
-          Số tiền (dvt) :Nghìn đồng
+        <div class="header-sub"> Con số: Số tiền đã trao &nbsp; &nbsp; <br><span
+            style="color:#81C784;font-weight:700">✓</span> : Nhu yếu phẩm đã trao<br>
+          Ô xanh lá: Tháng được hỗ trợ <br>
+          Số tiền (ĐVT): Nghìn đồng
         </div>
       </div>
       <div class="header-stats">
@@ -679,7 +671,7 @@
         </div>
         <div class="h-stat">
           <div class="h-stat-val" id="statMTQ">—</div>
-          <div class="h-stat-lbl">Lượt MTQ</div>
+          <div class="h-stat-lbl">Lượt Hỗ trợ</div>
         </div>
       </div>
     </div>
